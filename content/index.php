@@ -72,13 +72,16 @@ if (defined('ENVIRONMENT')) {
  	
 switch(ENVIRONMENT) {
 	case 'production' :
-		$system_path = '/mnt/stor08-wc1-ord1/718973/DOMsystem';
+		$system_path = '/mnt/stor08-wc1-ord1/718973/content.dealeronlinemarketing.com/web/domcms/sys';
+		$application_folder = '/mnt/stor08-wc1-ord1/718973/content.dealeronlinemarketing.com/web/domcms/app';
 	break;
 	case 'testing' :
-		$system_path = '/mnt/stor08-wc1-ord1/718973/DOMsystem';
+		$system_path = '/mnt/stor08-wc1-ord1/718973/testing.dealeronlinemarketing.com/web/domcms/sys';
+		$application_folder = '/mnt/stor08-wc1-ord1/718973/testing.dealeronlinemarketing.com/web/domcms/app';
 	break;
 	default:
 		$system_path = '/home/lbs9000/public_html/domcms/jeremy.com/web/domcms/sys';
+		$application_folder = '/home/lbs9000/public_html/domcms/jeremy.com/web/domcms/app';
 	break;	
 }
 
@@ -96,7 +99,8 @@ switch(ENVIRONMENT) {
  * NO TRAILING SLASH!
  *
  */
-	$application_folder = '/home/lbs9000/public_html/domcms/jeremy.com/web/domcms/app';
+	
+	
 
 /*
  * --------------------------------------------------------------------
