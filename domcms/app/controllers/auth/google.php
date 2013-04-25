@@ -12,8 +12,8 @@ class Google extends CI_Controller {
     }
 	
 	public function connect() {
-		require_once 'domcms/libraries/googleapi/Google_Client.php';
-		require_once 'domcms/libraries/googleapi/contrib/Google_Oauth2Service.php';
+		require_once APPPATH . 'libraries/googleapi/Google_Client.php';
+		require_once APPPATH . 'libraries/googleapi/contrib/Google_Oauth2Service.php';
 		
 		$client = new Google_Client();
 		$client->setApplicationName("DOM CMS");
