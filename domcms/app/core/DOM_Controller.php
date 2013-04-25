@@ -136,12 +136,17 @@ class DOM_Controller extends CI_Controller {
 
     public function LoadTemplate($filepath, $data = false, $header_data = false, $nav_data = false, $footer_data = false) {
 		
-		//Get what page we are currently on, we need this to load the pieces we need.
+		echo encrypt_password('Q?noodle*09');
+		
+		//Get what page we are currently on, we need this to load the pieces based on the url
+		//we have the system loading files based on the url, but just because a controller appears in the url, doesnt mean that controller is named that.
+		//check the apps routes to make 100% sure what controller is running when. 
+		//sometimes we like to trick people :)
 		$page = $this->router->fetch_class();		
 
 		// Define what level were on so we can filter the naviation and take away the items that arn't available on certain levels
-		
         $this->load->dom_view('incl/header', $this->theme_settings['GlobalViews'], $this->theme_settings);
+		
 		//if were not on the login screen, show the user nav
         if($page != 'login' && $page != 'sign_in') { 
 			$user_nav = array(
@@ -164,6 +169,7 @@ class DOM_Controller extends CI_Controller {
         if($page != 'login' && $page != 'sign_in') { 
 			$level = $this->user['DropdownDefault']->LevelType;
 			
+			//lets figure out where we are.
 			switch($level) {
 				case 'a':
 					$selectedLevel = 1;
@@ -178,21 +184,23 @@ class DOM_Controller extends CI_Controller {
 					$selectedLevel = 1;
 				break;
 			}
+			
+			//system navigation on the left side of the page. 
 			$nav = array(
 				'nav' => $this->main_nav,
 				'active_button' => $this->activeNav,
 				'activeLevel' => $selectedLevel
 			);
-			$this->load->dom_view('incl/nav', $this->theme_settings['GlobalViews'] . $nav);
+			$this->load->dom_view('incl/nav', $this->theme_settings['GlobalViews'],$nav);
 		}
 		
 		//load the content
-        $this->load->dom_view($filepath, $this->theme_settings['ThemeViews'] , ($data) ? $data : array());
+        $this->load->dom_view($filepath, $this->theme_settings['ThemeViews'], ($data) ? $data : array());
 		
 		//if were not on the login screen, load the tags form in the footer. Its hidden by default.
-		if($page != 'login' && $page != 'sign_in') { 
+		if($page != 'login' AND $page != 'sign_in') : 
 			$this->load->dom_view('forms/ajax/add_tags', $this->theme_settings['ThemeViews']);
-		}
+		endif;
 		
 		//Load the footers
         $this->load->dom_view('incl/footer', $this->theme_settings['ThemeViews'], ($footer_data) ? $footer_data : array());
