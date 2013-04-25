@@ -25,7 +25,6 @@
                             </div>
                             <div class="fix"></div>
                         </div>
-                        <input class="greyishBtn submitForm" type="submit" value="Add Tag" />
                     </fieldset>
                 <?= form_close(); ?>
             </div>
