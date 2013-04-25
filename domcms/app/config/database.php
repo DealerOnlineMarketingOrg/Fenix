@@ -49,64 +49,45 @@ switch(ENVIRONMENT) {
 	case 'production' :
 		$active_group = 'prod';
 	break;
-	case 'testing':
-		$active_group = 'test';
-	break;	
 	default:
-		$active_group = 'dev';
+		$active_group = 'test';
 	break;
 }
 
 $active_record = TRUE;
 
-$db['prod']['hostname'] = 'mysql51-021.wc1.ord1.stabletransit.com';
-$db['prod']['username'] = '718973_prodbeta';
-$db['prod']['password'] = 'Q?noodle*09';
-$db['prod']['database'] = '718973_DOM_APP';
-$db['prod']['dbdriver'] = 'mysqli';
-$db['prod']['dbprefix'] = '';
-$db['prod']['pconnect'] = TRUE;
-$db['prod']['db_debug'] = FALSE;
-$db['prod']['cache_on'] = FALSE;
-$db['prod']['cachedir'] = '';
-$db['prod']['char_set'] = 'utf8';
-$db['prod']['dbcollat'] = 'utf8_general_ci';
-$db['prod']['swap_pre'] = '';
-$db['prod']['autoinit'] = TRUE;
-$db['prod']['stricton'] = FALSE;
+$db['prod'] = array(
+	'hostname' => 'mysql51-021.wc1.ord1.stabletransit.com',
+	'username' => '718973_prodbeta',
+	'password' => 'Q?noodle*09',
+	'database' => '718973_DOM_APP',
+	'dbdriver' => 'mysqli',
+	'dbprefix' => '',
+	'pconnect' => TRUE,
+	'db_debug' => FALSE,
+	'cache_on' => FALSE,
+	'cachedir' => '',
+	'char_set' => 'utf8',
+	'dbcollat' => 'utf8_general_ci',
+	'swap_pre' => '',
+	'autoinit' => TRUE,
+	'stricton' => FALSE
+);
 
-$db['test']['hostname'] = 'mysql51-017.wc1.ord1.stabletransit.com';
-$db['test']['username'] = '718973_testbeta';
-$db['test']['password'] = 'Q?noodle*09';
-$db['test']['database'] = '718973_DOM_CMS';
-$db['test']['dbdriver'] = 'mysqli';
-$db['test']['dbprefix'] = '';
-$db['test']['pconnect'] = TRUE;
-$db['test']['db_debug'] = FALSE;
-$db['test']['cache_on'] = FALSE;
-$db['test']['cachedir'] = '';
-$db['test']['char_set'] = 'utf8';
-$db['test']['dbcollat'] = 'utf8_general_ci';
-$db['test']['swap_pre'] = '';
-$db['test']['autoinit'] = TRUE;
-$db['test']['stricton'] = FALSE;
-
-$db['dev']['hostname'] = '198.101.136.226';
-$db['dev']['username'] = '718973_testbeta';
-$db['dev']['password'] = 'Q?noodle*09';
-$db['dev']['database'] = '718973_DOM_CMS';
-$db['dev']['dbdriver'] = 'mysqli';
-$db['dev']['dbprefix'] = '';
-$db['dev']['pconnect'] = TRUE;
-$db['dev']['db_debug'] = TRUE;
-$db['dev']['cache_on'] = FALSE;
-$db['dev']['cachedir'] = '';
-$db['dev']['char_set'] = 'utf8';
-$db['dev']['dbcollat'] = 'utf8_general_ci';
-$db['dev']['swap_pre'] = '';
-$db['dev']['autoinit'] = TRUE;
-$db['dev']['stricton'] = TRUE;
-
-
-/* End of file database.php */
-/* Location: ./application/config/database.php */
+$db['test'] = array(
+	'hostname' => ((ENVIRONMENT != 'testing') ? '198.101.136.226' : 'mysql51-017.wc1.ord1.stabletransit.com'),
+	'username' => '718973_testbeta',
+	'password' => 'Q?noodle*09',
+	'database' => '718973_DOM_CMS',
+	'dbdriver' => 'mysqli',
+	'dbprefix' => '',
+	'pconnect' => TRUE,
+	'db_debug' => FALSE,
+	'cache_on' => FALSE,
+	'cachedir' => '',
+	'char_set' => 'utf8',
+	'dbcollat' => 'utf8_general_ci',
+	'swap_pre' => '',
+	'autoinit' => TRUE,
+	'stricton' => FALSE
+);

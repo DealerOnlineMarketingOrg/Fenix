@@ -1,9 +1,11 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 class Login extends DOM_Controller {
+	
 	public $google_token;
 	public $google_email;
 	public $google_avatar;
+	
     public function __construct() {
         parent::__construct();
 		$this->load->model('members');

@@ -6,7 +6,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
   This controller checks the user credentials.
   If the users credentials do not pass it sends them to the login page.
  */
-session_start();
+if(!isset($_SESSION)) { session_start(); }
 
 class DOM_Controller extends CI_Controller {
 
@@ -136,7 +136,7 @@ class DOM_Controller extends CI_Controller {
 
     public function LoadTemplate($filepath, $data = false, $header_data = false, $nav_data = false, $footer_data = false) {
 		
-		echo encrypt_password('Q?noodle*09');
+		//echo encrypt_password('Q?noodle*09');
 		
 		//Get what page we are currently on, we need this to load the pieces based on the url
 		//we have the system loading files based on the url, but just because a controller appears in the url, doesnt mean that controller is named that.
