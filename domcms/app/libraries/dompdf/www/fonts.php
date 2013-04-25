@@ -56,9 +56,8 @@ $extensions = array("ttf", "afm", "afm.php", "ufm", "ufm.php");
   </tr>
   <?php foreach($fonts as $family => $variants) { ?>
     <tr>
-      <td class="title" rowspan="<?php echo count($variants); ?>">
-        <?php 
-          echo htmlentities($family);
+      <td class="title" rowspan="<?= count($variants); ?>">
+        <?= htmlentities($family);
           if ($family == DOMPDF_DEFAULT_FONT) {
             echo ' <strong>(default)</strong>';
           }
@@ -162,7 +161,7 @@ $max_size = min(to_bytes(ini_get('post_max_size')), to_bytes(ini_get('upload_max
 ?>
 
 <form name="upload-font" method="post" action="controller.php?cmd=install-font" target="upload-font" enctype="multipart/form-data" onsubmit="return checkFileName(this)">
-  <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo $max_size; ?>" />
+  <input type="hidden" name="MAX_FILE_SIZE" value="<?= $max_size; ?>" />
   
   <table class="setup">
     <tr>

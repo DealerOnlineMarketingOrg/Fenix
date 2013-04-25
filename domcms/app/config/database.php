@@ -75,7 +75,7 @@ $db['prod'] = array(
 );
 
 $db['test'] = array(
-	'hostname' => ((ENVIRONMENT != 'testing') ? '198.101.136.226' : 'mysql51-017.wc1.ord1.stabletransit.com'),
+	'hostname' => ((ENVIRONMENT != 'testing' AND ENVIRONMENT != 'production') ? '198.101.136.226' : 'mysql51-017.wc1.ord1.stabletransit.com'),
 	'username' => '718973_testbeta',
 	'password' => 'Q?noodle*09',
 	'database' => '718973_DOM_CMS',

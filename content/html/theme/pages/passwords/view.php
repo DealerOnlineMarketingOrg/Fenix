@@ -2,27 +2,27 @@
     	<div class="title">
         	<h5>Contact Information</h5>
         </div>
-        <?php include 'html/global/breadcrumb.php'; ?>
+        <?php include FCPATH . 'html/global/breadcrumb.php'; ?>
     	<div class="widget" style="margin-top:5px;">
         	<div class="head">
-    			<h5 class="iUser"><?php echo  $display->Name; ?></h5>
+    			<h5 class="iUser"><?= $display->Name; ?></h5>
             </div>
             <table cellpadding="0" cellspacing="0" width="100%" class="tableStatic">
             	<tbody>
                 	<tr class="noborder">
                     	<td width="10%">Title:</td>
-                        <td><?php echo  $display->JobTitle; ?></td>
+                        <td><?= $display->JobTitle; ?></td>
                     </tr>
                     <tr>
                     	<td width="10%">
                     </tr>
                     <tr>
                     	<td width="10%">Parent Client:</td>
-                        <td><?php echo  $display->Dealership; ?></td>
+                        <td><?= $display->Dealership; ?></td>
                     </td>
                     <tr>
                     	<td width="10%">Name:</td>
-                        <td><?php echo  $display->Name; ?></td>
+                        <td><?= $display->Name; ?></td>
                     </tr>
                     <tr>
                       	<td width="10%" style="vertical-align:top;">Emails:</td>
@@ -48,7 +48,7 @@
                     <?php if(isset($display->Address)) { ?>
                     <tr>
                     	<td width="10%" style="vertical-align:top;">Address:</td>
-                        <td><?php echo  $display->Address['street'] . ' <br />' . $display->Address['city'] . ', ' . $display->Address['state'] . ' ' . $display->Address['zipcode']; ?></td>
+                        <td><?= $display->Address['street'] . ' <br />' . $display->Address['city'] . ', ' . $display->Address['state'] . ' ' . $display->Address['zipcode']; ?></td>
                     </tr>
                     <?php } ?>
                     <?php if(isset($display->Phone)) { ?>
@@ -76,7 +76,7 @@
                     <?php if(isset($display->Notes)) { ?>
                     <tr>
                     	<td width="10%" style="vertical-align:top;">Notes:</td>
-                        <td><p><?php echo  $display->Notes; ?></p></td>
+                        <td><p><?= $display->Notes; ?></p></td>
                     </tr>
                     <?php } ?>
                 </tbody>

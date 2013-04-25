@@ -2,7 +2,7 @@
 <div class="content hideTagFilter" id="container">
     <div class="title"><h5>Reports</h5></div>
     <?php notifyError(); ?>
-    <?php echo  (($html) ? $html : ''); ?>
+    <?= (($html) ? $html : ''); ?>
     <!-- Form begins -->
     <?php
 		$dateRange = $this->input->post();
@@ -93,7 +93,7 @@
             	<input type="submit" value="submit" class="redBtn" />
             </div>
         </fieldset>
-    <?php echo  form_close(); ?>
+    <?= form_close(); ?>
     
     <?php
         $form = array(
@@ -102,11 +102,11 @@
             'class' => 'mainForm valid'
         );
 		echo form_open('%page%',$form); ?>
-    	<input ID="startMonthCancel" name="startMonth" type="hidden" value="<?php echo $dateRange['startMonth']; ?>" />
-        <input ID="startYearCancel" name="startYear" type="hidden" value="<?php echo $dateRange['startYear']; ?>" />
-        <input ID="endMonthCancel" name="endMonth" type="hidden" value="<?php echo $dateRange['endMonth']; ?>" />
-        <input ID="endYearCancel" name="endYear" type="hidden" value="<?php echo $dateRange['endYear']; ?>" />
-    <?php echo  form_close(); ?>
+    	<input ID="startMonthCancel" name="startMonth" type="hidden" value="<?= $dateRange['startMonth']; ?>" />
+        <input ID="startYearCancel" name="startYear" type="hidden" value="<?= $dateRange['startYear']; ?>" />
+        <input ID="endMonthCancel" name="endMonth" type="hidden" value="<?= $dateRange['endMonth']; ?>" />
+        <input ID="endYearCancel" name="endYear" type="hidden" value="<?= $dateRange['endYear']; ?>" />
+    <?= form_close(); ?>
     
     <script type="text/javascript">
 	

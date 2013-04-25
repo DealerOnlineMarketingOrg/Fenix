@@ -4,7 +4,7 @@
 <div class="content">
     <div class="title"><h5>Passwords</div>
     <?php notifyError(); ?>
-    <?php include 'html/global/breadcrumb.php'; ?>
+    <?php include FCPATH . 'html/global/breadcrumb.php'; ?>
     <div class="table" style="margin-top:5px;">
         <div class="head"><h5 class="iView">View All Passwords</h5></div>
         	<div id="passwordListTable"><?= PasswordlistTable(); ?></div>

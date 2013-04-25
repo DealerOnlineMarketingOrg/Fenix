@@ -7,7 +7,7 @@
                     <span style="white-space:nowrap;font-weight:bold">First step - Enter Lead Source</span><br /><br />
                     <div style="position:relative;float:left"><label style="white-space:nowrap"><span class="req">*</span> Source</label></div>
                     <div style="position:relative;float:left:margin-left:10px"><select class="chzn-select" style="position:relative;float:left;margin-left:10px" name="source" id="source">
-                        <?php echo $sources; ?>
+                        <?= $sources; ?>
                     </select></div>
                 </div>
                 <div class="fix"></div>

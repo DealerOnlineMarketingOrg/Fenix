@@ -8,7 +8,7 @@
         <div class="tab_container">
             <div id="addNewTag" style="display:block;">
                 <div class="head"><h5 class="iList">Add New Tags</h5></div>
-                <?php echo  form_open('/ajax/add_new_tag',array('name'=>'addTags','id'=>'valid')); ?>
+                <?= form_open('/ajax/add_new_tag',array('name'=>'addTags','id'=>'valid')); ?>
                     <fieldset>
                         <div class="rowElem noborder">
                             <label>Tag Name</label>
@@ -27,7 +27,7 @@
                         </div>
                         <input class="greyishBtn submitForm" type="submit" value="Add Tag" />
                     </fieldset>
-                <?php echo  form_close(); ?>
+                <?= form_close(); ?>
             </div>
             <div id="editExistingTags" style="display:none;">
                 <div class="head"><h5 class="iList">Edit Tags</h5></div>

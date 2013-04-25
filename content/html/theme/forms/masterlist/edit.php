@@ -3,7 +3,7 @@
         <div class="uiForm">
             <div class="widget masterlistPop" style="margin-top:5px;">
             	<div class="head"><h5 class="iCompanies"><?= $client->Dealership; ?></h5></div>
-            	<?php echo form_open('/admin/masterlist/form',array('id'=>'editMasterlistForm','class'=>'validate mainForm formPop','style'=>'text-align:left;'));	?>
+            	<?= form_open('/admin/masterlist/form',array('id'=>'editMasterlistForm','class'=>'validate mainForm formPop','style'=>'text-align:left;'));	?>
                 	<? //print_object($client); ?>
                     <fieldset>
                         <div class="rowElem noborder noSearch">

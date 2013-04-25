@@ -1,6 +1,6 @@
 <!-- Login form area -->
 <div class="loginWrapper">
-	<div class="loginLogo"><img src="<?php echo  base_url(); ?>imgs/loginLogo.png" alt="" style="height:100%; " /></div>
+	<div class="loginLogo"><img src="<?= base_url(); ?>imgs/loginLogo.png" alt="" style="height:100%; " /></div>
     <div class="loginRow noborder error" style="display:none;width:320px;margin-top:-50px;float:left;" id="errorMessage"></div>
 	<div class="fix"></div>
     <div class="loginPanel">
@@ -36,19 +36,19 @@
             <fieldset>
                 <div class="loginRow noborder">
                     <label for="req1">Username:</label>
-                    <div class="loginInput"><?php echo  form_input($email); ?></div>
+                    <div class="loginInput"><?= form_input($email); ?></div>
                     <div class="fix"></div>
                 </div>
                 
                 <div class="loginRow">
                     <label for="req2">Password:</label>
-                    <div class="loginInput"><?php echo  form_password($password); ?></div>
+                    <div class="loginInput"><?= form_password($password); ?></div>
                     <div class="fix"></div>
                 </div>
                 
                 <div class="loginRow" style="padding-bottom:0;">
                     <div class="rememberMe"><input type="checkbox" <?= (($checkBox) ? 'checked="checked"' : ''); ?> id="remember_me" name="remember_me" /><label for="check2">Remember me</label></div>
-                    <?php echo  form_submit($submit); ?>
+                    <?= form_submit($submit); ?>
                     <div class="fix"></div>
                 </div>
                 <div class="loginRow noborder" style="padding-top:0;">
@@ -56,7 +56,7 @@
                     <div class="fix"></div>
                 </div>
             </fieldset>
-        <?php echo  form_close(); ?>
+        <?= form_close(); ?>
         <div id="result"></div>
     </div>
     <div id="thirdPartyConnect" style="text-align:center;margin-top:10px;">

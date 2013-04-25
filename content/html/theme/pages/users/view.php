@@ -2,7 +2,7 @@
     	<div class="title">
         	<h5>Contact Information</h5>
         </div>
-        <?php include 'html/global/breadcrumb.php'; ?>
+        <?php include FCPATH . 'html/global/breadcrumb.php'; ?>
     	<div class="widget" style="margin-top:5px;">
         	<div class="head">
     			<h5 class="iUser"><?= $display->FirstName . ' ' . $display->LastName; ?></h5>

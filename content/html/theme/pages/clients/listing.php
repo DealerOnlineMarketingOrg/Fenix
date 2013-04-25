@@ -4,7 +4,7 @@
 <div class="content">
     <div class="title"><h5>Clients</h5></div>
     <?php notifyError(); ?>
-    <?php include 'html/global/breadcrumb.php'; ?>
+    <?php include FCPATH . 'html/global/breadcrumb.php'; ?>
     <div class="table" id="dataClient">
         <div class="head" style="margin-top:5px;"><h5 class="iView">View All Clients</h5></div>
         <div id="clientTableHolder">

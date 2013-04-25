@@ -26,7 +26,7 @@ auth_check();
   
   <?php if (isset($_SESSION["auth_message"])) { ?>
     <script type="text/javascript">
-      alert("<?php echo $_SESSION["auth_message"]; ?>");
+      alert("<?= $_SESSION["auth_message"]; ?>");
     </script>
   <?php } ?>
 </head>

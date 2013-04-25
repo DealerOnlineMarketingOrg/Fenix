@@ -23,7 +23,7 @@
                                 <label style="position:relative;float:left"><span class="req">*</span>Source</label>
                                 <select id="providers" name="providers" class="input msSelect chzn-select" style="position:relative;float:left" placeholder="Select A Source...">
                                     <option value="">Select A Source</option>
-                                    <?php echo $providers; ?>
+                                    <?= $providers; ?>
                                 </select>
                                 <div class="fix"></div>
                                 <div style="position:relative;float:left">
@@ -109,7 +109,7 @@
                         <input type="submit" value="submit" class="redBtn" />
                     </div>
                 <fieldset>
-			<?php echo  form_close(); ?>
+			<?= form_close(); ?>
         </div>
     </div>
 </div>
@@ -121,11 +121,11 @@
 		'class' => 'mainForm valid'
 	);
 	echo form_open('%page%',$form); ?>
-	<input ID="startMonthCancel" name="startMonth" type="hidden" value="<?php echo $dateRange['startMonth']; ?>" />
-	<input ID="startYearCancel" name="startYear" type="hidden" value="<?php echo $dateRange['startYear']; ?>" />
-	<input ID="endMonthCancel" name="endMonth" type="hidden" value="<?php echo $dateRange['endMonth']; ?>" />
-	<input ID="endYearCancel" name="endYear" type="hidden" value="<?php echo $dateRange['endYear']; ?>" />
-<?php echo  form_close(); ?>
+	<input ID="startMonthCancel" name="startMonth" type="hidden" value="<?= $dateRange['startMonth']; ?>" />
+	<input ID="startYearCancel" name="startYear" type="hidden" value="<?= $dateRange['startYear']; ?>" />
+	<input ID="endMonthCancel" name="endMonth" type="hidden" value="<?= $dateRange['endMonth']; ?>" />
+	<input ID="endYearCancel" name="endYear" type="hidden" value="<?= $dateRange['endYear']; ?>" />
+<?= form_close(); ?>
 
 <script type="text/javascript">
 	//$(document).ready(function() {

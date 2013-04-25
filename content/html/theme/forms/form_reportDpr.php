@@ -5,8 +5,8 @@
     <script type="text/javascript" src="<?= base_url(); ?>js/dpr_popups.js"></script>
     <script type="text/javascript" src="<?= base_url(); ?>js/wizardDialog.js"></script>
     <?php notifyError(); ?>
-    <?php include 'html/global/breadcrumb.php'; ?>
-    <?php echo  (($html) ? $html : ''); ?>
+    <?php include FCPATH . 'html/global/breadcrumb.php'; ?>
+    <?= (($html) ? $html : ''); ?>
     <!-- Form begins -->
     <?php
         $form = array(
@@ -15,7 +15,7 @@
             'class' => 'mainForm valid'
         );
 	?>
-		<?php echo form_open('%page%',$form); ?>
+		<?= form_open('%page%',$form); ?>
         
         <?php
 			$startDate = $dateRange['startMonth'].'/1/'.$dateRange['startYear'];
@@ -94,7 +94,7 @@
                         <div class="rowElem noborder">
                             <!-- Provider data lists -->
                             <div id="tableID">
-                                <?php echo $report_leads; ?>
+                                <?= $report_leads; ?>
                             </div>
                             <div class="fix"></div>
                         </div>
@@ -118,7 +118,7 @@
                 <div id="dprImportPop"></div>
 			<?php } ?>
     	</fieldset>
-    <?php echo  form_close(); ?>
+    <?= form_close(); ?>
 	
     <script type="text/javascript">
 		var excelCreated = false;
@@ -165,7 +165,7 @@
 				startDate = $("#startMonth").val() + "/1/" + $("#startYear").val();
 				// We're changing the start dates. Make sure the end dates don't conflict.
 				lowerDateObj = new Date(startDate);
-				upperDateObj = new Date('<?php echo $upperEnd; ?>');
+				upperDateObj = new Date('<?= $upperEnd; ?>');
 				endDate = $("#endMonth").val() + "/1/" + $("#endYear").val();
 				endDateObj = new Date(endDate);
 				endDateObj = setToBounds(lowerDateObj, upperDateObj, endDateObj);
@@ -182,7 +182,7 @@
 				jQuery('form#reportDpr').attr('action', '<?= base_url(); ?>dpr/editReport');
 				endDate = $("#endMonth").val() + "/1/" + $("#endYear").val();
 				// We're changing the end dates. Make sure the start dates don't conflict.
-				lowerDateObj = new Date('<?php echo $lowerStart; ?>');
+				lowerDateObj = new Date('<?= $lowerStart; ?>');
 				upperDateObj = new Date(endDate);				
 				startDate = $("#startMonth").val() + "/1/" + $("#startYear").val();
 				startDateObj = new Date(startDate);
@@ -261,16 +261,16 @@
 		function doEmail(ccRecipients,bccRecipients) {
 			var msg = '<head></head><body><p>Attached is your Digital Performance Report, which we will be discussing on our next call.</p>' +
 					  '<p>Thank you.</p>';
-			var sig = '<?php echo str_replace("'", "\'", $signatureFragment); ?>';
+			var sig = '<?= str_replace("'", "\'", $signatureFragment); ?>';
 			if (sig != '')
 				msg += '<p>--</p><p>' + sig + '</p>';
 			msg += '</body>';
 			var email = {
-				sender_email:'<?php echo $user['Username']; ?>',
-				sender_name:'<?php echo ($user['FirstName'] . ' ' . $user['LastName']); ?>',
-				reply_to_email:'<?php echo $user['Username']; ?>',
-				reply_to_name:'<?php echo ($user['FirstName'] . ' ' . $user['LastName']); ?>',
-				to:'<?php echo $user['Username']; ?>',
+				sender_email:'<?= $user['Username']; ?>',
+				sender_name:'<?= ($user['FirstName'] . ' ' . $user['LastName']); ?>',
+				reply_to_email:'<?= $user['Username']; ?>',
+				reply_to_name:'<?= ($user['FirstName'] . ' ' . $user['LastName']); ?>',
+				to:'<?= $user['Username']; ?>',
 				cc:ccRecipients,
 				bcc:bccRecipients,
 				subject:'DPR report',
@@ -301,8 +301,8 @@
 			plotPieChart();
 		});
 		
-		function plotLineChart() {<?php echo $report_lineChart_script; ?>}
-		function plotPieChart() {<?php echo $report_pieChart_script; ?>}
+		function plotLineChart() {<?= $report_lineChart_script; ?>}
+		function plotPieChart() {<?= $report_pieChart_script; ?>}
 	
 		// Use base64 encoding if XSS filtering is active, since
 		//  XSS will strip certain tags, like style.
@@ -363,7 +363,7 @@
 			// Compile the report.
 			var lineChartFile = "uploads/lineChart.png";
 			var pieChartFile = "uploads/pieChart.png";
-			var report_leads = "<?php echo str_replace('"','\\"',$report_leads); ?>";
+			var report_leads = "<?= str_replace('"','\\"',$report_leads); ?>";
 			var report = report_leads.replace(/(<table[^>]*?>)/i, "$1" +
 				"<tr>" +
 					"<td><img src=\"" + lineChartFile + "\" /></td>" +

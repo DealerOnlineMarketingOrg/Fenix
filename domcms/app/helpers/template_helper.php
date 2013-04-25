@@ -523,7 +523,7 @@ function ContactsListingTable($id = false,$hide_add = false,$hide_actions = fals
     <?php if($addPriv) { ?><a href="javascript:addContact();" class="greenBtn floatRight button" style="margin-top:-73px;margin-right:3px;">Add New Contact</a><?php } ?>
     <?php if($listingPriv) { ?>
     	<?php if($contacts) { ?>
-        <table cellpadding="0" cellspacing="0" border="0" class="<?php echo ($from_tab) ? 'tableStatic' : 'display contacts'; ?>" id="<?php echo ($from_tab) ? 'contacts' : 'example'; ?>" width="100%;">
+        <table cellpadding="0" cellspacing="0" border="0" class="<?= ($from_tab) ? 'tableStatic' : 'display contacts'; ?>" id="<?= ($from_tab) ? 'contacts' : 'example'; ?>" width="100%;">
             <thead>
                 <tr>
                     <?php if(!$from_tab) { ?><th style="text-align:left;padding-left:1em;">Team</th><?php } ?>
@@ -575,8 +575,8 @@ function ContactsListingTable($id = false,$hide_add = false,$hide_actions = fals
 					?>
 
                 
-                    <tr class="tagElement <?php echo $contact->Tag; ?>" >
-                    	<?php if(!$from_tab) { ?><td class="tags"><div class="<?php echo $contact->Tag; ?>">&nbsp;</div></td><?php } ?>
+                    <tr class="tagElement <?= $contact->Tag; ?>" >
+                    	<?php if(!$from_tab) { ?><td class="tags"><div class="<?= $contact->Tag; ?>">&nbsp;</div></td><?php } ?>
                         <?php if(!$from_tab) { ?><td><?php switch($contact->TypeCode) {
 							case 'CID': echo 'Client'; break;
 							case 'VID': echo 'Vendor'; break;
@@ -584,18 +584,16 @@ function ContactsListingTable($id = false,$hide_add = false,$hide_actions = fals
 							case 'UID': echo 'User';
 						} ?></td><?php } ?>
                         <?php if($level == 'g' || $level == 'a') { ?>
-                        <?php if(!$from_tab) { ?><td style="width:auto;white-space:no-wrap;text-align:left;white-space:nowrap;"><?php echo $contact->Parent; ?></td><?php } ?>
+                        <?php if(!$from_tab) { ?><td style="width:auto;white-space:no-wrap;text-align:left;white-space:nowrap;"><?= $contact->Parent; ?></td><?php } ?>
                         <?php } ?>
                         <td style="text-align:left;white-space:nowrap;"><?= $contact->JobTitle; ?></td>
                         <td><?= $contact->Name; ?></td>
                         <td>
-                        	<?php
-								echo '<span style="white-space:nowrap;"><a href="mailto:'.$contact->PrimaryEmail.'">'.$contact->PrimaryEmail.'</a></span>';
+                        	<?= '<span style="white-space:nowrap;"><a href="mailto:'.$contact->PrimaryEmail.'">'.$contact->PrimaryEmail.'</a></span>';
 							?>
                         </td>
                         <td>
-							<?php
-								echo '<span style="white-space:nowrap;"><a href="tel:'.$contact->PrimaryPhone.'">'.$contact->PrimaryPhone.'</a></span>';
+							<?= '<span style="white-space:nowrap;"><a href="tel:'.$contact->PrimaryPhone.'">'.$contact->PrimaryPhone.'</a></span>';
                             ?>
                         </td>
                         <?php if($editPriv) { ?>

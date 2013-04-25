@@ -1,1 +1,1 @@
-<?php echo MasterlistTable(); ?>
+<?= MasterlistTable(); ?>

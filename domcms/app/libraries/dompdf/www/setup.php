@@ -77,11 +77,10 @@ if (($gm = extension_loaded("gmagick")) || ($im = extension_loaded("imagick"))) 
 
   <?php foreach($server_configs as $label => $server_config) { ?>
     <tr>
-      <td class="title"><?php echo $label; ?></td>
-      <td><?php echo ($server_config["required"] === true ? "Yes" : $server_config["required"]); ?></td>
-      <td class="<?php echo ($server_config["result"] ? "ok" : (isset($server_config["fallback"]) ? "warning" : "failed")); ?>">
-        <?php
-        echo $server_config["value"];
+      <td class="title"><?= $label; ?></td>
+      <td><?= ($server_config["required"] === true ? "Yes" : $server_config["required"]); ?></td>
+      <td class="<?= ($server_config["result"] ? "ok" : (isset($server_config["fallback"]) ? "warning" : "failed")); ?>">
+        <?= $server_config["value"];
         if ($server_config["result"] && !$server_config["value"]) echo "Yes";
         if (!$server_config["result"]) {
           if (isset($server_config["fallback"])) {
@@ -230,7 +229,7 @@ $constants = array(
 
   <?php foreach($defined_constants["user"] as $const => $value) { ?>
     <tr>
-      <td class="title"><?php echo $const; ?></td>
+      <td class="title"><?= $const; ?></td>
       <td>
       <?php
         if (isset($constants[$const]["secret"])) {
@@ -280,7 +279,7 @@ $constants = array(
           }
           echo 'class="' . ($success ? "ok" : "failed") . '"';
         }
-      ?>><?php echo $message; ?></td>
+      ?>><?= $message; ?></td>
     </tr>
   <?php } ?>
 

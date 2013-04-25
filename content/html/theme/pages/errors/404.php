@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Untitled Document</title>
 </head>
-	<div style="text-align:center"><strong><?php echo $message; ?></strong></div>
+	<div style="text-align:center"><strong><?= $message; ?></strong></div>
 <body>
 </body>
 </html>

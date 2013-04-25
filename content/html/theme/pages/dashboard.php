@@ -24,12 +24,12 @@
         </div> -->
         
         <div class="widget first" style="border:none;">
-        	<img src="<?php echo  base_url(); ?>imgs/unique_visitors.png" style="width:100%;" />
+        	<img src="<?= base_url(); ?>imgs/unique_visitors.png" style="width:100%;" />
         </div>
         <div class="widgets">
         	<div class="left">
                 <div class="widget" style="border:none;">
-                    <img src="<?php echo  base_url(); ?>imgs/lead_sources.png" style="width:100%;" />
+                    <img src="<?= base_url(); ?>imgs/lead_sources.png" style="width:100%;" />
                 </div>
             </div>
         <!-- Widgets -->

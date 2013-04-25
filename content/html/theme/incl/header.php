@@ -4,11 +4,11 @@
 	$level = $level['DropdownDefault']->LevelType;
 ?>
 <div id="header" class="wrapper">
-    <div class="logo"><a href="/" title=""><img src="<?php echo  base_url(); ?>imgs/loginLogo.png"  alt="Dealer Online Marketing" /></a></div>
+    <div class="logo"><a href="/" title=""><img src="<?= base_url(); ?>imgs/loginLogo.png"  alt="Dealer Online Marketing" /></a></div>
     <div id="system_tags">
 		<fieldset>
 			<div class="widget" style="border:none;">
-            	<div class="rowElem noborder" style="padding:0;border:0 none #fff !important;"><?php echo  $tagHtml; ?></div>
+            	<div class="rowElem noborder" style="padding:0;border:0 none #fff !important;"><?= $tagHtml; ?></div>
             </div>
         </fieldset>
     </div>
@@ -17,7 +17,7 @@
         	<li class="iFolder" id="changeCount"><a href="<?= base_url(); ?>beta" title=""><span>Changes</span></a></li>
             <li class="iList"><a href="<?= base_url(); ?>masterlist" title=""><span>Master List</span></a></li>
             <?php if($level == 'c' OR $level == 3) { ?><li class="iLocked2"><a  href="<?= base_url(); ?>passwords" title=""><span>Passwords</span></a></li><?php } ?>
-            <li class="iUser"><a href="<?php echo  base_url(); ?>contacts" title=""><span>Contacts</span></a></li>
+            <li class="iUser"><a href="<?= base_url(); ?>contacts" title=""><span>Contacts</span></a></li>
         </ul>
     </div>
     <div class="fix"></div>

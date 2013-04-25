@@ -66,7 +66,7 @@ class Members extends CI_Model {
 					}
 				}else {
 					if($user_info->Avatar != '') {
-						return base_url() . 'assets/uploads/avatars/' . $user_info->Avatar;	
+						return base_url() . 'uploads/avatars/' . $user_info->Avatar;	
 					}else {
 						return base_url() . 'imgs/icons/middlenav/user2.png';
 					}
@@ -193,7 +193,7 @@ class Members extends CI_Model {
 			   'Username' 		 => (string)$row->USER_Name,
 			   'FirstName' 		 => (string)$row->DIRECTORY_FirstName,
 			   'LastName' 		 => (string)$row->DIRECTORY_LastName,
-			   'Emails' 		 => (object)mod_parser($row->DIRECTORY_Email,false,true),
+			   'Emails' 		 => ((!empty($row->DIRECTORY_Email)) ? (object)mod_parser($row->DIRECTORY_Email,false,true) : FALSE),
 			   'Gravatar'		 => (string)$row->USER_GravatarEmail,
 			   'Avatar'			 => (string)$row->USER_Avatar,
 			   'UserID' 		 => (int)$row->USER_ID,
@@ -202,15 +202,15 @@ class Members extends CI_Model {
 			   'GroupID' 	     => (int)$row->GROUP_ID,
 			   'AgencyID' 	     => (int)$row->AGENCY_ID,
 			   'ClientName' 	 => (string)$row->CLIENT_Name,
-			   'ClientAddress' 	 => (object)group_parser($row->CLIENT_Address),
-			   'ClientPhone' 	 => (object)group_parser($row->CLIENT_Phone),
+			   'ClientAddress' 	 => ((!empty($row->CLIENT_Address)) ? (object)group_parser($row->CLIENT_Address) : FALSE),
+			   'ClientPhone' 	 => ((!empty($row->CLIENT_Phone)) ? (object)group_parser($row->CLIENT_Phone) : FALSE),
 			   'ClientNotes' 	 => (string)$row->CLIENT_Notes,
 			   'ClientCode' 	 => (string)$row->CLIENT_Code,
 			   'ClientActive' 	 => (bool)$row->CLIENT_Active,
 			   'ClientActiveTS'  => date(FULL_MILITARY_DATETIME, strtotime($row->CLIENT_ActiveTS)),
 			   'AccessLevel' 	 => (int)$row->ACCESS_Level,
 			   'AccessName' 	 => (string)$row->ACCESS_Name,
-			   'UserModules' 	 => $this->UserModules(mod_parser($row->USER_Modules)),
+			   'UserModules' 	 => $this->UserModules(((!empty($row->USER_Modules)) ? mod_parser($row->USER_Modules) : $this->getSystemDefaultModules($row->ACCESS_Level))),
 			   'isActive' 		 => (bool)$row->USER_Active,
 			   'TimeActive' 	 => date(FULL_MILITARY_DATETIME, strtotime($row->USER_ActiveTS)),
 			   'isGenerated' 	 => (int)$row->USER_Generated,
@@ -226,6 +226,11 @@ class Members extends CI_Model {
 
 	   }
    }  
+   
+   public function getSystemDefaultModules($access_level) {
+	   $query = $this->db->select('ACCESS_Perm as Modules')->from('xSystemAccess')->where('ACCESS_Level',$access_level)->limit(1)->get();
+	   return ($query) ? mod_parser($query->row()->Modules) : FALSE;
+   }
 
    public function AuthenticateGoogleUser($email,$token) {
    	$log = FALSE;

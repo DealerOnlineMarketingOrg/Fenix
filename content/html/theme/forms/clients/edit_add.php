@@ -250,7 +250,7 @@
                                     <label>Client Status</label>
                                     <div class="formRight" style="text-align:left;padding-top:5px;">
                                         <?php if(isset($view)) { ?>
-                                            <?php echo (($client->Status >= 1) ? 'Enabled' : 'Disabled'); ?>
+                                            <?= (($client->Status >= 1) ? 'Enabled' : 'Disabled'); ?>
                                         <?php }else { ?>
                                         <?php if(isset($client->Status)) { ?>
                                             <input type="radio" id="radio1" name="status" value="1" <?= (($client->Status >= 1) ? 'checked="checked"' : ''); ?> />
@@ -344,7 +344,7 @@
 			$.ajax({
 				type:'POST',
 				data:formData,
-				url:'<?php echo (($client) ? '/admin/clients/form?cid=' . $client->ClientID : '/admin/clients/form?gid=' . $this->user['DropdownDefault']->SelectedGroup); ?>',
+				url:'<?= (($client) ? '/admin/clients/form?cid=' . $client->ClientID : '/admin/clients/form?gid=' . $this->user['DropdownDefault']->SelectedGroup); ?>',
 				success:function(resp) {
 					if(resp == '1') {
 						if(formType == 'edit') {

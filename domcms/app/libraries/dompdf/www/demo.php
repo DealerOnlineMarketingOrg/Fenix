@@ -32,7 +32,7 @@ if ( isset( $_POST["html"] ) && $is_local ) {
 <p>Enter your html snippet in the text box below to see it rendered as a
 PDF: (Note by default, remote stylesheets, images &amp; inline PHP are disabled.)</p>
 
-<form action="<?php echo $_SERVER["PHP_SELF"];?>" method="post">
+<form action="<?= $_SERVER["PHP_SELF"];?>" method="post">
 <p>Paper size and orientation:
 <select name="paper">
 <?php

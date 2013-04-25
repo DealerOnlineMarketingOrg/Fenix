@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
-<title><?php echo  SITETITLE; ?></title>
+<title><?= SITETITLE; ?></title>
 
 <link type="text/css" rel="stylesheet" href="/css/reset.css" />
 <link type="text/css" rel="stylesheet" href="/css/dataTable.css" />
@@ -82,10 +82,10 @@
 <!-- Error info area -->
 <div class="wrapper">
     <div class="errorPage">
-        <h2 class="red errorTitle"><span><?php echo $heading; ?></span></h2>
+        <h2 class="red errorTitle"><span><?= $heading; ?></span></h2>
         <h1>Error</h1>
         <span class="bubbles"></span>
-	<p><?php echo $message; ?></p>
+	<p><?= $message; ?></p>
         <div class="backToDash"><a href="/" title="" class="seaBtn button">Back to Dashboard</a></div>
     </div>
 </div>
@@ -93,7 +93,7 @@
 <!-- Footer -->
 <div id="footer">
 	<div class="wrapper">
-    	<span>&copy; Copyright <?php echo  date('Y'); ?>. All rights reserved.</span>
+    	<span>&copy; Copyright <?= date('Y'); ?>. All rights reserved.</span>
     </div>
 </div>
 

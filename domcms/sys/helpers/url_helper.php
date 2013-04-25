@@ -345,7 +345,7 @@ if ( ! function_exists('safe_mailto'))
 	var l=new Array();
 	<?php
 	$i = 0;
-	foreach ($x as $val){ ?>l[<?php echo $i++; ?>]='<?php echo $val; ?>';<?php } ?>
+	foreach ($x as $val){ ?>l[<?= $i++; ?>]='<?= $val; ?>';<?php } ?>
 
 	for (var i = l.length-1; i >= 0; i=i-1){
 	if (l[i].substring(0, 1) == '|') document.write("&#"+unescape(l[i].substring(1))+";");

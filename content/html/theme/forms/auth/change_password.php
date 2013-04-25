@@ -2,8 +2,7 @@
     <div id="reset" class="dialog-message" title="Change Password">
         <p><img src="<?= base_url(); ?>imgs/lock50.png" style="float:left;margin:5px;"  alt="Reset Password" />Fill the form out below to change your password back to something easier to remember.</p>
         <div class="uiForm">
-            <?php 
-                echo form_open(base_url().'change', array('id' => 'changePassword','class'=>'valid')); 
+            <?= form_open(base_url().'change', array('id' => 'changePassword','class'=>'valid')); 
                 echo form_password(array('id' => 'oldPass','name'=>'oldPass','placeHolder'=>'Your Temporary Password','class'=>'validate[required]','style'=>'margin-top:5px;')); 
                 echo form_password(array('id' => 'newPass','name'=>'newPass','placeHolder'=>'Your New Password','class'=>'validate[required]','style'=>'margin-top:5px;'));
                 echo form_password(array('id' => 'newPassMatch','name'=>'matchPass','placeHolder'=>'Confirm Your New Password','class'=>'validate[required,equels[newPass]]','style'=>'margin-top:5px;'));

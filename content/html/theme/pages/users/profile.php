@@ -19,7 +19,7 @@
 <div class="content">
     <div class="title"><h5>User Preferences</h5></div>
     <? notifyError(); ?>
-    <?php include 'html/global/breadcrumb.php'; ?>
+    <?php include FCPATH . 'html/global/breadcrumb.php'; ?>
     <div id="profilePage">
         <div class="widget first" style="margin-top:5px !important;">
             <div class="head info">

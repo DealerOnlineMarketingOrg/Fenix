@@ -4,7 +4,7 @@
     </div>
     <div class="title"><h5>Masterlist</div>
     <?php notifyError(); ?>
-    <?php include 'html/global/breadcrumb.php'; ?>
+    <?php include FCPATH . 'html/global/breadcrumb.php'; ?>
     <div class="table" style="margin-top:5px;">
         <div class="head"><h5 class="iView">View All Data</h5></div>
         	<div id="masterListTable"><?= MasterlistTable(); ?></div>
