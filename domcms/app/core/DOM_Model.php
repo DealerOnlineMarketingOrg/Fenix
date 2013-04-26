@@ -7,7 +7,6 @@
 		public function __construct() {
 			// Call the Model constructor
 			parent::__construct();
-			$this->load->helper('query');
 			$this->usr = $this->session->userdata('valid_user');
 		}
 	}

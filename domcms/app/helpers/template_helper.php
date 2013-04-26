@@ -178,10 +178,6 @@ function MasterlistTable() { ?>
 		$ci->load->model('mlist');
 		$clients = $ci->mlist->buildMasterList();
 		
-		if($addPriv) { ?>
-    		<!-- <a href="javascript:addMasterlist();" class="greenBtn floatRight button" style="margin-top:-73px;margin-right:3px;">Add New Entry</a> -->
-<?php 	}
-		
 		if($clients AND $listingPriv) { ?>
             <table cellpadding="0" cellspacing="0" border="0" class="display masterlistTable" id="example" width="100%">
                 <thead>
@@ -196,14 +192,14 @@ function MasterlistTable() { ?>
                         <th class="doclist noSort">DOC</th>
                         <th class="excellist noSort">XSL</th>
                         <?php if($editPriv) { ?>
-                            <th class="noSort" style="width:30px;">Actions</th>
+                            <th class="noSort actionsCol">Actions</th>
                         <?php } ?>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach($clients as $client) : ?>
                         <tr class="tagElement <?= $client->Class; ?>">
-                            <td class="tag"><div class="<?= $client->Class; ?>">&nbsp;</div></td>
+                            <td class="tag"><div class="<?= $client->Class; ?>">&nbsp;</div><span style="display:none;"><?= $client->Class; ?></span></td>
                             <td class="code"><?= $client->Code; ?></td>
                             <td class="dealerName"><?= $client->Dealership; ?></td>
                             <td class="websiteLink">
@@ -271,7 +267,11 @@ function MasterlistTable() { ?>
                                     <ul>
                                         <?php foreach($client->Assets as $asset) { ?>
                                         	<?php if(isset($asset->DOCLink)) { ?>
-                                            	<li><a title="Google Doc" href="<?= $asset->DOCLink; ?>" target="_blank"><img src="<?= base_url() . THEMEIMGS; ?>icons/color/document-word-text.png" alt="" /></a></li>
+                                            	<li>
+                                                	<a title="Google Doc" href="<?= $asset->DOCLink; ?>" target="_blank">
+                                                    	<img src="<?= base_url() . THEMEIMGS; ?>icons/color/document-word-text.png" alt="" />
+                                                    </a>
+                                                </li>
                                             <?php }else { ?>
                                             	<li><span class="fillerString">...</span></li>
                                             <?php } ?>
@@ -286,7 +286,11 @@ function MasterlistTable() { ?>
                                     <ul>
                                         <?php foreach($client->Assets as $asset) { ?>
                                         	<?php if(isset($asset->ExcelLink)) { ?>
-                                            	<li><a title="Google Doc" href="<?= $asset->ExcelLink; ?>" target="_blank"><img src="<?= base_url() . THEMEIMGS; ?>icons/color/document-excel.png" alt="" /></a></li>
+                                            	<li>
+                                                	<a title="Google Doc" href="<?= $asset->ExcelLink; ?>" target="_blank">
+                                                    	<img src="<?= base_url() . THEMEIMGS; ?>icons/color/document-excel.png" alt="" />
+                                                    </a>
+                                                </li>
                                             <?php }else { ?>
                                             	<li><span class="fillerString">...</span></li>
                                             <?php } ?>
@@ -299,7 +303,9 @@ function MasterlistTable() { ?>
                             <?php //blue-document-excel.png; ?>
                             <?php if($editPriv) { ?>
                                 <td class="actionsCol noSort" style="text-align:center !important;">
-                                    <a title="Edit Client" href="javascript:editEntry('<?= $client->ClientID; ?>');" class="actions_link"><img src="<?= base_url() . THEMEIMGS; ?>icons/color/pencil.png" alt="" /></a>
+                                    <a title="Edit Client" href="javascript:editEntry('<?= $client->ClientID; ?>');" class="actions_link">
+                                    	<img src="<?= base_url() . THEMEIMGS; ?>icons/color/pencil.png" alt="" />
+                                    </a>
                                 </td>
                             <?php } ?>
                         </tr>
@@ -307,123 +313,178 @@ function MasterlistTable() { ?>
                 </tbody>
             </table>
 <?php   }else { ?>
-            <p style="padding-left:10px;padding-bottom:10px;">You don't have access to view this data. Sorry.</p>
+            <p class="noData">You don't have access to view this data. Sorry.</p>
 <?php   }
-        if($addPriv) { ?>
-            <!-- <a href="javascript:addMasterlist();" class="greenBtn floatRight button" style="margin-top:10px;">Add New Entry</a> -->
-<?php 	}
 }
+
+function ContactsListingTable() { ?>
+	<?php
+		$ci =& get_instance();
+		$ci->load->model('system_contacts','sysContacts');
+		$contacts = $ci->sysContacts->getDefaultContacts();
+		print_object($contacts);
+	?>
+    <table cellpadding="0" cellspacing="0" width="100%;" id="example" class="display contactsTable">
+    	<thead>
+        	<tr>
+                <th class="tagsCol">Team</th>
+                <th>Type</th>
+                <th>Client/Vendor Name</th>
+                <th>Title Name</th>
+                <th>Contact Name</th>
+                <th>Primary Email</th>
+                <th>Primary Phone</th>
+                <th class="actionsCol">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        	<tr>
+            	<td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+
+<?php } //end contacts listing table
 
 function AgencyListingTable() { 
 	$ci =& get_instance();
 	$ci->load->model('administration');
 	$agency_id = $ci->user['DropdownDefault']->SelectedAgency;
+	
+	//get all agencies
 	$agencies = $ci->administration->getAgencies();	
 ?>
 	<?php if($agencies) : ?>
-    <script type="text/javascript" src="<?= base_url(); ?>js/masterlist_popups.js"></script>
-    <?php 
-        $userPermissionLevel = $ci->user['AccessLevel'];
-        $addPriv     		 = GateKeeper('Agency_Add',$userPermissionLevel);
-        $editPriv    		 = GateKeeper('Agency_Edit',$userPermissionLevel);
-        $disablePriv 		 = GateKeeper('Agency_Disable_Enable',$userPermissionLevel);
-        $listingPriv 		 = GateKeeper('Agency_List',$userPermissionLevel);
-    ?>
-    <?php if($addPriv) { ?><a href="javascript:addAgency();" class="greenBtn floatRight button" style="margin-top:-73px;margin-right:3px;">Add New Agency</a><?php } ?>
-    <?php if($listingPriv) { ?>
-        <table cellpadding="0" cellspacing="0" border="0" class="display" id="example" width="100%;">
-            <thead>
-                <tr>
-                    <th style="width:30%;text-align:left;">Name</th>
-                    <th style="text-align:left;">Description</th>
-                    <th>Status</th>
-                    <?php if($editPriv) { ?>
-                    <th class="noSort">Actions</th>
-                    <?php } ?>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach($agencies as $agency) { ?>
+    	<script type="text/javascript" src="<?= base_url(); ?>js/masterlist_popups.js"></script>
+    	<?php 
+			$userPermissionLevel = $ci->user['AccessLevel'];
+			$addPriv     		 = GateKeeper('Agency_Add',$userPermissionLevel);
+			$editPriv    		 = GateKeeper('Agency_Edit',$userPermissionLevel);
+			$disablePriv 		 = GateKeeper('Agency_Disable_Enable',$userPermissionLevel);
+			$listingPriv 		 = GateKeeper('Agency_List',$userPermissionLevel);
+    	?>
+        
+    	<?php if($addPriv) { ?>
+        	<a href="javascript:addAgency();" class="greenBtn floatRight button addButtonTop">Add New Agency</a>
+		<?php } ?>
+        
+    	<?php if($listingPriv) { ?>
+            <table cellpadding="0" cellspacing="0" border="0" class="display" id="example" width="100%;">
+                <thead>
                     <tr>
-                        <td style="text-align:left;"><?= $agency->Name; ?></td>
-                        <td><?= $agency->Description; ?></td>
-                        <td style="width:30px;text-align:center;"><?= (($agency->Status) ? 'Active' : 'Disable'); ?></td>
+                        <th style="width:30%;">Name</th>
+                        <th>Description</th>
+                        <th>Status</th>
                         <?php if($editPriv) { ?>
-                        <td class="actionsCol" style="width:75px;text-align:center;">
-                            <a title="Edit Agency" href="javascript:editAgency('<?= $agency->ID; ?>');" class="actions_link"><img src="<?= base_url() . THEMEIMGS; ?>icons/color/pencil.png" alt="" /></a>
-                        </td>
+                            <th class="noSort noWrap">Actions</th>
                         <?php } ?>
                     </tr>
-                <?php } ?>
-            </tbody>
-        </table>
-    <?php } ?>
-    <?php if($addPriv) { ?><a href="javascript:addAgency();" class="greenBtn floatRight button" style="margin-top:10px;">Add New Agency</a><?php } ?>
+                </thead>
+                <tbody>
+                    <?php foreach($agencies as $agency) { ?>
+                        <tr>
+                            <td class="alignTextLeft" style="text-align:left;"><?= $agency->Name; ?></td>
+                            <td><?= $agency->Description; ?></td>
+                            <td style="width:30px;"><?= (($agency->Status) ? 'Active' : 'Disable'); ?></td>
+                            <?php if($editPriv) { ?>
+                                <td class="actionsCol">
+                                    <a title="Edit Agency" href="javascript:editAgency('<?= $agency->ID; ?>');" class="actions_link">
+                                        <img src="<?= base_url() . THEMEIMGS; ?>icons/color/pencil.png" alt="" />
+                                    </a>
+                                </td>
+                            <?php } ?>
+                        </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+		<?php } ?>
+        
+    	<?php if($addPriv) { ?>
+        	<a href="javascript:addAgency();" class="greenBtn floatRight button addButtonBottom">Add New Agency</a>
+		<?php } ?>
+        
     <?php else : ?>
-    <p style="padding-left:10px;padding-bottom:10px;">No agencies found.</p>
+    	<p class="noWrap">No agencies found.</p>
     <?php endif; ?>
 <?php }
 
 function GroupsListingTable() { 
-		$ci =& get_instance();
-		$ci->load->model('administration');
-		
-		//the dropdown level, agency, groups or clients
-		$level = $ci->user['DropdownDefault']->LevelType;
-		//the selected agency id
-		$agency_id = $ci->user['DropdownDefault']->SelectedAgency;
-		
-		//if we are on agency level, get all groups in the agency
-		if($level == 1 OR $level == 'a') {
-			$groups = $ci->administration->getGroups($agency_id);
-		}else {
-			//else, we just need to get the selected group
-			$groups = $ci->administration->getGroups($agency_id,$ci->user['DropdownDefault']->SelectedGroup);
-		}
-
-?>
-	<?php if($groups) : ?>
-    <script type="text/javascript" src="<?= base_url(); ?>js/group_popups.js"></script>
-    <?php 
-        $userPermissionLevel = $ci->user['AccessLevel'];
-        $addPriv     		 = GateKeeper('Group_Add',$userPermissionLevel);
-        $editPriv    		 = GateKeeper('Group_Edit',$userPermissionLevel);
-        $disablePriv 		 = GateKeeper('Group_Disable_Enable',$userPermissionLevel);
-        $listingPriv 		 = GateKeeper('Group_List',$userPermissionLevel);
-    ?>
-    <?php if($addPriv) { ?><a href="javascript:addGroup();" class="greenBtn floatRight button" style="margin-top:-73px;margin-right:3px;">Add New Group</a><?php } ?>
-    <?php if($listingPriv) { ?>
-        <table cellpadding="0" cellspacing="0" border="0" class="display" id="example" width="100%;">
-            <thead>
-                <tr>
-                    <th style="width:30%;text-align:left;">Name</th>
-                    <th style="text-align:left;">Member Of</th>
-                    <th class="status">Status</th>
-                    <?php if($editPriv) { ?>
-                    <th class="noSort">Actions</th>
-                    <?php } ?>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach($groups as $group) { ?>
+	$ci =& get_instance();
+	$ci->load->model('administration');
+	
+	//the dropdown level, agency, groups or clients
+	$level = $ci->user['DropdownDefault']->LevelType;
+	
+	//the selected agency id
+	$agency_id = $ci->user['DropdownDefault']->SelectedAgency;
+	
+	//if we are on agency level, get all groups in the agency
+	if($level == 1 OR $level == 'a') {
+		$groups = $ci->administration->getGroups($agency_id);
+	}else {
+		//else, we just need to get the selected group
+		$groups = $ci->administration->getGroups($agency_id,$ci->user['DropdownDefault']->SelectedGroup);
+	}
+	
+	if($groups) : ?>
+    	<script type="text/javascript" src="<?= base_url(); ?>js/group_popups.js"></script>
+		<?php 
+		$userPermissionLevel = $ci->user['AccessLevel'];
+		$addPriv     		 = GateKeeper('Group_Add',$userPermissionLevel);
+		$editPriv    		 = GateKeeper('Group_Edit',$userPermissionLevel);
+		$disablePriv 		 = GateKeeper('Group_Disable_Enable',$userPermissionLevel);
+		$listingPriv 		 = GateKeeper('Group_List',$userPermissionLevel);
+       
+    	if($addPriv) : ?>
+        	<a href="javascript:addGroup();" class="greenBtn floatRight button addButtonTop">Add New Group</a>
+		<?php endif;
+        
+    	if($listingPriv) { ?>
+            <table cellpadding="0" cellspacing="0" border="0" class="display" id="example" width="100%;">
+                <thead>
                     <tr>
-                        <td style="text-align:left;"><?= $group->Name; ?></td>
-                        <td><?= $group->AgencyName; ?></td>
-                        <td style="width:30px;text-align:center;"><?= (($group->Status) ? 'Active' : 'Disable'); ?></td>
+                        <th style="width:30%;">Name</th>
+                        <th>Member Of</th>
+                        <th class="status">Status</th>
                         <?php if($editPriv) { ?>
-                        <td class="actionsCol" style="width:75px;text-align:center;">
-                            <a title="Edit Group" href="javascript:editGroup('<?= $group->GroupId; ?>');" class="actions_link"><img src="<?= base_url() . THEMEIMGS; ?>icons/color/pencil.png" alt="" /></a>
-                            <a title="View Group" href="javascript:viewGroup('<?= $group->GroupId; ?>');" class="actions_link"><img src="<?= base_url() . THEMEIMGS; ?>icons/color/cards-address.png" alt="" /></a>
-                        </td>
+                        	<th class="noSort">Actions</th>
                         <?php } ?>
                     </tr>
-                <?php } ?>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    <?php foreach($groups as $group) { ?>
+                        <tr>
+                            <td style="text-align:left;"><?= $group->Name; ?></td>
+                            <td><?= $group->AgencyName; ?></td>
+                            <td style="width:30px;"><?= (($group->Status) ? 'Active' : 'Disable'); ?></td>
+                            <?php if($editPriv) { ?>
+                                <td class="actionsCol">
+                                    <a title="Edit Group" href="javascript:editGroup('<?= $group->GroupId; ?>');" class="actions_link">
+                                        <img src="<?= base_url() . THEMEIMGS; ?>icons/color/pencil.png" alt="" />
+                                    </a>
+                                    <a title="View Group" href="javascript:viewGroup('<?= $group->GroupId; ?>');" class="actions_link">
+                                        <img src="<?= base_url() . THEMEIMGS; ?>icons/color/cards-address.png" alt="" />
+                                    </a>
+                                </td>
+                            <?php } ?>
+                        </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
     <?php } ?>
-    <?php if($addPriv) { ?><a href="javascript:addGroup();" class="greenBtn floatRight button" style="margin-top:10px;">Add New Group</a><?php } ?>
+    
+    <?php if($addPriv) { ?>
+    	<a href="javascript:addGroup();" class="greenBtn floatRight button addButtonBottom">Add New Group</a>
+	<?php } ?>
     <?php else : ?>
-    <p style="padding-left:10px;padding-bottom:10px;">No groups found.</p>
+    	<p class="noData">No groups found.</p>
     <?php endif; ?>
 <?php }
 
@@ -442,184 +503,53 @@ function VendorListingTable($hide_actions=false,$hide_add=false) { ?>
 		$vendors = $ci->administration->getVendors();
 		
     ?>
-    <?php if($addPriv) { ?><?php if(!$hide_add OR !$hide_actions) { ?><a href="javascript:addVendor();" class="greenBtn floatRight button" style="margin-top:-73px;margin-right:3px;">Add New Vendor</a><?php } ?><?php } ?>
-    <?php if($listingPriv) { ?>
-    		<?php if($vendors) { ?>
-                <table cellpadding="0" cellspacing="0" border="0" class="display vendors" id="example" width="100%;">
-                    <thead>
-                        <tr>
-                            <th style="text-align:left;white-space:nowrap;">Vendor Name</th>
-                            <th style="text-align:left;white-space:nowrap;">Vendor Address</th>
-                            <th style="white-space:nowrap;">Vendor Phone</th>
-                            <?php if($editPriv) { ?>
-                                <?php if(!$hide_actions) { ?>
-                                    <th class="noSort" style="white-space:nowrap;">Actions</th>
-                                <?php } ?>
-                            <?php } ?>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach($vendors as $vendor) { $vendor->Address = ($vendor->Address != '') ? mod_parser($vendor->Address) : FALSE; ?>
-                            <tr>
-                                <td style="text-align:left;white-space:nowrap;"><?= $vendor->Name; ?></td>
-                                <td style="white-space:nowrap;"><?= ($vendor->Address) ? $vendor->Address['street'] . ' ' . $vendor->Address['city'] . ', ' . $vendor->Address['state'] . ' ' . $vendor->Address['zipcode'] : '...'; ?></td>
-                                <td style="text-align:left;white-space:nowrap;"><?= ($vendor->Phone != '') ? $vendor->Phone : '...'; ?></td>
-                                <?php if($editPriv) { ?>
-                                    <?php if(!$hide_actions) { ?>
-                                        <td class="actionsCol" style="width:75px;text-align:center;white-space:nowrap;">
-                                            <a title="Edit Group" href="javascript:editVendor('<?= $vendor->ID; ?>');" class="actions_link"><img src="<?= base_url() . THEMEIMGS; ?>icons/color/pencil.png" alt="" /></a>
-                                            <a title="View Group" href="javascript:viewVendor('<?= $vendor->ID; ?>');" class="actions_link"><img src="<?= base_url() . THEMEIMGS; ?>icons/color/cards-address.png" alt="" /></a>
-                                        </td>
-                                    <?php } ?>
-                                <?php } ?>
-                            </tr>
-                        <?php } ?>
-                    </tbody>
-                </table>
-            <?php }else { ?>
-                <p style="padding-left:10px;padding-bottom:10px;">No Vendors found.</p>
-			<?php } ?>
-    <?php }else { ?>
-    	<p style="padding-left:10px;padding-bottom:10px;">You dont have access to view vendors.</p>
-    <?php } ?>
-    <?php if($addPriv) { ?><?php if(!$hide_add OR !$hide_actions) { ?><a href="javascript:addVendor();" class="greenBtn floatRight button" style="margin-top:10px;">Add New Vendor</a><?php } ?><?php } ?>
-<?php }
-
-
-function ContactsListingTable($id = false,$hide_add = false,$hide_actions = false,$from_tab = false,$type = false) { ?>
-    <script type="text/javascript" src="<?= base_url(); ?>js/contact_popups.js"></script>
-    <script type="text/javascript" src="<?= base_url(); ?>js/websites_popups.js"></script>
-    <?php 
-		$ci =& get_instance();
-		$level				 = $ci->user['DropdownDefault']->LevelType;
-        $userPermissionLevel = $ci->user['AccessLevel'];
-        $addPriv     		 = GateKeeper('Contact_Add',$userPermissionLevel);
-        $editPriv    		 = GateKeeper('Contact_Edit',$userPermissionLevel);
-        $disablePriv 		 = GateKeeper('Contact_Disable_Enable',$userPermissionLevel);
-        $listingPriv 		 = GateKeeper('Contact_List',$userPermissionLevel);
-		
-		// $type with $id, $id refers to $type
-		if ($type) {
-			if ($id)
-				$contacts = $ci->administration->getContactsByTypeID($type,$id);
-			else
-				$contacts = $ci->administration->getContactsByType($type);
-		// $id without type, $id refers to directory ID.
-		} elseif ($id) {
-			$contacts = $ci->administration->getContact($id);
-		} else {
-			// We need to get listing from DropDown selection.
-			switch ($level) {
-				case 'a': $contacts = $ci->administration->getAllContactsInAgency($ci->user['DropdownDefault']->SelectedAgency);
-				break;
-				case 'g': $contacts = $ci->administration->getAllContactsInGroup($ci->user['DropdownDefault']->SelectedGroup);
-				break;
-				case 'c': $contacts = $ci->administration->getAllContactsInClient($ci->user['DropdownDefault']->SelectedClient);
-				break;
-			}
-		}
-
-    ?>
-    <?php if($addPriv) { ?><a href="javascript:addContact();" class="greenBtn floatRight button" style="margin-top:-73px;margin-right:3px;">Add New Contact</a><?php } ?>
-    <?php if($listingPriv) { ?>
-    	<?php if($contacts) { ?>
-        <table cellpadding="0" cellspacing="0" border="0" class="<?= ($from_tab) ? 'tableStatic' : 'display contacts'; ?>" id="<?= ($from_tab) ? 'contacts' : 'example'; ?>" width="100%;">
+    
+    <?php if($addPriv AND (!$hide_add OR !$hide_actions)) { ?>
+    	<a href="javascript:addVendor();" class="greenBtn floatRight button addButtonTop">Add New Vendor</a>
+	<?php } ?>
+    
+    <?php if($listingPriv AND $vendors) : ?>
+        <table cellpadding="0" cellspacing="0" border="0" class="display vendors" id="example" width="100%;">
             <thead>
                 <tr>
-                    <?php if(!$from_tab) { ?><th style="text-align:left;padding-left:1em;">Team</th><?php } ?>
-                    <?php if(!$from_tab) { ?><th style="text-align:left;padding-left:1em;">Type</th><?php } ?>
-                    <?php if($level == 'g' || $level == 'a') { ?>
-                    <?php if(!$from_tab) { ?><th style="text-align:left;padding-left:1em;">Client/Vendor Name</th><?php } ?>
-                    <?php } ?>
-                    <th style="text-align:left;padding-left:1em;">Title Name</th>
-                    <th style="text-align:left;padding-left:1em;">Contact Name</th>
-                    <th style="text-align:left;padding-left:1em;"><?php if($from_tab) { echo ''; } ?> Primary Email</th>
-                    <th style="text-align:left;padding-left:1em;"><?php if($from_tab) { echo ''; } ?> Primary Phone</th>
-                    <?php if($editPriv) { ?>
-                    	<?php if(!$hide_actions) { ?>
-                    		<th class="noSort" style="text-align:left;padding-left:1em;">Actions</th>
-                    	<?php } ?>
+                    <th class="noWrap">Vendor Name</th>
+                    <th class="noWrap">Vendor Address</th>
+                    <th class="noWrap">Vendor Phone</th>
+                    <?php if($editPriv AND !$hide_actions) { ?>
+                    	<th class="noSort noWrap">Actions</th>
                     <?php } ?>
                 </tr>
             </thead>
             <tbody>
-                <?php foreach($contacts as $contact) { ?>
-                	
-                    <?php
-						/*
-							FORMAT THE CONTACTS
-						*/
-						$contact->Name = $contact->FirstName . ' ' . $contact->LastName;
-						$contact->Address = (isset($contact->Address)) ? mod_parser($contact->Address) : false;
-						$contact->Phone = (isset($contact->Phone)) ? mod_parser($contact->Phone,false,true) : new stdClass();
-						// Locate primary.
-						$contact->PrimaryPhone = '';
-						foreach ($contact->Phone as $contactPhone) foreach ($contactPhone as $type => $phone) {
-							if ($phone == $contact->PrimaryPhoneType) {
-								$contact->PrimaryPhone = $phone;
-								break;
-							}
-						}
-						$contact->Email = (isset($contact->Email)) ? mod_parser($contact->Email,false,true) : new stdClass();
-						// Locate primary.
-						$contact->PrimaryEmail = '';
-						foreach ($contact->Email as $contactEmail) foreach ($contactEmail as $type => $email) {
-							if ($email == $contact->PrimaryEmailType) {
-								$contact->PrimaryEmail = $email;
-								break;
-							}
-						}
-						$contact->Parent = $contact->Dealership;
-						$contact->TypeCode = substr($contact->Type,0,3);
-						$contact->TypeID = substr($contact->Type,4);
-					?>
-
-                
-                    <tr class="tagElement <?= $contact->Tag; ?>" >
-                    	<?php if(!$from_tab) { ?><td class="tags"><div class="<?= $contact->Tag; ?>">&nbsp;</div></td><?php } ?>
-                        <?php if(!$from_tab) { ?><td><?php switch($contact->TypeCode) {
-							case 'CID': echo 'Client'; break;
-							case 'VID': echo 'Vendor'; break;
-							case 'GID': echo 'General'; break;
-							case 'UID': echo 'User';
-						} ?></td><?php } ?>
-                        <?php if($level == 'g' || $level == 'a') { ?>
-                        <?php if(!$from_tab) { ?><td style="width:auto;white-space:no-wrap;text-align:left;white-space:nowrap;"><?= $contact->Parent; ?></td><?php } ?>
-                        <?php } ?>
-                        <td style="text-align:left;white-space:nowrap;"><?= $contact->JobTitle; ?></td>
-                        <td><?= $contact->Name; ?></td>
-                        <td>
-                        	<?= '<span style="white-space:nowrap;"><a href="mailto:'.$contact->PrimaryEmail.'">'.$contact->PrimaryEmail.'</a></span>';
-							?>
+                <?php foreach($vendors as $vendor) { $vendor->Address = ($vendor->Address != '') ? mod_parser($vendor->Address) : FALSE; ?>
+                    <tr>
+                        <td class="noWrap" style="text-align:left;"><?= $vendor->Name; ?></td>
+                        <td class="noWrap">
+                            <?= ($vendor->Address) ? $vendor->Address['street'] . ' ' . $vendor->Address['city'] . ', ' . $vendor->Address['state'] . ' ' . $vendor->Address['zipcode'] : '...'; ?>
                         </td>
-                        <td>
-							<?= '<span style="white-space:nowrap;"><a href="tel:'.$contact->PrimaryPhone.'">'.$contact->PrimaryPhone.'</a></span>';
-                            ?>
-                        </td>
-                        <?php if($editPriv) { ?>
-                        	<?php if(!$hide_actions) { ?>
-                                <td class="actionsCol" style=" <?php if(!$from_tab) { ?>width:75px;<?php }else {?>width:30px;<?php } ?>text-align:center;">
-                                    <a title="Edit Contact" href="javascript:editContact('<?= $contact->TypeID; ?>','<?= $contact->TypeCode; ?>');" class="actions_link"><img src="<?= base_url() . THEMEIMGS; ?>icons/color/pencil.png" alt="" /></a>
-                                    <?php if(!$from_tab) { ?><a title="View Contact" href="javascript:viewContact('<?= $contact->TypeID; ?>','<?= $contact->TypeCode; ?>');" class="actions_link"><img src="<?= base_url() . THEMEIMGS; ?>icons/color/cards-address.png" alt="" /></a><?php } ?>
-                                </td>
-                            <?php } ?>
+                        <td class="noWrap"><?= ($vendor->Phone != '') ? $vendor->Phone : '...'; ?></td>
+                        <?php if($editPriv AND !$hide_actions) { ?>
+                            <td class="actionsCol noWrap" style="width:75px;">
+                                <a title="Edit Group" href="javascript:editVendor('<?= $vendor->ID; ?>');" class="actions_link">
+                                    <img src="<?= base_url() . THEMEIMGS; ?>icons/color/pencil.png" alt="" />
+                                </a>
+                                <a title="View Group" href="javascript:viewVendor('<?= $vendor->ID; ?>');" class="actions_link">
+                                    <img src="<?= base_url() . THEMEIMGS; ?>icons/color/cards-address.png" alt="" />
+                                </a>
+                            </td>
                         <?php } ?>
                     </tr>
                 <?php } ?>
             </tbody>
         </table>
-    <?php }else { ?>
-       <p style="padding-left:10px;padding-bottom:10px;">No Contacts have been added.</p>
-	<? }?>
-    <?php if($addPriv) { ?>
-    	<?php if(!$hide_add) { ?>
-    	<a href="javascript:addContact();" class="greenBtn floatRight button" style="margin-top:10px;">Add New Contact</a>
-        <?php } ?>
-	<?php } ?>
-    <?php }else { ?>
-        <p style="padding-left:10px;padding-bottom:10px;">No contacts found.</p>
-	<?php } ?>
-<?php }
+    <?php else : ?>
+    	<p class="noData">No Vendors found.</p>
+    <?php endif; ?>
+    
+    <?php if($addPriv AND (!$hide_add OR !$hide_actions)) : ?>
+			 <a href="javascript:addVendor();" class="greenBtn floatRight button addButtonBottom">Add New Vendor</a>
+    <?php endif;
+}
 
 function GroupsClientTable($group_id) {
 	$ci =& get_instance();
@@ -630,14 +560,13 @@ function GroupsClientTable($group_id) {
 	
 	if($clients) {
 	?>
-	
     <table cellpadding="0" cellspacing="0" class="tableStatic" id="clientExample" style="width:100%;">
     	<thead>
         	<tr>
-            	<td style="width:31px;text-align:center;">Tag</td>
-                <td style="width:51px;text-align:center;">Code</td>
-                <td style="text-align:left;padding-left:5px;">Dealership Name</td>
-                <td style="width:50px;text-align:center;">Status</td>
+            	<td style="width:30px;">Tag</td>
+                <td style="width:51px;">Code</td>
+                <td class="alignTextLeft" style="padding-left:5px;">Dealership Name</td>
+                <td style="width:50px;">Status</td>
             </tr>
         </thead>
         <tbody>
@@ -653,7 +582,7 @@ function GroupsClientTable($group_id) {
     </table>
     
 <?php }else { ?>
-	<p style="padding-left:10px;padding-bottom:10px;">No clients have been added to this group.</p>
+	<p class="noData">No clients have been added to this group.</p>
 <? } }
 
 function ClientsListingTable() { 
@@ -671,15 +600,15 @@ function ClientsListingTable() {
         $disablePriv 		 = GateKeeper('Client_Disable_Enable',$userPermissionLevel);
         $listingPriv 		 = GateKeeper('Client_List',$userPermissionLevel);
     ?>
-    <?php if($addPriv) { ?><a href="javascript:addClient();" class="greenBtn floatRight button" style="margin-top:-74px;margin-right:3px;">Add New Client</a><?php } ?>
+    <?php if($addPriv) { ?><a href="javascript:addClient();" class="greenBtn floatRight button addButtonTop">Add New Client</a><?php } ?>
     <?php if($listingPriv) { ?>
         <table cellpadding="0" cellspacing="0" border="0" class="display" id="example" width="100%;">
             <thead>
                 <tr>
-                    <th style="width:50px;text-align:center;">Tag</th>
-                    <th style="text-align:left;width:50px;">Code</th>
-                    <th style="text-align:left;width:30%;">Dealership Name</th>
-                    <th style="text-align:left;">Group</th>
+                    <th style="width:50px;">Tag</th>
+                    <th style="width:50px;">Code</th>
+                    <th style="width:30%;">Dealership Name</th>
+                    <th>Group</th>
                     <th>Status</th>
                     <?php if($editPriv) { ?>
                     <th class="noSort">Actions</th>
@@ -691,9 +620,9 @@ function ClientsListingTable() {
                     <tr class="tagElement <?= $client->ClassName; ?> ">
                     	<td class="tags"><div class="<?= $client->ClassName; ?>">&nbsp;</div><span style="display:none;"><?= $client->ClassName; ?></span></td>
                         <td><?= $client->ClientCode; ?></td>
-                        <td style="text-align:left;"><?= $client->Name; ?></td>
+                        <td class="alignTextLeft"><?= $client->Name; ?></td>
                         <td><?= $client->GroupName; ?></td>
-                        <td style="width:30px;text-align:center;"><?= (($client->Status) ? 'Active' : 'Disable'); ?></td>
+                        <td class="alignTextLeft" style="width:30px;"><?= (($client->Status) ? 'Active' : 'Disable'); ?></td>
                         <?php if($editPriv) { ?>
                         <td class="actionsCol noSort" style="width:60px;text-align:center;">
                             <a title="Edit Client" href="javascript:editClient('<?= $client->ClientID; ?>');" class="actions_link"><img src="<?= base_url() . THEMEIMGS; ?>icons/color/pencil.png" alt="" /></a>
@@ -705,9 +634,9 @@ function ClientsListingTable() {
             </tbody>
         </table>
     <?php } ?>
-    <?php if($addPriv) { ?><a href="javascript:addClient();" class="greenBtn floatRight button" style="margin-top:10px;">Add New Client</a><?php } ?>
+    <?php if($addPriv) { ?><a href="javascript:addClient();" class="greenBtn floatRight button addButtonBottom">Add New Client</a><?php } ?>
     <?php else : ?>
-    <p style="padding-left:10px;padding-bottom:10px;">No clients found.</p>
+    <p class="noData">No clients found.</p>
     <?php endif; ?>
 <?php }
 
@@ -717,19 +646,22 @@ function UserListingTable($client_id = false,$hide_actions = false) { ?>
 		$ci =& get_instance();
         $userPermissionLevel = $ci->user['AccessLevel'];
 		$level				 = $ci->user['DropdownDefault']->LevelType;
-        $addPriv     		 = GateKeeper('User_Add',$userPermissionLevel);
-        $editPriv    		 = GateKeeper('User_Edit',$userPermissionLevel);
-        $disablePriv 		 = GateKeeper('User_Disable_Enable',$userPermissionLevel);
-        $listingPriv 		 = GateKeeper('User_List',$userPermissionLevel);
+		
+		//Check permissions for this user.
+        $addPriv     		 = GateKeeper('User_Add',			 $userPermissionLevel);
+        $editPriv    		 = GateKeeper('User_Edit',			 $userPermissionLevel);
+        $disablePriv 		 = GateKeeper('User_Disable_Enable', $userPermissionLevel);
+        $listingPriv 		 = GateKeeper('User_List',			 $userPermissionLevel);
 		
 		//collect users here
-		$users = array();
+		$users     = array();
 		
+		//selected agency id and group id.
 		$agency_id = $ci->user['DropdownDefault']->SelectedAgency;
-		$group_id = $ci->user['DropdownDefault']->SelectedGroup;
+		$group_id  = $ci->user['DropdownDefault']->SelectedGroup;
 		
 		switch($level) {
-			case "a":
+			case 1 OR 'a':
 				//get all groups, all users are associated to client level. if were on agency level, we still dont know where all clients are coming from until we know the groups.
 				$groups = $ci->administration->getAllGroupsInAgencyResults($agency_id);
 				//loop through the groups to get the clients so we can get the users.
@@ -750,28 +682,7 @@ function UserListingTable($client_id = false,$hide_actions = false) { ?>
 					}
 				}
 			break;
-			case 1:
-				//get all groups, all users are associated to client level. if were on agency level, we still dont know where all clients are coming from until we know the groups.
-				$groups = $ci->administration->getAllGroupsInAgencyResults($agency_id);
-				//loop through the groups to get the clients so we can get the users.
-				foreach($groups as $group) {
-					//now we know the group info
-					$clients = $ci->administration->getAllClientsInGroup($group->GroupID);
-					foreach($clients as $client) {
-						//get the users in the clients, but we still dont have them in a single level array.
-						$userGrouped = $ci->administration->getUsers(false,$client->ClientID);
-						//check to see if the user group returned data, if so we need to loop through them and push the contents to our collection array
-						if($userGrouped) {
-							foreach($userGrouped as $usersGroup) {
-								//push users to the array
-								array_push($users,$usersGroup);	
-							}
-						}
-
-					}
-				}
-			break;
-			case "g":
+			case "g" OR 2:
 				//grab the clients in the group
 				$clients = $ci->administration->getAllClientsInGroup($group_id);
 				//loop through each client and grab its users, then reformat the return into a 1 level array and push to our collection array.
@@ -782,19 +693,6 @@ function UserListingTable($client_id = false,$hide_actions = false) { ?>
 							foreach($userGrouped as $usersGroup) {
 								array_push($users,$usersGroup);	
 							}
-						}
-					}
-				}
-			break;
-			case 2:
-				//grab the clients in the group
-				$clients = $ci->administration->getAllClientsInGroup($group_id);
-				//loop through each client and grab its users, then reformat the return into a 1 level array and push to our collection array.
-				foreach($clients as $client) {
-					$userGrouped = $ci->administration->getUsers(false,$client->ClientID);
-					if($userGrouped) {
-						foreach($userGrouped as $usersGroup) {
-							array_push($users,$usersGroup);	
 						}
 					}
 				}
@@ -844,15 +742,18 @@ function UserListingTable($client_id = false,$hide_actions = false) { ?>
                 <?php } ?>
             </tbody>
         </table>
-        <?php if(isset($user_id)) { echo $user_id; ?>
+        <?php if(isset($user_id)) { 
+			echo $user_id; ?>
 			<script type="text/javascript">
             	editUser('<?= $user_id; ?>');
             </script>
-        <? } ?>
+        <?php } ?>
     <?php }else { ?>
-    	<p style="padding-left:10px;padding-bottom:10px;">No Users found. Please select a different Client or add a user by selecting the "Add New User" button below.</p>
+    	<p class="noData">No Users found. Please select a different Client or add a user by selecting the "Add New User" button below.</p>
     <?php } ?>
-    <?php if($addPriv) { ?><a href="javascript:addUser();" class="greenBtn floatRight button" style="margin-top:10px;">Add New User</a><?php } ?>
+    <?php if($addPriv) { ?>
+    	<a href="javascript:addUser();" class="greenBtn floatRight button" style="margin-top:10px;">Add New User</a>
+	<?php } ?>
 <?php }
 
 function get_welcome_message() {
@@ -1307,12 +1208,14 @@ function ContactInfoListingTable_EditAdd($contact, $type) {
 				</tr>
 			</thead>
 			<tbody>';
-				if ($contact) foreach ($contact->Phone as $contactPhone) foreach ($contactPhone as $type => $phone) {
+				if ($contact)  {
+					foreach ($contact->Phone as $contactPhone) {
 				$fragment .= '<tr>
-					<td width="10%"><div style="width:20px;margin:0 auto;"><input type="radio" class="phonePrimary" name="phonePrimary" value="'.$phone.'" '.(($phone == $contact->PrimaryPhoneType) ? 'checked' : '').' /></div></td>
+					<td width="10%"><div style="width:20px;margin:0 auto;"><input type="radio" class="phonePrimary" name="phonePrimary" value="'.$phone.'" '.(($phone == $contact->PrimaryPhone) ? 'checked' : '').' /></div></td>
 					<td width="80%">'.(($contact) ? $phone : '').'</td>
 					<td width="10%"><div style="width:20px;margin:0 auto;"><a title="Edit Phone Number" href="javascript:editPhone(\''.$contact->ContactID.'\',\''.$type.'\',\''.$phone.'\');" class="actions_link"><img src="'.base_url().THEMEIMGS.'icons/color/pencil.png" alt="" /></a></div></td>
 				</tr>';
+					}
 				}
 			$fragment .= '</tbody>
 		</table>

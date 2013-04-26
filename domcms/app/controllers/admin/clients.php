@@ -173,7 +173,7 @@ class Clients extends DOM_Controller {
 		
 		if($client) {
 			$client->Address = (isset($client->Address)) ? mod_parser($client->Address) : false;
-			$client->Phone = (isset($client->Phone)) ? mod_parser($client->Phone,false,true) : false;
+			$client->Phone = (!empty($client->Phone)) ? mod_parser($client->Phone,false,true) : false;
 			$client->Reviews = array(
 				'Google'   => ($this->administration->getSelectedClientsReviews($client_id,1)) ? $this->administration->getSelectedClientsReviews($client_id,1)->URL : FALSE,
 				'GoogleID' => ($this->administration->getSelectedClientsReviews($client_id,1)) ? $this->administration->getSelectedClientsReviews($client_id,1)->ID  : FALSE,
@@ -188,8 +188,7 @@ class Clients extends DOM_Controller {
 				'html' => $html,
 				'tags'=>$tags,
 				'websites'=>WebsiteListingTable($client_id, 'CID'),
-				'contacts'=>true,
-				'contactInfo'=>ContactInfoListingTable($client, 'CID', true),
+				'contacts'=>false,
 			);
 			//THIS IS THE DEFAULT VIEW FOR ANY BASIC FORM.
 			$this->load->dom_view('forms/clients/edit_add', $this->theme_settings['ThemeViews'], $data);		

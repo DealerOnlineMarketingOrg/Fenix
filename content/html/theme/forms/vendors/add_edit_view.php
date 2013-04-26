@@ -16,10 +16,10 @@
             		<li class="activeTab"><a href="javascript:void(0);" rel="clientInfo">Vendor Details</a></li>
                     <?php if(isset($websites)) { ?>
                     <li><a href="javascript:void(0);" rel="websites">Websites</a></li>
-                    <?php } 
+                    <?php } /*
 					if(isset($contacts)) { ?>
             		<li><a href="javascript:void(0);" rel="contactInfo">Contacts</a></li>
-                    <?php } ?>
+                    <?php } */?>
             	</ul>
             	<div class="tab_container">
             		<div id="clientInfo" class="tab_content">
@@ -152,9 +152,11 @@
                      <div id="websites" class="tab_content" style="display:none;">
                      	<?= $websites; ?>
                      </div>
+                     <?php /*
                      <div id="contactInfo" class="tab_content" style="display:none;">
                     	<?= $contactInfo; ?>
                      </div>
+					 */ ?>
                   </div>
                 <div class="fix"></div>			       
             </div> <? //end widget ?>
