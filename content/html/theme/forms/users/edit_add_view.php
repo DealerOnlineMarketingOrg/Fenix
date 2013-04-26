@@ -30,7 +30,7 @@
 				ul.modulesTable.first{border-top:1px solid #d5d5d5 !important;margin-top:0 !important;}
 				ul.odd{background-color:#E2E4FF;}
 				div.submitForm{margin-top:10px;}
-				#importGoogleAvatar{background:url('<?= base_url() . THEMEIMGS; ?>icons/color/google_icon.png') no-repeat top left;background-size:12px 12px;}
+				#importGoogleAvatar{background:url('<?= base_url(); ?>imgs/icons/color/google_icon.png') no-repeat top left;background-size:12px 12px;}
 				#importGoogleAvatar span {display:none;}
 				div.tab_content div.head {background:none;border:none;width:14em;margin:0 auto;}
 				</style>
@@ -168,7 +168,7 @@
 									var formData = jQuery(this).serialize();
 									jQuery.ajax({
 										type:'POST',
-										url:'/admin/users/submit_user_edit_modules?uid=<?= $user->ID; ?>',
+										url:'<?= ((isset($view)) ? '/admin/users/submit_user_edit_modules?uid=' . $user->ID : '/admin/users/submit_user_modules'); ?>',
 										data:formData,
 										success:function(data) {
 											if(data == '1') {
@@ -327,12 +327,14 @@
 				text:'Close',
 				click:function() {$(this).dialog('close')}
 			},
+			<?php if(!isset($view)) { ?>
 			<?php if(GateKeeper('Website_Add',$this->user['AccessLevel'])) { ?>
 				{
 					class:'greenBtn hidden addWebsiteBtn',
 					text:"Add New Website",
 					click:function() { addWebsiteForm('<?= ($user) ? $user->TypeID : ''; ?>','<?= $user->TypeCode; ?>')}
 				},
+			<?php } ?>
 			<?php } ?>
 				{
 					class:'redBtn hidden savePrimariesBtn',

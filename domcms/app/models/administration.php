@@ -1235,7 +1235,7 @@ class Administration extends CI_Model {
 		$this->db->where('USER_ID',$user_id);
 
 		$query = $this->db->get();
-		return ($query) ? $query->row()->Signature : FALSE;
+		return ($query) ? ((isset($query->row()->Signature)) ? $query->row()->Signature : FALSE) : FALSE;
 	}
 	
 	public function editContactInfoPhone($id, $oldPhone, $newPhone) {

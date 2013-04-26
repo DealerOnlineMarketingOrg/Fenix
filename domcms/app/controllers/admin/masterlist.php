@@ -58,17 +58,19 @@ class Masterlist extends DOM_Controller {
 		
 		$isEdit = TRUE;
 		
-		$client_id = $this->security->xss_clean($form['client_id']);
+		$client_id = $this->myClientID;
 		$return = array();
-		//always just one entry, never duplicated based on different websites
-		$doc = $this->security->xss_clean($form['doc']);
-		$xsl = $this->security->xss_clean($form['xsl']);
-		$crm = $this->security->xss_clean($form['crm']);
-		$crm_link = $this->security->xss_clean($form['crm_link']);
-		$cms = $this->security->xss_clean($form['cms']);
-		//$cms_links = $this->security->xss_clean($form['cms_link']);
-		$crazyegg = $this->security->xss_clean($form['crazyegg']);
 		
+		//always just one entry, never duplicated based on different websites
+		$doc = $this->security->xss_clean((!empty($form['doc']) ? $form['doc'] : 'NULL'));
+		$xsl = $this->security->xss_clean((!empty($form['xsl']) ? $form['xsl'] : 'NULL'));
+		$crm = $this->security->xss_clean((!empty($form['crm']) ? $form['crm'] : 'NULL'));
+		$crm_link = $this->security->xss_clean((!empty($form['crm_link']) ? $form['crm_link'] : 'NULL'));
+		
+		//cms,crazyegg and cms links can be multiples
+		$cms = $this->security->xss_clean((!empty($form['cms']) ? $form['cms'] : 'NULL'));
+		$cms_links = $this->security->xss_clean((!empty($form['cms_link']) ? $form['cms_link'] : 'NULL'));
+		$crazyegg = $this->security->xss_clean((!empty($form['crazyegg']) ? $form['crazyegg'] : 'NULL'));
 		
 		$assets = array(
 			'CRM_Vendor_ID'=>$crm,
@@ -85,34 +87,38 @@ class Masterlist extends DOM_Controller {
 			array_push($return,false);	
 		}
 		
-		foreach($cms as $key => $value) {
-			$data = array(
-				'WEB_ID'=>$key,
-				'CLIENT_ID'=>$client_id,
-				'CMS_Vendor_ID'=>$value['id'],
-				'CMS_Vendor_Link'=>$value['link']
-			);
-			
-			$cms_data = $this->mlist->addCMS($key,$data);	
-			
-			if($cms_data) {
-				array_push($return,true);
-			}else {
-				array_push($return,false);	
+		if(!empty($cms)) {
+			foreach($cms as $key => $value) {
+				$data = array(
+					'WEB_ID'=>$key,
+					'CLIENT_ID'=>$client_id,
+					'CMS_Vendor_ID'=>$value['id'],
+					'CMS_Vendor_Link'=>$value['link']
+				);
+				
+				$cms_data = $this->mlist->addCMS($key,$data);	
+				
+				if($cms_data) {
+					array_push($return,true);
+				}else {
+					array_push($return,false);	
+				}
 			}
 		}
 		
-		foreach($crazyegg as $key =>$value) {
-			$data = array(
-				'WEB_ID'=>$key,
-				'CrazyEggStatusID'=>$value
-			);	
-			
-			$crazyegg_data = $this->mlist->addCrazyEgg($key,$data);
-			if($crazyegg_data) {
-				array_push($return,true);	
-			}else {
-				array_push($return,false);	
+		if(!empty($crazyegg)) {
+			foreach($crazyegg as $key =>$value) {
+				$data = array(
+					'WEB_ID'=>$key,
+					'CrazyEggStatusID'=>$value
+				);	
+				
+				$crazyegg_data = $this->mlist->addCrazyEgg($key,$data);
+				if($crazyegg_data) {
+					array_push($return,true);	
+				}else {
+					array_push($return,false);	
+				}
 			}
 		}
 		

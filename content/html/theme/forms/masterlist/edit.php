@@ -14,7 +14,8 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                    	<?php if(isset($client->Assets) AND !empty($client->Assets)) { ?>
+                                    
+                                    	<?php if(!empty($client->Assets)) { ?>
                                         	<?php foreach($client->Assets as $asset) { ?>
                                                 <input type="text" value="<?= (isset($asset->DOCLink)) ? $asset->DOCLink : ''; ?>" name="doc" class="enableCopy" />
                                             <?php } ?>
@@ -23,7 +24,7 @@
                                         <?php } ?>
                                     </td>
                                     <td>
-                                    	<?php if(isset($client->Assets) AND !empty($client->Assets)) { ?>
+                                    	<?php if(!empty($client->Assets)) { ?>
                                         	<?php foreach($client->Assets as $asset) { ?>
                                                 <select class="chzn-select crm" name="crm" style="margin:12px 0 0 0;width:43%;" id="crm_<?= $asset->AssetsID; ?>" onChange="javascript:addValidation('crm_<?= $asset->AssetsID; ?>','crm_link_<?= $asset->AssetsID; ?>')">
                                                     <option value="">Choose A CRM</option>
@@ -33,7 +34,7 @@
                                                 </select>
                                             <?php } ?>
                                         <?php }else { ?>
-                                                <select class="chzn-select" name="crm" style="margin:12px 0;width:43%;" id="crm_<?= $asset->AssetsID; ?>" onChange="javascript:addValidation('crm_<?= $asset->AssetsID; ?>','crm_link_<?= $asset->AssetsID; ?>')">
+                                                <select class="chzn-select" name="crm" style="margin:12px 0;width:43%;" id="crm" onChange="javascript:addValidation('crm','crm_link')">
                                                     <option value="">Choose A CRM</option>
                                                     <?php foreach($vendorOptions as $option) { ?>
                                                         <option value="<?= $option->ID; ?>"><?= $option->Name; ?></option>
@@ -49,21 +50,21 @@
                                 </tr>
                                 <tr>
                                 	<td>
-									<?php if(isset($client->Assets) AND !empty($client->Assets)) { ?>
+									<?php if(!empty($client->Assets)) { ?>
                                         <?php foreach($client->Assets as $asset) { ?>
-                                            <input type="text" value="<?= (isset($asset->ExcelLink)) ? $asset->ExcelLink : ''; ?>" name="xsl" id="xsl" class="enableCopy" />
+                                            <input type="text" value="<?= (!empty($asset->ExcelLink)) ? $asset->ExcelLink : ''; ?>" name="xsl" id="xsl" class="enableCopy" />
                                         <?php } ?>
                                     <?php }else { ?>
                                         <input type="text" name="xsl" id="Doc" />
                                     <?php } ?>
                                     </td>
                                     	<td>
-                                        	<?php if(isset($client->Assets) AND !empty($client->Assets)) { ?>
+                                        	<?php if(!empty($client->Assets)) { ?>
                                             	<?php foreach($client->Assets as $assets) { ?>
-                                        			<input style="margin-top:0px;width:330px !important;" id="crm_link_<?= $asset->AssetsID; ?>"  class="enableCopy" type="text" value="<?= (isset($asset->CRMLink)) ? $asset->CRMLink : ''; ?>" name="crm_link" />
+                                        			<input style="margin-top:0px;width:330px !important;" id="crm_link_<?= $assets->AssetsID; ?>"  class="enableCopy" type="text" value="<?= (isset($assets->CRMLink)) ? $asset->CRMLink : ''; ?>" name="crm_link" />
                                                 <?php } ?>
                                             <?php }else { ?>
-                                                <input style="margin-top:0px;width:330px !important;" id="crm_link_<?= $asset->AssetsID; ?>" type="text" value="" placeholder="CRM Url" name="crm_link" />
+                                                <input style="margin-top:0px;width:330px !important;" id="crm_link" type="text" value="" placeholder="CRM Url" name="crm_link" />
                                             <?php } ?>
                                         </td>
                                     <td>
@@ -182,11 +183,16 @@
 	
 		
 	$('#editMasterlistForm').submit(function(e) {
-		
+		var validForm = true;
 		if($('input.required').val() == '') {
+			validForm = false;
+		}
+		
+		
+		if(validForm != true) {
 			jAlert('The CRM and CMS Links are required when a vendor is chosen. Please copy and paste the URL to these into the link box','Validation Error');
+			return;
 		}else {
-			
 			e.preventDefault();
 			var formData = $(this).serialize();
 			$.ajax({

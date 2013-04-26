@@ -13,7 +13,7 @@
 			</style>
             <div class="widget" style="margin-top:0;padding-top:0;margin-bottom:10px;">
             	<ul class="tabs">
-            		<li class="activeTab"><a href="javascript:void(0);" rel="clientInfo">Vendor Details</a></li>
+            		<li class="activeTab"><a href="javascript:void(0);" rel="vendorInfo">Vendor Details</a></li>
                     <?php if(isset($websites)) { ?>
                     <li><a href="javascript:void(0);" rel="websites">Websites</a></li>
                     <?php } /*
@@ -22,7 +22,7 @@
                     <?php } */?>
             	</ul>
             	<div class="tab_container">
-            		<div id="clientInfo" class="tab_content">
+            		<div id="vendorInfo" class="tab_content">
 						<?php
                             if(isset($vendor)) :
                                 echo form_open('/admin/vendor/edit',array('id'=>'editVendorForm','class' => 'validate mainForm formPop','style'=>'text-align:left;'));
@@ -233,6 +233,8 @@
 		
 		var activeContent = $(this).attr('rel');
 		
+		//alert(activeContent);
+		
 		<?php if(!isset($view)) { ?>
 				
 		if(activeContent == 'contacts') {
@@ -265,7 +267,7 @@
 			}
 		}
 		
-		if(activeContent == 'contactInfo') {
+		if(activeContent == 'vendorInfo') {
 			if($('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addContactBtn').is(':visible')) {
 				$('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addContactBtn').addClass('hidden');
 			}

@@ -5,8 +5,8 @@
 	                   False if Excel 5 (.xls). Defaults to Excel 2007.
 	*/
 	function CreateExcel($file_name, &$objPHPExcel, $isExcel2007 = TRUE) {
-		require_once 'domcms/libraries/PHPExcel.php';
-		require_once 'domcms/libraries/PHPExcel/IOFactory.php';
+		require_once APPPATH . 'libraries/PHPExcel.php';
+		require_once APPATH . 'libraries/PHPExcel/IOFactory.php';
 		
 		if ($isExcel2007) {
 			$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
@@ -20,8 +20,8 @@
 		Used for converting html code to pdf.
 	*/
 	function CreatePDF($file_name, &$objPHPExcel) {
-		require_once 'domcms/libraries/PHPExcel.php';
-		require_once 'domcms/libraries/PHPExcel/IOFactory.php';
+		require_once APPPATH . 'libraries/PHPExcel.php';
+		require_once APPPATH . 'libraries/PHPExcel/IOFactory.php';
 
 		$objWriter = new PHPExcel_Writer_PDF($objPHPExcel);
 		$objWriter->setPreCalculateFormulas(false);
@@ -33,7 +33,7 @@
 		Creates a PDF from a single image.
 	*/
 	function CreatePDFFromImage($file_name, $img_name, $scale) {
-		require_once('domcms/libraries/tcpdf/tcpdf.php');
+		require_once(APPPATH . 'libraries/tcpdf/tcpdf.php');
 
 		// create new PDF document
 		$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -512,8 +512,8 @@
 		//
 		// Create new PHPExcel object with default attributes
 		//
-		require_once 'domcms/libraries/PHPExcel.php';
-		require_once 'domcms/libraries/PHPExcel/IOFactory.php';
+		require_once APPPATH . 'libraries/PHPExcel.php';
+		require_once APPPATH . 'libraries/PHPExcel/IOFactory.php';
 		$objPHPExcel = new PHPExcel();
 		$objPHPExcel->getDefaultStyle()->getFont()->setName('Arial');
 		$objPHPExcel->getDefaultStyle()->getFont()->setSize(9);
@@ -558,8 +558,8 @@
 	function HTMLToobjPHPExcel($user_id, $html) {
 		$ci =& get_instance();
 		$ci->load->helper('html_codes_helper');
-		require_once 'domcms/libraries/PHPExcel.php';
-		require_once 'domcms/libraries/PHPExcel/IOFactory.php';
+		require_once APPPATH . 'libraries/PHPExcel.php';
+		require_once APPPATH . 'libraries/PHPExcel/IOFactory.php';
 		
 		$dom = CreateDom($html);
 		if(!$dom) {

@@ -40,7 +40,7 @@ function PasswordlistTable() { ?>
 		$counter=0;
 		
 		if($addPriv) : ?>
-        	<a href="javascript:addPasswords('<?= base_url(); ?>')" class="greenBtn floatRight button" style="margin-top:-73px;margin-right:3px">Add New Password</a>
+        	<a href="javascript:addPasswords('<?= base_url(); ?>')" class="greenBtn floatRight button addButtonTop">Add New Password</a>
         <?php endif; 
         
         if($passwords AND $listingPriv) :  ?>
@@ -49,11 +49,10 @@ function PasswordlistTable() { ?>
 				.align-cell-left{text-align:left;}
 				.no-text-wrap{white-space:nowrap}
 				.boldTheText{font-weight:bold;}
-				.clipData{width:22px;height:22px;float:left;cursor:pointer;background:url(<?=base_url() . THEMEIMGS; ?>icons/dark/clipboard.png) no-repeat;}
+				.clipData{width:22px;height:22px;float:left;cursor:pointer;background:url(<?=base_url(); ?>imgs/icons/middlenav/clipboard.png) no-repeat;background-size:14px 16px;}
 				.passwordNotes{overflow:hidden; max-height:22px;float:left;width:80%;}
 				.passwordNotesMore{cursor:pointer;color:blue;top:0;}
 				.notesCol{width:25%;}
-				.actionsCol{width:32px !important;text-align:center !important;}
 			</style>
         	<table cellpadding="0" cellspacing="0" border="0" class="display passwordsListTable" id="example" width="100%">
             	<thead>
@@ -81,12 +80,12 @@ function PasswordlistTable() { ?>
                             <td class="no-text-wrap">
                             	<span class="boldTheText">
                                 	<div id="username<?=$counter;?>" class="clipBoard clipData" clipBoardData="<?=$clipData; ?>"></div>
-                                    <div style="float:left;"><a href="mailto:<?=$password->Username;?>"><?=$password->Username;?></div>
+                                    <a href="mailto:<?=$password->Username;?>"><?=$password->Username;?>
                                 </span>
                             </td>
                             <td class="no-text-wrap">
                             	<div id="password<?=$counter;?>" class="clipBoard clipData" clipBoardData="<?=$clipData;?>"></div>
-                                <div style="float:left;"><?=$password->Password;?></div>
+                                <?=$password->Password;?>
                             </td>
                             <td class="notesCol">
                             	<?php if($password->Notes) { ?>
@@ -111,11 +110,11 @@ function PasswordlistTable() { ?>
                 </tbody>
             </table>
         <?php else: ?>
-        	<p style="padding-left:10px;padding-bottom:10px;">Sorry, no passwords were found for this client. Please add a password or select a different Client.</p>
+        	<p class="noData">Sorry, no passwords were found for this client. Please add a password or select a different Client.</p>
         <?php endif; 
         
         if($addPriv) : ?>
-        	<a href="javascript:addPasswords('<?= base_url(); ?>')" class="greenBtn floatRight button" style="margin-top:10px;">Add New Password</a>
+        	<a href="javascript:addPasswords('<?= base_url(); ?>')" class="greenBtn floatRight button addButtonBottom">Add New Password</a>
         <?php endif; ?>
         
         <?php if($passwords) { ?>
@@ -266,7 +265,7 @@ function MasterlistTable() { ?>
                                 <?php if(isset($client->Assets) AND !empty($client->Assets)) { ?>
                                     <ul>
                                         <?php foreach($client->Assets as $asset) { ?>
-                                        	<?php if(isset($asset->DOCLink)) { ?>
+                                        	<?php if(!empty($asset->DOCLink) AND $asset->DOCLink != 'NULL') { ?>
                                             	<li>
                                                 	<a title="Google Doc" href="<?= $asset->DOCLink; ?>" target="_blank">
                                                     	<img src="<?= base_url() . THEMEIMGS; ?>icons/color/document-word-text.png" alt="" />
@@ -285,7 +284,7 @@ function MasterlistTable() { ?>
                                 <?php if(isset($client->Assets) AND !empty($client->Assets)) { ?>
                                     <ul>
                                         <?php foreach($client->Assets as $asset) { ?>
-                                        	<?php if(isset($asset->ExcelLink)) { ?>
+                                        	<?php if(!empty($asset->ExcelLink) AND $asset->ExcelLink != 'NULL') { ?>
                                             	<li>
                                                 	<a title="Google Doc" href="<?= $asset->ExcelLink; ?>" target="_blank">
                                                     	<img src="<?= base_url() . THEMEIMGS; ?>icons/color/document-excel.png" alt="" />
@@ -716,11 +715,11 @@ function UserListingTable($client_id = false,$hide_actions = false) { ?>
                 <tr>
                     <th style="width:50px;text-align:center;">Team</th>
                     <th style="text-align:center;width:50px;">Avatar</th>
-                    <th style="text-align:left;width:30%;">Email Address</th>
-                    <th style="text-align:left;">Name</th>
+                    <th style="width:30%;">Email Address</th>
+                    <th>Name</th>
                     <th>Status</th>
                     <?php if($editPriv) { ?>
-                    	<th class="noSort">Actions</th>
+                    	<th class="actionsCol noSort" style="text-align:center;">Actions</th>
                     <?php } ?>
                 </tr>
             </thead>
@@ -728,14 +727,18 @@ function UserListingTable($client_id = false,$hide_actions = false) { ?>
                 <?php foreach($users as $user) { $avatar = $ci->members->get_user_avatar($user->ID); ?>
                     <tr class="tagElement <?= $user->ClassName; ?>">
                     	<td class="tags" style="vertical-align: middle;"><div class="<?= $user->ClassName; ?>">&nbsp;</div></td>
-                        <td style="text-align:center;vertical-align: middle;"><div style="text-align:center;margin-top:5px;"><img src="<?= $avatar; ?>" style="width:30px;" alt="<?= $user->FirstName . ' ' . $user->LastName; ?>" /></div></td>
+                        <td style="text-align:center;vertical-align: middle;">
+                        	<div style="text-align:center;margin-top:5px;">
+                            	<img src="<?= $avatar; ?>" style="width:30px;" alt="<?= $user->FirstName . ' ' . $user->LastName; ?>" />
+                            </div>
+                        </td>
                         <td style="text-align:left;vertical-align: middle;"><a href="mailto:<?= $user->Username; ?>"><?= $user->Username; ?></a></td>
                         <td style="vertical-align:middle;"><?= $user->FirstName . ' ' . $user->LastName; ?></td>
                         <td style="width:30px;text-align:center;vertical-align: middle;"><?= (($user->Status) ? 'Active' : 'Disable'); ?></td>
                         <?php if($editPriv) { ?>
                         <td class="actionsCol noSort" style="width:60px;text-align:center;vertical-align: middle;">
-                            <a title="Edit Client" href="javascript:editUser('<?= $user->ID; ?>');" class="actions_link"><img src="<?= base_url() . THEMEIMGS; ?>icons/color/pencil.png" alt="" /></a>
-                            <a title="View Client" href="javascript:viewUser('<?= $user->ID; ?>');" class="actions_link"><img src="<?= base_url() . THEMEIMGS; ?>icons/color/cards-address.png" alt="" /></a>
+                            <a title="Edit User" href="javascript:editUser('<?= $user->ID; ?>');" class="actions_link"><img src="<?= base_url() . THEMEIMGS; ?>icons/color/pencil.png" alt="" /></a>
+                            <a title="View User" href="javascript:viewUser('<?= $user->ID; ?>');" class="actions_link"><img src="<?= base_url() . THEMEIMGS; ?>icons/color/cards-address.png" alt="" /></a>
                         </td>
                         <?php } ?>
                     </tr>

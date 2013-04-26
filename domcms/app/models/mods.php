@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-	class Mods extends CI_Model {
+	class Mods extends DOM_Model {
 		
 		function __construct() {
 			// Call the Model constructor
@@ -15,8 +15,9 @@
 					MODULE_Name as Name, 
 					MODULE_ID as Id 
 					FROM xModules 
-					WHERE MODULE_Name = "' . $name . '";';
-					return query_row($this,$sql);
+					WHERE MODULE_Name = "' . $name . '" AND MODULE_Active = 1;';
+			$query = $this->db->query($sql);
+			return ($query) ? $query->row() : FALSE;
 		}
 		
 		public function getModLevelByID($id) {
@@ -27,7 +28,8 @@
 					MODULE_ID as Id 
 					FROM xModules 
 					WHERE MODULE_ID = "' . $id . '";';
-					return query_row($this,$sql);	
+			$query = $this->db->query($sql);
+			return ($query) ? $query->row() : FALSE;
 		}
 		
 		public function getModulesByAccessLevel($level) {
@@ -39,12 +41,14 @@
 					FROM xModules WHERE MODULE_Level >= "' . $level . '"; 
 					AND MODULE_Active = "1" 
 					ORDER BY Module_Name';	
-					return query_results($this,$sql);
+			$query = $this->db->query($sql);
+			return ($query) ? $query->result() : FALSE;
 		}
 		
 		public function getAccessLevelByHref($href) {
 			$sql = 'SELECT NAV_Level as Level FROM xSystemNav WHERE NAV_Ref = "' . $href . '";';
-			return query_results($this,$sql);	
+			$query = $this->db->query($sql);
+			return ($query) ? $query->row() : FALSE;	
 		}
 		
 	}

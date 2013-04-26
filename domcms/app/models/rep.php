@@ -199,8 +199,8 @@
 		public function CalculateData($report) {
 			// Create PHPExcel worksheet for doing in-report calculations.
 			// Report formulas should be in the same format as Excel.
-			require_once 'domcms/libraries/PHPExcel.php';
-			require_once 'domcms/libraries/PHPExcel/IOFactory.php';
+			require_once APPPATH . 'libraries/PHPExcel.php';
+			require_once APPPATH . 'libraries/PHPExcel/IOFactory.php';
 			
 			$objPHPExcel = CreateExcelWorkbook('report');
 			$worksheet = CreateWorksheet($objPHPExcel);

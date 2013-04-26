@@ -59,7 +59,7 @@ class Members extends CI_Model {
 				if($user_info->Google_Avatar == '1') {
 					$google_query = $this->db->select('Avatar')->get_where('GoogleAvatars',array('USER_ID'=>$user_id));
 					if($google_query) {
-						$google_avatar = $google_query->row()->Avatar;
+						$google_avatar = ((isset($google_query->row()->Avatar)) ? $google_query->row()->Avatar : base_url() . 'imgs/icons/middlenav/user2.png');
 						return $google_avatar;
 					}else {
 						return base_url() . 'imgs/icons/middlenav/user2.png';	

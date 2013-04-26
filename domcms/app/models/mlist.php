@@ -260,7 +260,7 @@ class Mlist extends CI_Model {
 		$isRowsql = 'SELECT CLIENT_ID FROM MasterListAssets WHERE CLIENT_ID = "' . $cid . '";';
 		$isRow = $this->db->query($isRowsql);
 		
-		if($isRow) {
+		if($isRow->num_rows() > 0) {
 			$this->db->where('CLIENT_ID',$cid);
 			return ($this->db->update('MasterListAssets',$data)) ? TRUE : FALSE;	
 		}else {
@@ -272,7 +272,7 @@ class Mlist extends CI_Model {
 		$isRowsql = 'SELECT WEB_ID FROM MasterList WHERE WEB_ID = "' . $web_id . '";';
 		$isRow = $this->db->query($isRowsql);
 		
-		if($isRow) {
+		if($isRow->num_rows() > 0) {
 			$this->db->where('WEB_ID',$web_id);
 			return ($this->db->update('MasterList',$data)) ? TRUE :FALSE;	
 		}else {
@@ -284,7 +284,7 @@ class Mlist extends CI_Model {
 		$isRowsql = 'SELECT WEB_ID FROM WebsiteOptions WHERE WEB_ID = "' . $web_id . '";';
 		$isRow = $this->db->query($isRowsql);
 		
-		if($isRow) {
+		if($isRow->num_rows() > 0) {
 			$this->db->where('WEB_ID',$web_id);
 			return ($this->db->update('WebsiteOptions',$data)) ? TRUE : FALSE;	
 		}else {
