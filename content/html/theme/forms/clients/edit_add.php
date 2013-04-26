@@ -14,10 +14,10 @@
                     <?php if(isset($websites)) { ?>
                     <li><a href="javascript:void(0);" rel="websites">Websites</a></li>
                     <?php } 
-					
+					/*
 					if(isset($contacts)) { ?>
             		<li><a href="javascript:void(0);" rel="contactInfo">Contacts</a></li>
-                    <?php } ?>
+                    <?php } */ ?>
             	</ul>
             	<div class="tab_container">
             		<div id="clientInfo" class="tab_content">
@@ -126,10 +126,11 @@
 			                <div class="rowElem noborder">
 			                    <label><span class="req">*</span> Phone Number</label>
 			                    <div class="formRight">
-                                	<?php if (isset($client->Phone)) {
+                                	<?php if ($client->Phone) {
 										// Locate primary.
-										foreach ($client->Phone as $clientPhone) foreach ($clientPhone as $type => $phone) {
-											if ($phone == $client->PrimaryPhoneType) {
+										foreach ($client->Phone as $clientPhone) :
+										 foreach ($clientPhone as $type => $phone) {
+											if ($phone == $client->PrimaryPhone) {
 												if(isset($view)) { 
 													echo form_input(array('disabled'=>'disabled','class'=>'maskPhone required validate[required,custom[phone]]','name'=>'phone','id'=>'phone','value'=>$phone));
 												}else {
@@ -137,7 +138,7 @@
 												}
 												break;
 											}
-										}
+										} endforeach;
 									} else {
 										echo form_input(array('class'=>'maskPhone required validate[required,custom[phone]]','name'=>'phone','id'=>'phone','value'=>''));
 									}?>
@@ -286,9 +287,11 @@
     				<div id="websites" class="tab_content" style="display:none;">
                     	<?= (isset($websites)) ? $websites : ''; ?>
     				</div>
+                    <?php /*
                     <div id="contactInfo" class="tab_content" style="display:none;">
                     	<?= (isset($contactInfo)) ? $contactInfo : ''; ?>
                     </div>
+					*/ ?>
                     <div id="loader" style="display:none;"><img src="<?= base_url() . THEMEIMGS; ?>loaders/loader2.gif" /></div>
     				<div class="fix"></div>
     			</div>	

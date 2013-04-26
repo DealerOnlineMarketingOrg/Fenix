@@ -12,24 +12,15 @@ class Administration extends CI_Model {
 	public function getClientsByDDLevel() {
 		$level = $this->user['DropdownDefault']->LevelType;
 		switch($level) {
-			case 1:
+			case 1 OR 'a':
 				return $this->getAllClientsInAgency($this->agency_id);
 			break;
-			case 2:
+			case 2 OR 'g':
 				return $this->getAllClientsInGroup($this->group_id);
 			break;
-			case 3:
+			case 3 OR 'c':
 				return $this->getClientByID($this->user['DropdownDefault']->SelectedClient);
 			break;
-			case 'a':
-				return $this->getAllClientsInAgency($this->agency_id);
-			break;
-			case 'g':
-				return $this->getAllClientsInGroup($this->group_id);
-			break;
-			case 'c':
-				return $this->getClientByID($this->user['DropdownDefault']->SelectedClient);
-			break;	
 			default:
 				return $this->getAllClientsInAgency($this->agency_id);
 			break;
@@ -781,7 +772,7 @@ class Administration extends CI_Model {
 						   c.CLIENT_Name as Name,
 						   c.CLIENT_Address as Address,
 						   c.CLIENT_Phone as Phone,
-						   c.CLIENT_Primary_Phone as PrimaryPhoneType,
+						   c.CLIENT_Primary_Phone as PrimaryPhone,
 						   c.CLIENT_Notes as Description,
 						   c.CLIENT_Code as Code,
 						   c.CLIENT_Tag as Tag,

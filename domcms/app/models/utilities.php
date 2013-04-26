@@ -182,7 +182,7 @@
 			foreach($query as $tags) {
 				$select .= "\t\t" . '<option value="' . $tags->ClassName . '">' . $tags->TagName . '</option>';
 			}
-			$select .= "\t" . '</select><a href="javascript:void(0);" id="AddTags"><img src="' . base_url() . 'imgs/icons/dark/add.png" alt="Add/Edit Tags" /></a>';
+			$select .= "\t" . '</select><a style="display:none;" href="javascript:void(0);" id="AddTags"><img src="' . base_url() . 'imgs/icons/dark/add.png" alt="Add/Edit Tags" /></a>';
 			return $select;
 		}
 	}

@@ -1006,6 +1006,13 @@ ul.thirdparty li a {float:left;margin-right:8px;}
 }
 
 /*We need to add this to the media queries down the road */
+.tagCol{width:50px;text-align:center;}
+.actionsCol{width:75px;text-align:center;}
+.noWrap{white-space:nowrap;}
+.alignTextLeft{text-align:left;}
+.addButtonTop{margin-top:-73px !important;margin-right:3px;}
+.addButtonBottom{margin-top:10px;}
+p.noData{padding:10px;}
 table.masterlistTable th.dealerName,table.masterlistTable th.websiteLink{text-align:left;}
 table.masterlistTable th.crazyEgg{white-space:nowrap;}
 table.masterlistTable td {vertical-align:middle !important;}
