@@ -7,19 +7,31 @@ function GateKeeper($mod,$uPerm) {
 	//We need to know where codeigniter is.
 	$ci =& get_instance();
 	$ci->load->model('mods');
+	$ci->load->helper('pass');
 	
+	$userMods = $ci->user['UserModules'];
+	//print_object($userMods);
+	//print_object($userMods);
+	$perms = $ci->mods->getUsersModuleLevelByName($userMods,$mod,$uPerm);
+	//print_object($perms);
 	//load the model in the helper
-	$perms = $ci->mods->getModLevelByName($mod);
+	$myperms = $ci->mods->getModLevelByName($mod);
 	
 	//check the permission levels
 	if (!$perms) {
 		return false;
 	} else {
-		if ($uPerm >= $perms->Level) {
+		//check to see if the doesnt have any module level.
+		if($perms) {
+			return true;
+		}else {
+			return false;	
+		}
+		/*if ($uPerm >= $perms->Level) {
 			return TRUE;
 		} else {
 			return false;
-		}
+		}*/
 	}
 }
 

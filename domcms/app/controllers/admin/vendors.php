@@ -2,11 +2,17 @@
 
 class Vendors extends DOM_Controller {
 	
+	//this is used when we know the vendor
+	public $vid;
+	
+	
     public function __construct() {
         parent::__construct();
         $this->load->model(array('administration'));
         $this->load->helper(array('msg','html'));
 		$this->activeNav = 'admin';
+		
+		$this->vid = ((isset($_GET['vid'])) ? $_GET['vid'] : FALSE);
     }
 	
 	public function index() {
@@ -23,10 +29,6 @@ class Vendors extends DOM_Controller {
 	}
 	
 	public function edit() {
-		//this is a popup that receives a post/get so we need to set the id
-		if(isset($_GET['VID'])) {
-			$vid = $_GET['VID'];
-		}
 		$vendor = $this->administration->getVendor($vid);
 		$vendor->TypeCode = 'VID';
 		$vendor->TypeID = $vid;

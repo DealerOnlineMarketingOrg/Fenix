@@ -32,8 +32,8 @@
                                     <input 
                                         type="radio" 
                                         name="phone" 
-                                        onclick="javascript:executePrimaryPhone('<?=$phone->PHONE_ID;?>','<?=$phone->DIRECTORY_ID;?>','<?=$phone->PHONE_Primary;?>')"
-                                        value="<?= $phone->DIRECTORY_ID; ?>:<?= $phone->PHONE_Primary; ?>" 
+                                        onclick="javascript:executePrimaryPhone('<?=$phone->PHONE_ID;?>','<?=$phone->OWNER_ID;?>','<?=$phone->PHONE_Primary;?>')"
+                                        value="<?= $phone->OWNER_ID; ?>:<?= $phone->PHONE_Primary; ?>" 
                                         <?= ($phone->PHONE_Primary != 0) ? 'checked' : ''; ?> />
                                 </td>
                                 <td width="80%"><?= $phone->PHONE_Number; ?></td>
@@ -77,8 +77,8 @@
                                     <input 
                                         type="radio" 
                                         name="email" 
-                                        onclick="javascript:executePrimaryEmail('<?=$email->EMAIL_ID;?>','<?=$email->DIRECTORY_ID;?>','<?=$email->EMAIL_Primary;?>')"
-                                        value="<?= $email->DIRECTORY_ID; ?>:<?= $email->EMAIL_Primary; ?>" 
+                                        onclick="javascript:executePrimaryEmail('<?=$email->EMAIL_ID;?>','<?=$email->OWNER_ID;?>','<?=$email->EMAIL_Primary;?>')"
+                                        value="<?= $email->OWNER_ID; ?>:<?= $email->EMAIL_Primary; ?>" 
                                         <?= ($email->EMAIL_Primary != 0) ? 'checked' : ''; ?> />
                                 </td>
                                 <td width="80%"><?= $email->EMAIL_Address; ?></td>

@@ -58,17 +58,15 @@ class System_contacts extends DOM_Model {
 			$address 		= (($this->getContactPhysicalAddresses($directory_info->did)) ? $this->getContactPhysicalAddresses($directory_info->did) : FALSE);
 			
 			$contact_info['directory'] = $directory_info;
-			$contact_info['phones'] = (!empty($phoneNumbers)) ? $phoneNumbers : FALSE;
-			$contact_info['address'] = (!empty($address)) ? $address : FALSE;
-			$contact_info['emails'] = (!empty($emails)) ? $emails : FALSE;
+			$contact_info['phones']    = (!empty($phoneNumbers)) ? $phoneNumbers : FALSE;
+			$contact_info['address']   = (!empty($address))      ? $address      : FALSE;
+			$contact_info['emails']    = (!empty($emails))       ? $emails       : FALSE;
 			
 			//return the info back to the caller
 			return (!empty($contact_info)) ? $contact_info : FALSE;
 		}else {
 			return FALSE;
 		}
-		
-		
 	}
 	
 	function getVendorDirectoryInfo($vid) {
@@ -88,7 +86,7 @@ class System_contacts extends DOM_Model {
 		//query using the active record codeigniter method
 		$query = $this->db->select('*')->
 				 from('PhoneNumbers')->
-				 where('DIRECTORY_ID',$did)->
+				 where('OWNER_ID',$did)->
 				 get();
 		
 		//we return the results back to the caller...if found return the object, if not return FALSE		 
@@ -132,7 +130,7 @@ class System_contacts extends DOM_Model {
 	function getContactEmailAddresses($did) {
 		$query = $this->db->select('*')->
 				 from('EmailAddresses')->
-				 where('DIRECTORY_ID',$did)->
+				 where('OWNER_ID',$did)->
 				 get();	
 				 
 		return ($query) ? $query->result() : FALSE;
@@ -152,7 +150,7 @@ class System_contacts extends DOM_Model {
 	function getContactPhysicalAddresses($did) {
 		$query = $this->db->select('*')->
 				 from('DirectoryAddresses')->
-				 where('DIRECTORY_ID',$did)->
+				 where('OWNER_ID',$did)->
 				 get();
 				 
 		return ($query) ? $query->result() : FALSE;	
@@ -302,7 +300,7 @@ class System_contacts extends DOM_Model {
 	}
 	
 	function updatePrimaryEmail($eid,$did,$primary) {
-		$reset_primary = 'UPDATE EmailAddresses SET EMAIL_Primary = "0" WHERE DIRECTORY_ID = "' . $did . '"';
+		$reset_primary = 'UPDATE EmailAddresses SET EMAIL_Primary = "0" WHERE OWNER_ID = "' . $did . '"';
 		$reset_query = $this->db->query($reset_primary);
 		if($reset_query) {
 			$sql = 'UPDATE EmailAddresses SET EMAIL_Primary = "' . $primary . '" WHERE EMAIL_ID = "' . $eid . '"';

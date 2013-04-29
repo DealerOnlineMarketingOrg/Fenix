@@ -555,8 +555,8 @@ class Administration extends CI_Model {
 			 	 ->join('Users_Info ui','ui.USER_ID = u.USER_ID','inner')
 			 	 ->join('xSystemAccess a','ui.ACCESS_ID = a.ACCESS_ID','inner')
 			 	 ->join('Directories d','ui.DIRECTORY_ID = d.DIRECTORY_ID','inner')
-				 ->join('PhoneNumbers p','ui.DIRECTORY_ID = p.DIRECTORY_ID','inner')
-				 ->join('EmailAddresses e','ui.DIRECTORY_ID = e.DIRECTORY_ID','inner')
+				 ->join('PhoneNumbers p','ui.DIRECTORY_ID = p.OWNER_ID','inner')
+				 ->join('EmailAddresses e','ui.DIRECTORY_ID = e.OWNER_ID','inner')
 			 	 ->join('Clients c','c.CLIENT_ID = ui.CLIENT_ID','inner')
 			 	 ->join('xTags t','t.TAG_ID = u.Team','inner')
 			 	 ->where('u.USER_ID',$id)->where('p.PHONE_Primary',1)->where('e.EMAIL_Primary',1)->get();
@@ -1226,6 +1226,10 @@ class Administration extends CI_Model {
 	}
 	
 	public function getVendor($id) {
+		
+		//$select = 'v.VENDOR_ID as ID,v.VENDOR_Name as VendorName,VENDOR_Notes as Notes,
+		
+		
 		$this->db->select('VENDOR_ID as ID,VENDOR_Name as Name,VENDOR_Address as Address,VENDOR_Phone as Phone,VENDOR_Notes as Notes,VENDOR_Active as Status,VENDOR_ActiveTS as LastUpdate,VENDOR_Created as Created');
 		$this->db->from('Vendors');
 		$this->db->where('VENDOR_ID',$id);

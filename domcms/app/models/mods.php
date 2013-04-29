@@ -8,6 +8,20 @@
 			$this->load->helper('query');
 		}
 		
+		public function getUsersModuleLevelByName($userMods,$q,$prm) {
+			if(!empty($userMods)) {
+				foreach($userMods as $module) {
+					if($module->MODULE_Name = $q) {
+						return TRUE;
+					}else {
+						return FALSE;	
+					}
+				}
+			}else {
+				return FALSE;	
+			}
+		}
+		
 		public function getModLevelByName($name) {
 			$sql = 'SELECT 
 					MODULE_Level as Level, 

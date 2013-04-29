@@ -287,11 +287,6 @@
     				<div id="websites" class="tab_content" style="display:none;">
                     	<?= (isset($websites)) ? $websites : ''; ?>
     				</div>
-                    <?php /*
-                    <div id="contactInfo" class="tab_content" style="display:none;">
-                    	<?= (isset($contactInfo)) ? $contactInfo : ''; ?>
-                    </div>
-					*/ ?>
                     <div id="loader" style="display:none;"><img src="<?= base_url() . THEMEIMGS; ?>loaders/loader2.gif" /></div>
     				<div class="fix"></div>
     			</div>	

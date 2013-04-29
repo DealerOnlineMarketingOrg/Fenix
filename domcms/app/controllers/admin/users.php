@@ -105,8 +105,8 @@ class Users extends DOM_Controller {
 		);
 		
 		$directory_update = array(
-			'DIRECTORY_Type'=>'CID:' . $form['dealership'],
-			'CLIENT_Owner'=>$form['dealership'],
+			'DIRECTORY_Type'=>3,
+			'OWNER_ID'=>$form['dealership'],
 			'DIRECTORY_Address'=>'street:' . $form['street'] . ',city:' . $form['city'] . ',state:' . $form['state'] . ',zipcode:' . $form['zipcode'],
 			'DIRECTORY_Tag'=>$form['team'],
 			'DIRECTORY_Email'=>'work:'.$form['username'],
@@ -336,7 +336,8 @@ class Users extends DOM_Controller {
 		$type = $this->input->post('type');	
 		
 		$data = array(
-			'DIRECTORY_ID'=>$did,
+			'OWNER_Type'=>3,
+			'OWNER_ID'=>$did,
 			'PHONE_Number'=>$number,
 			'PHONE_Type'=>$type,
 			'PHONE_Created'=>date('Y-m-d H:i:s'),
@@ -358,7 +359,8 @@ class Users extends DOM_Controller {
 		$type = $this->input->post('type');	
 		
 		$data = array(
-			'DIRECTORY_ID'=>$did,
+			'OWNER_Type'=>3,
+			'OWNER_ID'=>$did,
 			'EMAIL_Address'=>$email,
 			'EMAIL_Type'=>$type,
 			'EMAIL_Created'=>date('Y-m-d H:i:s'),
