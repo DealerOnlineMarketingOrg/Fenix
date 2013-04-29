@@ -33,8 +33,8 @@
                                         type="radio" 
                                         name="phone" 
                                         onclick="javascript:executePrimaryPhone('<?=$phone->PHONE_ID;?>','<?=$phone->OWNER_ID;?>','<?=$phone->PHONE_Primary;?>')"
-                                        value="<?= $phone->OWNER_ID; ?>:<?= $phone->PHONE_Primary; ?>" 
-                                        <?= ($phone->PHONE_Primary != 0) ? 'checked' : ''; ?> />
+                                        value="<?= $phone->PHONE_Number; ?>" 
+                                        <?= ($phone->PHONE_Primary != 0) ? 'checked' : ''; ?> class="change_primary_phone" />
                                 </td>
                                 <td width="80%"><?= $phone->PHONE_Number; ?></td>
                                 <td width="10%" class="actionsCol"><a title="Edit User Phone" href="javascript:editUserPhone('<?= $phone->PHONE_ID; ?>');" class="actions_link"><img src="<?= base_url() . THEMEIMGS; ?>icons/color/pencil.png" alt="" /></a></td>
@@ -78,8 +78,8 @@
                                         type="radio" 
                                         name="email" 
                                         onclick="javascript:executePrimaryEmail('<?=$email->EMAIL_ID;?>','<?=$email->OWNER_ID;?>','<?=$email->EMAIL_Primary;?>')"
-                                        value="<?= $email->OWNER_ID; ?>:<?= $email->EMAIL_Primary; ?>" 
-                                        <?= ($email->EMAIL_Primary != 0) ? 'checked' : ''; ?> />
+                                        value="<?= $email->EMAIL_Address; ?>" 
+                                        <?= ($email->EMAIL_Primary != 0) ? 'checked' : ''; ?> class="change_primary_email" />
                                 </td>
                                 <td width="80%"><?= $email->EMAIL_Address; ?></td>
                                 <td width="10%" style="text-align:center;"><a title="Edit User Email" href="javascript:editUserEmail('<?= $email->EMAIL_ID; ?>');" class="actions_link"><img src="<?= base_url() . THEMEIMGS; ?>icons/color/pencil.png" alt="" /></a></td>

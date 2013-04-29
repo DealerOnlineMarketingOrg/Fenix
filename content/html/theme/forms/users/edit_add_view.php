@@ -88,13 +88,13 @@
                                 <tr class="even">
                                     <td class="icon"><img src="<?= base_url(); ?>imgs/icons/dark/mail.png" alt="" /></td>
                                     <td class="info">
-                                        <span>Primary Email:</span><a href="mailto:'<?= $user->PrimaryEmail; ?>"><?= $user->PrimaryEmail; ?></a>
+                                        <span>Primary Email:</span><span id="priEmail"><a href="mailto:'<?= $user->PrimaryEmail; ?>"><?= $user->PrimaryEmail; ?></a></span>
                                      </td>
                                 </td>
                                 <tr class="odd">
                                     <td class="icon"><img src="<?= base_url(); ?>imgs/icons/dark/phone.png" alt="" /></td>
                                     <td class="info">
-                                       <span>Primary Phone:</span><a href="mailto:'<?= $user->PrimaryPhone;?>'"><?= $user->PrimaryPhone; ?></a>
+                                       <span>Primary Phone:</span><span id="priPhone"><?= $user->PrimaryPhone; ?></span>
                                 	</td>
                                 </td>
                             </table>
@@ -294,6 +294,17 @@
 		});
 	});
 	
+	$('.change_primary_email').click(function() {
+		var email = $(this).val();
+		$('span#priEmail').find('a').attr('href',email);
+		$('span#priEmail').find('a').text(email);
+	});
+	
+	$('.change_primary_phone').click(function() {
+		var phone = $(this).val();
+		$('span#priPhone').text(phone);
+	});
+	
 	function executePrimaryPhone(pid,did,pri) {
 		$.ajax({
 			type:'POST',
@@ -302,6 +313,7 @@
 			success:function(data) {
 				if(data == '1') {
 					jAlert('Primary Number has been changed','Success');
+					
 				}else {
 					jAlert('There was an error changing this number to your primary number. Please try again.','Error');	
 				}
