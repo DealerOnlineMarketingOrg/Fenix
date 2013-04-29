@@ -216,7 +216,7 @@
 									var formData = jQuery(this).serialize();
 									jQuery.ajax({
 										type:'POST',
-										url:'<?= ((isset($view)) ? '/admin/users/submit_user_edit_modules?uid=' . $user->ID : '/admin/users/submit_user_modules'); ?>',
+										url:'<?= ((!isset($view)) ? '/admin/users/submit_user_edit_modules?uid=' . $user->ID : '/admin/users/submit_user_modules'); ?>',
 										data:formData,
 										success:function(data) {
 											if(data == '1') {
