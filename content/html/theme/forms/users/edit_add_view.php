@@ -301,9 +301,9 @@
 			url:'/admin/users/update_primary_phone',
 			success:function(data) {
 				if(data == '1') {
-					jAlert('Primary Number has been changed');
+					jAlert('Primary Number has been changed','Success');
 				}else {
-					jAlert('There was an error changing this number to your primary number. Please try again.');	
+					jAlert('There was an error changing this number to your primary number. Please try again.','Error');	
 				}
 			}
 		});
@@ -316,9 +316,9 @@
 			url:'/admin/users/update_primary_email',
 			success:function(data) {
 				if(data == '1') {
-					jAlert('Primary Email has been changed');
+					jAlert('Primary Email has been changed','Success');
 				}else {
-					jAlert('There was an error changing this email to your primary email. Please try again.');	
+					jAlert('There was an error changing this email to your primary email. Please try again.','Error');	
 				}
 			}
 		});

@@ -286,7 +286,7 @@ class System_contacts extends DOM_Model {
 	}
 	
 	function updatePrimaryPhone($pid,$did,$primary) {
-		$reset_primary = 'UPDATE PhoneNumbers SET PHONE_Primary = "0" WHERE DIRECTORY_ID = "' . $did . '"';
+		$reset_primary = 'UPDATE PhoneNumbers SET PHONE_Primary = "0" WHERE OWNER_ID = "' . $did . '"';
 		$reset_query = $this->db->query($reset_primary);
 		if($reset_query) {
 			$sql = 'UPDATE PhoneNumbers SET PHONE_Primary = "' . $primary . '" WHERE PHONE_ID = "' . $pid . '"';
