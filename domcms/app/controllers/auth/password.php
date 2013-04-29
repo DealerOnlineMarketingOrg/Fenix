@@ -31,11 +31,11 @@ class Password extends CI_Controller {
 		$data = array(
 			'email' => $email
 		);
-		$this->load->view('themes/itsbrain/forms/auth/change_password',$data);	
+		$this->load->dom_view('forms/auth/change_password',FCPATH . 'html/theme/', $data);	
 	}
 	
 	public function loadResetPasswordForm() {
-		$this->load->view('themes/itsbrain/forms/auth/reset_password');	
+		$this->load->dom_view('forms/auth/reset_password',FCPATH . 'html/theme/');	
 	}
 	
 	public function processChangePassword() {

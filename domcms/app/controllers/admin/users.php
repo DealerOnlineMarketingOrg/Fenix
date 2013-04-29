@@ -8,7 +8,7 @@ class Users extends DOM_Controller {
     public function __construct() {
         parent::__construct();
         $this->load->model(array('members','administration','utilities'));
-        $this->load->helper(array('template','msg','html','file'));
+        $this->load->helper(array('template','msg','html','file','contactinfo'));
         $this->level = $this->user['DropdownDefault']->LevelType;
 		$this->activeNav = 'admin';
 		
@@ -132,6 +132,7 @@ class Users extends DOM_Controller {
 	}
 	
 	public function Edit() {
+		$this->load->model('system_contacts','syscontacts');
 		if(isset($_GET['UID'])) {
 			$uid = $_GET['UID'];
 		}
@@ -153,9 +154,25 @@ class Users extends DOM_Controller {
 			'allMods'=>$this->administration->getAllModules(),
 			'websites'=>WebsiteListingTable($uid, 'UID'),
 			'contact'=>$user,
-			'contactInfo'=>ContactInfoListingTable($user, 'UID', true),
+			'contactInfo'=>$this->syscontacts->getUserContactInfo($uid),
 		);
 		$this->load->dom_view('forms/users/edit_add_view', $this->theme_settings['ThemeViews'], $data);
+	}
+	
+	public function load_phone_table() {
+		$uid = $_GET['uid'];
+		$data = array(
+			'uid'=>$uid
+		);
+		$this->load->dom_view('pages/users/phone_listing',$this->theme_settings['ThemeViews'],$data);
+	}
+	
+	public function load_email_table() {
+		$uid = $_GET['uid'];
+		$data = array(
+			'uid'=>$uid
+		);
+		$this->load->dom_view('pages/users/email_listing',$this->theme_settings['ThemeViews'],$data);
 	}
 	
 	public function Edit_details_form() {
@@ -225,7 +242,133 @@ class Users extends DOM_Controller {
 		}
 	}
 	
+	public function Edit_phone_form() {
+		$this->load->model('system_contacts','syscontacts');
+		$pid = $_GET['pid'];
+		$phone = $this->syscontacts->getSingleContactPhoneNumber($pid);
+		$data = array(
+			'phone'=>$phone
+		);
+		//print_object($phones);
+		$this->load->dom_view('forms/users/edit_phone', $this->theme_settings['ThemeViews'], $data);	
+	}
+	
+	public function Add_phone_form() {
+		$this->load->model('system_contacts','syscontacts');
+		$did = $_GET['did'];
+		
+		$data = array(
+			'did'=>$did
+		);
+		//print_object($phones);
+		$this->load->dom_view('forms/users/add_phone', $this->theme_settings['ThemeViews'], $data);	
+	}
+	
+	public function Edit_email_form() {
+		$this->load->model('system_contacts','syscontacts');
+		$eid = $_GET['eid'];
+		$email = $this->syscontacts->getSingleContactEmailAddress($eid);
+		$data = array(
+			'email'=>$email
+		);
+		//print_object($phones);
+		$this->load->dom_view('forms/users/edit_email', $this->theme_settings['ThemeViews'], $data);	
+	}
+	
+	public function Update_primary_phone() {
+		$this->load->model('system_contacts','syscontacts');
+		$form = $this->input->post();
+		//$pid,$did,$primary
+		$reset_primary = $this->syscontacts->updatePrimaryPhone($form['phone_id'],$form['directory_id'],1);
+		
+		if($reset_primary) {
+			echo '1';	
+		}else {
+			echo '0';	
+		}
+	}
+	
+	public function Update_primary_email() {
+		$this->load->model('system_contacts','syscontacts');
+		$form = $this->input->post();
+		//$pid,$did,$primary
+		$reset_primary = $this->syscontacts->updatePrimaryEmail($form['email_id'],$form['directory_id'],1);
+		
+		if($reset_primary) {
+			echo '1';	
+		}else {
+			echo '0';	
+		}
+	}
+	
+	public function Update_phone_number() {
+		$this->load->model('system_contacts','syscontacts');
+		$pid = $this->input->post('phone_id');
+		$number = $this->input->post('number');
+		$type = $this->input->post('type');	
+		
+		$data = array(
+			'PHONE_Number'=>$number,
+			'PHONE_Type'=>$type
+		);
+				
+		$update = $this->syscontacts->updateSingleContactPhoneNumber($pid,$data);
+		if($update) {
+			echo '1';	
+		}else {
+			echo '0';
+		}
+	}
+	
+	public function Add_phone_number() {
+		$this->load->model('system_contacts','syscontacts');
+		$did = $_GET['did'];
+		$number = $this->input->post('number');
+		$type = $this->input->post('type');	
+		
+		$data = array(
+			'DIRECTORY_ID'=>$did,
+			'PHONE_Number'=>$number,
+			'PHONE_Type'=>$type,
+			'PHONE_Created'=>date('Y-m-d H:i:s'),
+			
+		);
+				
+		$add = $this->syscontacts->addSingleContactPhoneNumber($data);
+		if($add) {
+			echo '1';	
+		}else {
+			echo '0';
+		}
+	}
+	
+	public function Update_user_email() {
+		$this->load->model('system_contacts','syscontacts');
+		$eid = $this->input->post('email_id');
+		$email = $this->input->post('email');
+		$type = $this->input->post('type');	
+		
+		$data = array(
+			'EMAIL_Address'=>$email,
+			'EMAIL_Type'=>$type
+		);
+		
+		print_object($data);
+		
+		/*
+				
+		$update = $this->syscontacts->updateSingleEmailAddress($eid,$data);
+		if($update) {
+			echo '1';	
+		}else {
+			echo '0';
+		}
+		
+		*/
+	}
+	
 	public function View_popup() {
+		$this->load->model('system_contacts','syscontacts');
 		if(isset($_GET['UID'])) {
 			$uid = $_GET['UID'];
 		}
@@ -249,7 +392,7 @@ class Users extends DOM_Controller {
 			'allMods'=>$this->administration->getAllModules(),
 			'websites'=>WebsiteListingTable($uid, 'UID', false),
 			'contact'=>$user,
-			'contactInfo'=>ContactInfoListingTable($user, 'UID'),
+			'contactInfo'=>$this->syscontacts->getUserContactInfo($uid),
 		);
 		$this->load->dom_view('forms/users/edit_add_view', $this->theme_settings['ThemeViews'], $data);
 	}

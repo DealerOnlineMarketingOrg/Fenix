@@ -1,6 +1,6 @@
 <?php
 	if(isset($vendor)) {
-		$vendor->Address = mod_parser($vendor->Address);
+		$vendor->Address = (!empty($vendor->Address)) ? mod_parser($vendor->Address) : FALSE;
 	}
 ?>
 <div class="uDialog" style="text-align:left;">

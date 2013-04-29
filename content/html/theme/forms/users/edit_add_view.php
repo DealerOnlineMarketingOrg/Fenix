@@ -38,7 +38,7 @@
             	<ul class="tabs">
             		<li class="activeTab"><a href="javascript:void(0);" rel="userInfo">User Details</a></li>
                     <li><a href="javascript:void(0);" rel="websites">Websites</a></li>
-                    <?php /* <li><a href="javascript:void(0);" rel="contactInfo">Contact Info</a></li> */ ?>
+                     <li><a href="javascript:void(0);" rel="contactInfo">Contact Info</a></li>
                     <li><a href="javascript:void(0);" rel="modules">Modules</a></li>
             	</ul>
             	<div class="tab_container">
@@ -128,12 +128,76 @@
     				<div id="websites" class="tab_content" style="display:none;">
                     	<?= $websites; ?>
     				</div>
-                    <?php /*
                     <div id="contactInfo" class="tab_content" style="display:none;">
-						<?= $contactInfo; ?>
+						<style type="text/css">
+                            #contactInfo div.head {background:none;border:none;width:100%;margin:0 auto;}
+                            #contactInfo div.head h5 {width:115px;margin:0 auto;display:block;float:none;}
+                        </style>
+						<?php if(isset($view)) { ?>
+                            <?php if(!empty($contactInfo['phones'])) { ?>
+                                <div style="margin-top:10px;margin-bottom:20px;">
+                                    <div class="head"><h5 class="iPhone">Phone Numbers</h5></div>
+                                    <table cellpadding="0" cellspacing="0" width="100%" class="tableStatic" style="border:1px solid #d5d5d5;">
+                                        <thead>
+                                            <tr>
+                                                <td width="10%" style="text-align:left;padding-left:10px;">Type</td>
+                                                <td width="90%" colspan="2" style="text-align:left;padding-left:10px;">Phone Number</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($contactInfo['phones'] as $phone) { ?>
+                                                <tr>
+                                                    <td width="10%"><?= $phone->PHONE_Type; ?></td>
+                                                    <td width="80%"><?= $phone->PHONE_Number; ?></td>
+                                                    <td width="10%"><?= ($phone->PHONE_Primary != 0) ? 'Primary' : ''; ?></td>
+                                                </tr>
+                                            <?php } ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            <?php }else { ?>
+                                <div style="margin-top:10px;margin-bottom:0px;">
+                                    <div class="head"><h5 class="iPhone">Phone Numbers</h5></div>
+                                    <p class="noData" style="text-align:center;">No phone numbers found for this user.</p>
+                                </div>
+                            <?php } ?>
+                            <?php if(!empty($contactInfo['emails'])) { ?>
+                                <div style="margin-top:10px;margin-bottom:60px;">
+                                    <div class="head"><h5 class="iPhone">Email Addresses</h5></div>
+                                    <table cellpadding="0" cellspacing="0" width="100%" class="tableStatic" style="border:1px solid #d5d5d5;">
+                                        <thead>
+                                            <tr>
+                                                <td width="10%" style="text-align:left;padding-left:10px;">Type</td>
+                                                <td width="90%" colspan="2" style="text-align:left;padding-left:10px;">Email Address</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($contactInfo['emails'] as $email) { ?>
+                                                <tr>
+                                                    <td width="10%"><?= $email->EMAIL_Type; ?></td>
+                                                    <td width="80%"><?= $email->EMAIL_Address; ?></td>
+                                                    <td width="10%"><?= ($email->EMAIL_Primary != 0) ? 'Primary' : ''; ?></td>
+                                                </tr>
+                                            <?php } ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            <?php }else { ?>
+                                <div style="margin-top:10px;margin-bottom:60px;">
+                                    <div class="head"><h5 class="iPhone">Email Addressess</h5></div>
+                                    <p class="noData" style="text-align:center">No email addresses found for this user.</p>
+                                </div>
+                            <?php } ?>
+                        <?php }else { ?>
+                        	<div id="phone_table">
+								<?= LoadUserPhoneNumberTable(false,$user->ID); ?> 
+                            </div>
+                            <div id="email_table">
+                            	<?= LoadUserEmailAddresses(false,$user->ID); ?>
+                            </div>
+                        <?php } ?>                         
                     <div class="fix"></div>
                     </div>
-					*/ ?>
                     <div id="modules" class="tab_content" style="display:none;">
                     	<?php if(isset($view)) { ?>
                         	<?= ModulesToEvenlyDesignedTable($user->Modules); ?>
@@ -199,6 +263,9 @@
 <div id="addContactInfoEmailPop"></div>
 <div id="editContactInfoEmailPop"></div>
 
+<div id="UserPhonePop"></div>
+<div id="UserEmailPop"></div>
+
 <script type="text/javascript">
 
 	var $ = jQuery;
@@ -242,6 +309,115 @@
 			}
 		});
 	});
+	
+	function executePrimaryPhone(pid,did,pri) {
+		$.ajax({
+			type:'POST',
+			data:{phone_id:pid,directory_id:did,primary:pri},
+			url:'/admin/users/update_primary_phone',
+			success:function(data) {
+				if(data == '1') {
+					jAlert('Primary Number has been changed');
+				}else {
+					jAlert('There was an error changing this number to your primary number. Please try again.');	
+				}
+			}
+		});
+	}
+	
+	function executePrimaryEmail(eid,did,pri) {
+		$.ajax({
+			type:'POST',
+			data:{email_id:eid,directory_id:did,primary:pri},
+			url:'/admin/users/update_primary_email',
+			success:function(data) {
+				if(data == '1') {
+					jAlert('Primary Email has been changed');
+				}else {
+					jAlert('There was an error changing this email to your primary email. Please try again.');	
+				}
+			}
+		});
+	}
+	
+	function editUserPhone(pid) {
+		$.ajax({
+			type:'GET',
+			url:'/admin/users/edit_phone_form?pid='+pid,
+			success:function(data) {
+				if(data) {
+					//alert(data);
+					$('#UserPhonePop').html(data);
+				}
+			}
+		});
+	}
+	
+	function editUserEmail(eid) {
+		$.ajax({
+			type:'GET',
+			url:'/admin/users/edit_email_form?eid='+eid,
+			success:function(data) {
+				if(data) {
+					//alert(data);
+					$('#UserEmailPop').html(data);
+				}
+			}
+		});
+	}
+	
+	function addUserPhone(did) {
+		alert(did);
+		$.ajax({
+			type:'GET',
+			url:'/admin/users/add_phone_form?did='+did,
+			success:function(data) {
+				if(data) {
+					$('#UserPhonePop').html(data);	
+				}
+			}
+		});
+	}
+	
+	function addUserEmail(did) {
+		
+	}
+	
+	function load_phone_table() {
+		$('#loader_block').slideDown('fast',function() {
+			$('#editPhone').remove();
+			$('#phone_table').html('');
+			$.ajax({
+				type:'GET',
+				url:'/admin/users/load_phone_table?uid=<?= $user->ID; ?>',
+				success:function(data) {
+					if(data) {
+						$('#loader_block').slideUp('fast',function() {
+							$('#phone_table').html(data);	
+						});
+					}
+				}
+			});
+		})
+	}
+	
+	function load_email_table() {
+		$('#loader_block').slideDown('fast',function() {
+			$('#editEmail').remove();
+			$('#email_table').html('');
+			$.ajax({
+				type:'GET',
+				url:'/admin/users/load_email_table?uid=<?= $user->ID; ?>',
+				success:function(data) {
+					if(data) {
+						$('#loader_block').slideUp('fast',function() {
+							$('#email_table').html(data);	
+						});
+					}
+				}
+			});
+		})
+	}
 
 	$.mask.definitions['~'] = "[+-]";
 	$(".maskDate").mask("99/99/9999",{completed:function(){alert("Callback when completed");}});
@@ -296,8 +472,8 @@
 			if($('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addWebsiteBtn').is(':visible')) {
 				$('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addWebsiteBtn').addClass('hidden');
 			}
-			if($('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.savePrimariesBtn').hasClass('hidden')) {
-				$('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.savePrimariesBtn').removeClass('hidden');
+			if($('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.savePrimariesBtn').is(':visible')) {
+				$('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.savePrimariesBtn').addClass('hidden');
 			}
 		}
 		
@@ -336,11 +512,13 @@
 				},
 			<?php } ?>
 			<?php } ?>
+			<?php if(!isset($view)) { ?>
 				{
 					class:'redBtn hidden savePrimariesBtn',
 					text:"Save",
 					click:function() { updatePrimaries('<?= ($user) ? $user->ID : ''; ?>',$(".phonePrimary:checked").val(),$(".emailPrimary:checked").val())}
 				},
+			<?php } ?>
 		] 
 	});
 	

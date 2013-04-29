@@ -24,6 +24,131 @@ class System_contacts extends DOM_Model {
 		$this->load->model('administration','adminQueries');
     }
 	
+	//get user information from directory
+	function getUserDirectoryInfo($uid) {
+		//the where array, multiple where statements require the arguments to be presented from an array.
+		$where = array('OWNER_ID'=>$uid,'DIRECTORY_Type',3);
+		
+		//query using active record codeigniter method
+		$query = $this->db->select('DIRECTORY_ID as did,DIRECTORY_FirstName as FirstName,DIRECTORY_LastName as LastName,DIRECTORY_Tag as tid')->
+				 from('Directories')->
+				 where('OWNER_ID',$uid)->
+				 where('DIRECTORY_Type',3)->
+				 get();
+		
+		//we should only find one result because the user id is unique to the user so we only return the row()
+		//if we are returned a match we return the object back to the caller.
+		return ($query) ? $query->row() : FALSE;
+	}
+	
+	function getUserContactInfo($uid) {
+		//collection array
+		$contact_info = array();
+		
+		//directory information for the user
+		$directory_info = $this->getUserDirectoryInfo($uid);
+		
+		//if the directory information is found and results are returned
+		if(!empty($directory_info)) {
+			//users contact numbers
+			$phoneNumbers   = (($this->getContactPhoneNumbers($directory_info->did))      ? $this->getContactPhoneNumbers($directory_info->did)         : FALSE);
+			//users email addresses
+			$emails 	    = (($this->getContactEmailAddresses($directory_info->did))    ? $this->getContactEmailAddresses($directory_info->did)    : FALSE);
+			//users physical addresses
+			$address 		= (($this->getContactPhysicalAddresses($directory_info->did)) ? $this->getContactPhysicalAddresses($directory_info->did) : FALSE);
+			
+			$contact_info['directory'] = $directory_info;
+			$contact_info['phones'] = (!empty($phoneNumbers)) ? $phoneNumbers : FALSE;
+			$contact_info['address'] = (!empty($address)) ? $address : FALSE;
+			$contact_info['emails'] = (!empty($emails)) ? $emails : FALSE;
+			
+			//return the info back to the caller
+			return (!empty($contact_info)) ? $contact_info : FALSE;
+		}else {
+			return FALSE;
+		}
+		
+		
+	}
+	
+	function getVendorDirectoryInfo($vid) {
+		//the where array, multiple where statements require the arguments to be presented from an array.
+		$where = array('OWNER_ID'=>$vid,'DIRECTORY_Type',2);
+		
+		//query using the active record codeigniter method
+		$query = $this->db->select('d.DIRECTORY_FirstName as FirstName,d.DIRECTORY_LastName as LastName,d.DIRECTORY_Tag as tid')->where($where)->get();
+		
+		//we should only find one result because the vendor id is unique to the vendor so we only return the row()
+		//if we are returned a match we return the object back to the caller.
+		return ($query) ? $query->row() : FALSE;
+	}
+	
+	//get contact phone numbers as object (could be multiple, could be none or one)
+	function getContactPhoneNumbers($did) {
+		//query using the active record codeigniter method
+		$query = $this->db->select('*')->
+				 from('PhoneNumbers')->
+				 where('DIRECTORY_ID',$did)->
+				 get();
+		
+		//we return the results back to the caller...if found return the object, if not return FALSE		 
+		return ($query) ? $query->result() : FALSE;
+	}
+	
+	//get contact phone numbers as object (could be multiple, could be none or one)
+	function getSingleContactPhoneNumber($pid) {
+		//query using the active record codeigniter method
+		$query = $this->db->select('*')->
+				 from('PhoneNumbers')->
+				 where('PHONE_ID',$pid)->
+				 get();
+		
+		//we return the results back to the caller...if found return the object, if not return FALSE		 
+		return ($query) ? $query->row() : FALSE;
+	}
+	
+	//update the phone number in question with the changes the user made from the front end form.
+	function updateSingleContactPhoneNumber($pid,$data) {
+		$this->db->where('PHONE_ID',$pid);
+		return ($this->db->update('PhoneNumbers',$data)) ? TRUE : FALSE;
+	}
+	
+	//update the phone number in question with the changes the user made from the front end form.
+	function updateSingleEmailAddress($eid,$data) {
+		$this->db->where('EMAIL_ID',$eid);
+		return ($this->db->update('EmailAddresses',$data)) ? TRUE : FALSE;
+	}
+	
+	//get contact email addresses as object (could be multiple, could be none or one)
+	function getContactEmailAddresses($did) {
+		$query = $this->db->select('*')->
+				 from('EmailAddresses')->
+				 where('DIRECTORY_ID',$did)->
+				 get();	
+				 
+		return ($query) ? $query->result() : FALSE;
+	}
+	
+	//get contact email addresses as object (could be multiple, could be none or one)
+	function getSingleContactEmailAddress($eid) {
+		$query = $this->db->select('*')->
+				 from('EmailAddresses')->
+				 where('EMAIL_ID',$eid)->
+				 get();	
+				 
+		return ($query) ? $query->row() : FALSE;
+	}
+	
+	//get contact physical address as object (could be multiple, could be none or one)
+	function getContactPhysicalAddresses($did) {
+		$query = $this->db->select('*')->
+				 from('DirectoryAddresses')->
+				 where('DIRECTORY_ID',$did)->
+				 get();
+				 
+		return ($query) ? $query->result() : FALSE;	
+	}
+	
 	function getDefaultContacts() {
 		//empty container array
 		$contacts = array();
@@ -151,6 +276,34 @@ class System_contacts extends DOM_Model {
 		$sql = 'SELECT WEB_Vendor as VendorID FROM Websites WHERE OWNER_Type = "' . $type . '" AND OWNER_ID = "' . $oid . '";';
 		$query = $this->db->query($sql);
 		return ($query) ? $query->result() : FALSE;
+	}
+	
+	function updatePrimaryPhone($pid,$did,$primary) {
+		$reset_primary = 'UPDATE PhoneNumbers SET PHONE_Primary = "0" WHERE DIRECTORY_ID = "' . $did . '"';
+		$reset_query = $this->db->query($reset_primary);
+		if($reset_query) {
+			$sql = 'UPDATE PhoneNumbers SET PHONE_Primary = "' . $primary . '" WHERE PHONE_ID = "' . $pid . '"';
+			$query = $this->db->query($sql);
+			if($query) {
+				return TRUE;	
+			}
+		}else {
+			return FALSE;	
+		}
+	}
+	
+	function updatePrimaryEmail($eid,$did,$primary) {
+		$reset_primary = 'UPDATE EmailAddresses SET EMAIL_Primary = "0" WHERE DIRECTORY_ID = "' . $did . '"';
+		$reset_query = $this->db->query($reset_primary);
+		if($reset_query) {
+			$sql = 'UPDATE EmailAddresses SET EMAIL_Primary = "' . $primary . '" WHERE EMAIL_ID = "' . $eid . '"';
+			$query = $this->db->query($sql);
+			if($query) {
+				return TRUE;	
+			}
+		}else {
+			return FALSE;	
+		}
 	}
 }
 	

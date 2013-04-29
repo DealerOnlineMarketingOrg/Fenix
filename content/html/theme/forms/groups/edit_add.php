@@ -37,7 +37,7 @@
                             	<select class="chzn-select" name="agency" style="width:200px;">
                                 	<option value="">Select a Agency</option>
                                     <?php foreach($agencies as $agency) { ?>
-                                    	<?php if($agency->ID == $group->AgencyID) { ?>
+                                    	<?php if($agency->ID == $group->AgencyId) { ?>
                                         	<option selected="selected" value="<?= $agency->ID; ?>"><?= $agency->Name; ?></option>
                                         <?php }else { ?>
                                         	<option value="<?= $agency->ID; ?>"><?= $agency->Name; ?></option>

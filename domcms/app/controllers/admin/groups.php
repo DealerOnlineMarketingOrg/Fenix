@@ -46,11 +46,11 @@ class Groups extends DOM_Controller {
 			
 			//we need to change all the clients Status if we disable a group.
 			if($this->user['AccessLevel'] >= 600000 AND $group_data['status'] == '0') {
-				$client_change = $this->administration->clientGroupedStatus($gid);
+				$client_change = $this->administration->clientGroupedStatus($group_id);
 			}
 			//prepare the update
 			$edit_data = array(
-				'AGENCY_ID'=>$group_data['agency'],
+				'AGENCY_ID'=>$group_data['agency_id'],
 				'GROUP_Name'=>$group_data['name'],
 				'GROUP_Notes'=>$group_data['notes'],
 				'GROUP_Active'=>$group_data['status'],

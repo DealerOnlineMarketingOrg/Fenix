@@ -347,7 +347,7 @@
 			$.ajax({
 				type:'POST',
 				data:formData,
-				url:'<?= (($client) ? '/admin/clients/form?cid=' . $client->ClientID : '/admin/clients/form?gid=' . $this->user['DropdownDefault']->SelectedGroup); ?>',
+				url:'<?= ((isset($client)) ? '/admin/clients/form?cid=' . $client->ClientID : '/admin/clients/form?gid=' . $this->user['DropdownDefault']->SelectedGroup); ?>',
 				success:function(resp) {
 					if(resp == '1') {
 						if(formType == 'edit') {

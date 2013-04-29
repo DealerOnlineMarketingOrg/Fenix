@@ -921,7 +921,7 @@ function ModulesToEvenlyDesignedTableWithForm($mods,$user_id,$allMods) {
 	$table = '';
 	$cols = 4;
 	$i = 0;
-	$m = 1;
+	$m = 0;
 			
 	foreach($allMods as $module) {
 		

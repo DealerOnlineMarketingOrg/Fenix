@@ -1,0 +1,1 @@
+<?= LoadUserPhoneNumberTable(false,$uid); ?>
