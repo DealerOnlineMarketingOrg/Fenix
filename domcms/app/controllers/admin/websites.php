@@ -20,31 +20,31 @@ class Websites extends DOM_Controller {
 
 		if(isset($_POST['VID'])) {
 			$this->id = $_POST['VID'];
-			$this->type = 'VID';
+			$this->type = 2;
 		}elseif(isset($_GET['VID'])) {
 			$this->id = $_GET['VID'];
-			$this->type = 'VID';
+			$this->type = 2;
 		}
 		if(isset($_POST['CID'])) {
 			$this->id = $_POST['CID'];
-			$this->type = 'CID';
+			$this->type = 1;
 		}elseif(isset($_GET['CID'])) {
 			$this->id = $_GET['CID'];
-			$this->type = 'CID';
+			$this->type = 1;
 		}
 		if(isset($_POST['GID'])) {
 			$this->id = $_POST['GID'];
-			$this->type = 'GID';
+			$this->type = 8;
 		}elseif(isset($_GET['GID'])) {
 			$this->contact_id = $_GET['GID'];
-			$this->type = 'GID';
+			$this->type = 8;
 		}
 		if(isset($_POST['UID'])) {
 			$this->id = $_POST['UID'];
-			$this->type = 'UID';
+			$this->type = 3;
 		}elseif(isset($_GET['UID'])) {
 			$this->id = $_GET['UID'];
-			$this->type = 'UID';
+			$this->type = 3;
 		}
 	}
 	
@@ -169,9 +169,9 @@ class Websites extends DOM_Controller {
 			$this->id = $_GET[$this->type];
 			//get the right client info
 			switch ($this->type) {
-				case 'CID': $caller = $this->administration->getClient($this->id); break;
-				case 'GID': $caller = $this->administration->getContactByTypeID($this->type,$this->id); $caller->ID = $caller->ContactID; break;
-				case 'UID': $caller = $this->administration->getContactByTypeID($this->type,$this->id); $caller->ID = $caller->ContactID; break;
+				case 1: $caller = $this->administration->getClient($this->id); break;
+				case 8: $caller = $this->administration->getContactByTypeID($this->type,$this->id); $caller->ID = $caller->ContactID; break;
+				case 3: $caller = $this->administration->getContactByTypeID($this->type,$this->id); $caller->ID = $caller->ContactID; break;
 			}
 			//vendors are not associated per client
 			$vendors = $this->administration->getAllVendors();

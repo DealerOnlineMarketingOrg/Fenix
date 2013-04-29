@@ -354,7 +354,6 @@
 	
 	function addUserPhone(did) {
 		$('#addPhone').remove();
-		alert(did);
 		$.ajax({
 			type:'GET',
 			url:'/admin/users/add_phone_form?did='+did,
