@@ -88,29 +88,13 @@
                                 <tr class="even">
                                     <td class="icon"><img src="<?= base_url(); ?>imgs/icons/dark/mail.png" alt="" /></td>
                                     <td class="info">
-										<?php
-                                            // Locate primary.
-                                            foreach ($user->Email as $userEmail) foreach ($userEmail as $type => $email) {
-                                                if ($email == $user->PrimaryEmailType) {
-                                                    echo '<span>Primary Email:</span><a href="mailto:'.$email.'">'.$email.'</a>';
-                                                    break;
-                                                }
-                                            }
-                                        ?>
+                                        <span>Primary Email:</span><a href="mailto:'<?= $user->PrimaryEmail; ?>"><?= $user->PrimaryEmail; ?></a>
                                      </td>
                                 </td>
                                 <tr class="odd">
                                     <td class="icon"><img src="<?= base_url(); ?>imgs/icons/dark/phone.png" alt="" /></td>
                                     <td class="info">
-                                    	<?php
-                                            // Locate primary.
-                                            foreach ($user->Phone as $userPhone) foreach ($userPhone as $type => $phone) {
-                                                if ($phone == $user->PrimaryPhoneType) {
-                                                    echo '<span>Primary Phone:</span><a href="mailto:'.$phone.'">'.$phone.'</a>';
-                                                    break;
-                                                }
-                                            }
-                                        ?>
+                                       <span>Primary Phone:</span><a href="mailto:'<?= $user->PrimaryPhone;?>'"><?= $user->PrimaryPhone; ?></a>
                                 	</td>
                                 </td>
                             </table>
@@ -341,6 +325,7 @@
 	}
 	
 	function editUserPhone(pid) {
+		$('#editPhone').remove();
 		$.ajax({
 			type:'GET',
 			url:'/admin/users/edit_phone_form?pid='+pid,
@@ -354,6 +339,7 @@
 	}
 	
 	function editUserEmail(eid) {
+		$('#EditEmail').remove();
 		$.ajax({
 			type:'GET',
 			url:'/admin/users/edit_email_form?eid='+eid,
@@ -367,6 +353,7 @@
 	}
 	
 	function addUserPhone(did) {
+		$('#addPhone').remove();
 		alert(did);
 		$.ajax({
 			type:'GET',
@@ -380,10 +367,22 @@
 	}
 	
 	function addUserEmail(did) {
-		
+		$('#addEmail').remove();
+		$.ajax({
+			type:'GET',
+			url:'/admin/users/add_email_form?did='+did,
+			success:function(data) {
+				if(data) {
+					//alert(data);
+					$('#UserEmailPop').html(data);
+				}
+			}
+		});
 	}
 	
 	function load_phone_table() {
+		$('#addPhone').remove();
+		$('#editPhone').remove();
 		$('#loader_block').slideDown('fast',function() {
 			$('#editPhone').remove();
 			$('#phone_table').html('');
@@ -402,6 +401,8 @@
 	}
 	
 	function load_email_table() {
+		$('#addEmail').remove();
+		$('#EditEmail').remove();
 		$('#loader_block').slideDown('fast',function() {
 			$('#editEmail').remove();
 			$('#email_table').html('');

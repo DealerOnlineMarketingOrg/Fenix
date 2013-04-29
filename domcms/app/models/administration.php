@@ -396,9 +396,9 @@ class Administration extends CI_Model {
 				$clients = $this->db->query($csql)->result();
 				
 				foreach($clients as $client) :
-					$contactsClients = $this->getContactsByTypeID('CID', $client->CID);
-					$contactsGeneral = $this->getContactsByType('GID');
-					$contactsUsers = $this->getContactsByType('UID');
+					$contactsClients = $this->getContactsByTypeID(1, $client->CID);
+					$contactsGeneral = $this->getContactsByType(4);
+					$contactsUsers = $this->getContactsByType(3);
 					$contacts = array_merge_($contactsClients, $contactsGeneral);
 					$contacts = array_merge_($contacts, $contactsUsers);
 				endforeach; //end clients foreach
@@ -417,9 +417,9 @@ class Administration extends CI_Model {
 		$clients = $this->db->query($csql)->result();
 		
 		foreach($clients as $client) :
-			$contactsClients = $this->getContactsByTypeID('CID', $client->CID);
-			$contactsGeneral = $this->getContactsByType('GID');
-			$contactsUsers = $this->getContactsByType('UID');
+			$contactsClients = $this->getContactsByTypeID(1, $client->CID);
+			$contactsGeneral = $this->getContactsByType(4);
+			$contactsUsers = $this->getContactsByType(3);
 			$contacts = array_merge_($contactsClients, $contactsGeneral);
 			$contacts = array_merge_($contacts, $contactsUsers);
 		endforeach; //end clients foreach
@@ -427,36 +427,41 @@ class Administration extends CI_Model {
 		return $contacts;
 	}
 	
-	public function getAllContactsInClient($cid) {
-		$this->load->helper('phpext');
+	public function getAllContactsInClient($cid) {	
+		$contacts = array();
 	
-		$contactsClients = $this->getContactsByTypeID('CID', $cid);
-		$contactsGeneral = $this->getContactsByType('GID');
-		$contactsUsers = $this->getContactsByType('UID');
-		$contacts = array_merge_($contactsClients, $contactsGeneral);
-		$contacts = array_merge_($contacts, $contactsUsers);
+		$contactsClients = $this->getContactsByTypeID(1, $cid);
+		foreach($contactsClients as $c) { array_push($contacts,$c); }
+		
+		/*
+		$contactsGeneral = $this->getContactsByType(4);
+		foreach($contactsGeneral as $cg) { array_push($contacts,$cg); }
+		
+		$contactsUsers = $this->getContactsByType(3);
+		foreach($contactsUsers as $u) { array_push($contacts,$u); }
+		*/
 	
 		return $contacts;
 	}
 	
 	public function getContactsByType($type) {
 		$contacts = $this->getContacts($type, false);
-		return $contacts->result();
+		return $contacts;
 	}
 	
 	public function getContactsByTypeID($type, $id) {
 		$contacts = $this->getContacts($type, $id);
-		return $contacts->result();
+		return $contacts;
 	}
 
 	public function getContactByTypeID($type, $id) {
 		$contact = $this->getContacts($type, $id);
-		return $contact->row();
+		return $contact;
 	}
 	
 	public function getContact($id) {
 		$contact = $this->getContacts(false, $id);
-		return $contact->row();
+		return $contact;
 	}
 	
 	private function getContacts($type = false, $id = false) {
@@ -484,21 +489,25 @@ class Administration extends CI_Model {
 				t.TAG_ClassName as Tag,
 				d.DIRECTORY_Notes as Notes
 				FROM Directories d
-				LEFT OUTER JOIN Clients c ON c.CLIENT_ID = '.((strtolower($type) == 'cid') ? $id : 'd.CLIENT_Owner').'
+				LEFT OUTER JOIN Clients c ON c.CLIENT_ID = d.OWNER_ID
 				LEFT OUTER JOIN xTags t on c.CLIENT_Tag = t.TAG_ID
-				LEFT OUTER JOIN Vendors v ON v.VENDOR_ID = '.((strtolower($type) == 'vid') ? $id : 'd.DIRECTORY_Type').'
+				LEFT OUTER JOIN Vendors v ON v.VENDOR_ID = d.OWNER_ID AND d.DIRECTORY_Type = 2
 				INNER JOIN xTitles ti on d.TITLE_ID = ti.TITLE_ID ';
 				// If both $type and $id, $id refers to $type.
 				if ($type && $id)
-					$sql .= 'WHERE d.DIRECTORY_Type = "'.$type.':'.$id.'" ';
+					$sql .= 'WHERE d.DIRECTORY_Type = '.$type . ' AND d.OWNER_ID = ' . $id;
 				elseif ($type)
-					$sql .= 'WHERE d.DIRECTORY_Type LIKE "'.$type.':%" ';
+					$sql .= 'WHERE d.DIRECTORY_Type ='.$type;
 				// If just $id, $id refers to the directory id.
 				elseif ($id)
-					$sql .= 'WHERE d.DIRECTORY_ID = '.$id.' ';
+					$sql .= 'WHERE d.OWNER_ID = '.$id.' ';
 				
 		$contacts = $this->db->query($sql);
-		return $contacts;
+		if($contacts) { 
+			return $contacts->result();
+		}else {
+			return FALSE;	
+		}
 	}
 	
 	public function addContact($data) {
@@ -523,9 +532,11 @@ class Administration extends CI_Model {
 					d.DIRECTORY_LastName as LastName,
 					d.DIRECTORY_Address as Address,
 					d.DIRECTORY_Email as Emails,
-					d.DIRECTORY_Primary_Email as PrimaryEmailType,
+					e.EMAIL_Address as PrimaryEmail,
+					e.EMAIL_Type as PrimaryEmailType,
+					p.PHONE_Number as PrimaryPhone,
+					p.PHONE_Type as PrimaryPhoneType,
 					d.DIRECTORY_Phone as Phones,
-					d.DIRECTORY_Primary_Phone as PrimaryPhoneType,
 					d.DIRECTORY_Notes as Notes,
 					d.TITLE_ID as TitleID,
 					a.ACCESS_NAME as AccessName,
@@ -538,15 +549,17 @@ class Administration extends CI_Model {
 					t.TAG_Name as TeamName,
 					t.TAG_ClassName as ClassName,
 					t.TAG_Color as Color";
-		
+					
 		$query = $this->db->select($selects)
 			 	 ->from('Users u')
 			 	 ->join('Users_Info ui','ui.USER_ID = u.USER_ID','inner')
 			 	 ->join('xSystemAccess a','ui.ACCESS_ID = a.ACCESS_ID','inner')
 			 	 ->join('Directories d','ui.DIRECTORY_ID = d.DIRECTORY_ID','inner')
+				 ->join('PhoneNumbers p','ui.DIRECTORY_ID = p.DIRECTORY_ID','inner')
+				 ->join('EmailAddresses e','ui.DIRECTORY_ID = e.DIRECTORY_ID','inner')
 			 	 ->join('Clients c','c.CLIENT_ID = ui.CLIENT_ID','inner')
 			 	 ->join('xTags t','t.TAG_ID = u.Team','inner')
-			 	 ->where('u.USER_ID',$id)->get();
+			 	 ->where('u.USER_ID',$id)->where('p.PHONE_Primary',1)->where('e.EMAIL_Primary',1)->get();
 		
 		return ($query) ? $query->row() : FALSE;
 	}

@@ -15,7 +15,7 @@
 	 	$contactInfo = $ci->syscontacts->getUserContactInfo($uid)
 		?>
 		<?php if(!empty($contactInfo['phones'])) { ?>
-            <div style="margin-top:10px;margin-bottom:10px;">
+            <div style="margin-top:10px;margin-bottom:30px;">
                 <div class="head"><h5 class="iPhone">Phone Numbers</h5></div>
                 <table cellpadding="0" cellspacing="0" width="100%" class="tableStatic" style="border:1px solid #d5d5d5;">
                     <thead>
@@ -50,7 +50,7 @@
             </div>
         <?php } ?>
         <?php if(!$view) {?>
-            <a href="javascript:addUserPhone('<?= $contactInfo['directory']->did; ?>');" class="greenBtn floatRight button" style="position:relative;z-index:1000;">Add New Phone Number</a>
+            <a href="javascript:addUserPhone('<?= $contactInfo['directory']->did; ?>');" class="greenBtn floatRight button" style="margin-top:-20px;">Add New Phone Number</a>
         <? } ?>
 	<? }
 	

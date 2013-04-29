@@ -114,6 +114,15 @@ class System_contacts extends DOM_Model {
 	}
 	
 	//update the phone number in question with the changes the user made from the front end form.
+	function addSingleContactPhoneNumber($data) {
+		return ($this->db->insert('PhoneNumbers',$data)) ? TRUE : FALSE;
+	}
+	
+	function addSingleEmailAddress($data) {
+		return ($this->db->insert('EmailAddresses',$data)) ? TRUE : FALSE;	
+	}
+	
+	//update the phone number in question with the changes the user made from the front end form.
 	function updateSingleEmailAddress($eid,$data) {
 		$this->db->where('EMAIL_ID',$eid);
 		return ($this->db->update('EmailAddresses',$data)) ? TRUE : FALSE;

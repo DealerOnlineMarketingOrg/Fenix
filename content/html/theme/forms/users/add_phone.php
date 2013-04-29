@@ -1,5 +1,5 @@
 <div class="uDialog" style="text-align:left;">
-    <div class="dialog-message popper" id="addPhone" title="Edit Phone Number">
+    <div class="dialog-message popper" id="addPhone" title="Add Phone Number">
         <div class="uiForm" style="text-align:left;">
 			<style type="text/css">
 				#addPhone label, #addPhone label{margin-top:0px;float:left;padding-top:12px;}
@@ -35,7 +35,7 @@
                         <div class="rowElem noborder">
                             <label>Phone Number</label>
                             <div class="formRight">
-                                <input id="phoneNumber" name="number" type="text" class="validate[required,custom[phone]] maskPhoneExt" value="<?= $phone->PHONE_Number; ?>" />
+                                <input id="phoneNumber" name="number" type="text" class="validate[required,custom[phone]] maskPhoneExt" value="" />
                                 <span class="formNote">(888) 888-8888 x888</span>
                             </div>
                             <div class="fix"></div>
@@ -72,6 +72,8 @@
 				}else {
 					jAlert('The phone number failed to update. Please try again.');
 				}
+				
+				
 			}
 		});
 	});
@@ -85,8 +87,8 @@
 		modal: true,
 		buttons: [
 			{
-				class:'redBtn',
-				text:'Save',
+				class:'greenBtn',
+				text:'Add',
 				click:function() {$('#addPhoneNumberForm').submit();}
 			},
 		] 

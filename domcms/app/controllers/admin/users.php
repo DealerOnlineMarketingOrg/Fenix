@@ -141,8 +141,6 @@ class Users extends DOM_Controller {
 		$user->ContactID = $user->DirectoryID;
 		$user->Address = mod_parser($user->Address);
 		$user->CompanyAddress = mod_parser($user->CompanyAddress);
-		$user->Email = mod_parser($user->Emails,false,true);
-		$user->Phone = mod_parser($user->Phones,false,true);
 		$user->Modules = ParseModulesInReadableArray($user->Modules);
 		$avatar = $this->members->get_user_avatar($user->ID);
 		$user->TypeCode = substr($user->UserType,0,3);
@@ -264,6 +262,17 @@ class Users extends DOM_Controller {
 		$this->load->dom_view('forms/users/add_phone', $this->theme_settings['ThemeViews'], $data);	
 	}
 	
+	public function Add_email_form() {
+		$this->load->model('system_contacts','syscontacts');
+		$did = $_GET['did'];
+		
+		$data = array(
+			'did'=>$did
+		);
+		//print_object($phones);
+		$this->load->dom_view('forms/users/add_email', $this->theme_settings['ThemeViews'], $data);	
+	}
+	
 	public function Edit_email_form() {
 		$this->load->model('system_contacts','syscontacts');
 		$eid = $_GET['eid'];
@@ -333,7 +342,7 @@ class Users extends DOM_Controller {
 			'PHONE_Created'=>date('Y-m-d H:i:s'),
 			
 		);
-				
+	
 		$add = $this->syscontacts->addSingleContactPhoneNumber($data);
 		if($add) {
 			echo '1';	
@@ -341,6 +350,29 @@ class Users extends DOM_Controller {
 			echo '0';
 		}
 	}
+	
+	public function Add_user_email() {
+		$this->load->model('system_contacts','syscontacts');
+		$did = $_GET['did'];
+		$email = $this->input->post('email');
+		$type = $this->input->post('type');	
+		
+		$data = array(
+			'DIRECTORY_ID'=>$did,
+			'EMAIL_Address'=>$email,
+			'EMAIL_Type'=>$type,
+			'EMAIL_Created'=>date('Y-m-d H:i:s'),
+			
+		);
+	
+		$add = $this->syscontacts->addSingleEmailAddress($data);
+		if($add) {
+			echo '1';	
+		}else {
+			echo '0';
+		}
+	}
+
 	
 	public function Update_user_email() {
 		$this->load->model('system_contacts','syscontacts');
@@ -353,9 +385,6 @@ class Users extends DOM_Controller {
 			'EMAIL_Type'=>$type
 		);
 		
-		print_object($data);
-		
-		/*
 				
 		$update = $this->syscontacts->updateSingleEmailAddress($eid,$data);
 		if($update) {
@@ -364,7 +393,6 @@ class Users extends DOM_Controller {
 			echo '0';
 		}
 		
-		*/
 	}
 	
 	public function View_popup() {

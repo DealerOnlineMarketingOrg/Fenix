@@ -64,8 +64,6 @@
 			url:'/admin/users/update_user_email',
 			data:formData,
 			success:function(data) {
-				alert(data);
-				/*
 				if(data == '1') {
 					jAlert('The phone number was updated successfully!',function() {
 						load_phone_table();
@@ -73,7 +71,6 @@
 				}else {
 					jAlert('The phone number failed to update. Please try again.');
 				}
-				*/
 			}
 		});
 	});
