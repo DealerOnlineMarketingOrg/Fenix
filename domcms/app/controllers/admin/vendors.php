@@ -119,21 +119,11 @@ class Vendors extends DOM_Controller {
 	}
 	
 	public function view() {
-		if(isset($_GET['VID'])) {
-			$vid = $_GET['VID'];
-		}
-		
-		$vendor = $this->administration->getVendor($vid);
-		$vendor->ContactID = $vendor->ID;
-		$vendor->Phone = (isset($vendor->Phone)) ? mod_parser($vendor->Phone,false,true) : false;
+		$vendor = $this->administration->getVendors($_GET['vid']);
 		$data = array(
-			'vendor'=>$vendor,
-			'contacts'=>true,
-			'websites'=>WebsiteListingTable($vid, 'VID'),
-			'contactInfo'=>ContactInfoListingTable($vendor, 'VID', true),
-			'view'=>true
+			'vendor'=>$vendor[0],
 		);	
-		$this->load->dom_view('forms/vendors/add_edit_view', $this->theme_settings['ThemeViews'],$data);
+		$this->load->dom_view('forms/vendors/view', $this->theme_settings['ThemeViews'],$data);
 	}
 	
 	public function remove($which) {
