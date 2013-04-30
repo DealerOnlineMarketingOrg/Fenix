@@ -614,6 +614,8 @@ function VendorListingTable($hide_actions=false,$hide_add=false) { ?>
 		
 		$vendors = $ci->administration->getVendors();
 		
+		//print_object($vendors);
+		
     ?>
     
     <?php if($addPriv AND (!$hide_add OR !$hide_actions)) { ?>
@@ -633,13 +635,25 @@ function VendorListingTable($hide_actions=false,$hide_add=false) { ?>
                 </tr>
             </thead>
             <tbody>
-                <?php foreach($vendors as $vendor) { $vendor->Address = ($vendor->Address != '') ? mod_parser($vendor->Address) : FALSE; ?>
+                <?php foreach($vendors as $vendor) { ?>
                     <tr>
                         <td class="noWrap" style="text-align:left;"><?= $vendor->Name; ?></td>
                         <td class="noWrap">
-                            <?= ($vendor->Address) ? $vendor->Address['street'] . ' ' . $vendor->Address['city'] . ', ' . $vendor->Address['state'] . ' ' . $vendor->Address['zipcode'] : '...'; ?>
+                        	<?php if(isset($vendor->Addresses)) { ?>
+								<?php foreach($vendor->Addresses as $address) {
+                                    echo (($address->ADDRESS_Primary) ? $address->ADDRESS_Street . ' ' . $address->ADDRESS_City . ', ' . $address->ADDRESS_State . ' ' . $address->ADDRESS_Zip : '');
+                                }?>
+                            <?php }else { ?>
+                            	<span>...</span>
+                            <?php } ?>
                         </td>
-                        <td class="noWrap"><?= ($vendor->Phone != '') ? $vendor->Phone : '...'; ?></td>
+                        <td class="noWrap">
+                        	<?php if(isset($vendor->Phones)) : 
+								foreach($vendor->Phones as $phone) { 
+									echo (($phone->PHONE_Primary) ? $phone->PHONE_Number : '');
+								}
+							endif; ?>
+                        </td>
                         <?php if($editPriv AND !$hide_actions) { ?>
                             <td class="actionsCol noWrap" style="width:75px;">
                                 <a title="Edit Group" href="javascript:editVendor('<?= $vendor->ID; ?>');" class="actions_link">
@@ -1423,9 +1437,26 @@ function showStates($selected = '',$disabled=false) {
     $ci->load->model('utilities');
     $states = $ci->utilities->getStates();
 	if(!$disabled) {
-    	$options = '<select data-placeholder="Choose a State..." class="chzn-select" style="width:350px;" name="state">';
+    	$options = '<select placeholder="Choose a State..." class="chzn-select" style="width:350px;" name="state">';
 	}else {
-    	$options = '<select data-placeholder="Choose a State..." class="chzn-select" style="width:350px;" name="state" disabled>';
+    	$options = '<select placeholder="Choose a State..." class="chzn-select" style="width:350px;" name="state" disabled>';
+	}
+	$options .= '<option value=""></option>';
+    foreach ($states as $state) {
+        $options .= '<option value="' . $state->Abbrev . '"' .(($selected == $state->Abbrev) ? ' selected' : '') . '>' . $state->Name . '</option>';
+    }
+    $options .= '</select>';
+
+    return $options;
+}
+function showStatesArray($selected = '',$disabled=false, $id) {
+    $ci =& get_instance();
+    $ci->load->model('utilities');
+    $states = $ci->utilities->getStates();
+	if(!$disabled) {
+    	$options = '<select placeholder="Choose a State..." class="chzn-select" style="width:350px;" name="address[' . $id . '][state]">';
+	}else {
+    	$options = '<select placeholder="Choose a State..." class="chzn-select" style="width:350px;" name="address[' . $id . '][state]" disabled>';
 	}
 	$options .= '<option value=""></option>';
     foreach ($states as $state) {
@@ -1440,7 +1471,7 @@ function popUpStates($selected = false) {
     $ci->load->model('utilities');
     $states = $ci->utilities->getStates();
 
-    $options = '<div style="text-align:left;" class="noSearch"><select data-placeholder="Choose a State..." class="chzn-select" style="text-align:left;float:left;" name="state">';
+    $options = '<div style="text-align:left;" class="noSearch"><select placeholder="Choose a State..." class="chzn-select" style="text-align:left;float:left;" name="state">';
 	$options .= '<option value=""></option>';
     foreach ($states as $state) {
         $options .= '<option ' . (($selected AND $selected == $state->Abbrev) ? 'selected="selected"' : '') . ' value="' . $state->Abbrev . '">' . $state->Name . '</option>';

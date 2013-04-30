@@ -29,16 +29,93 @@ class Vendors extends DOM_Controller {
 	}
 	
 	public function edit() {
-		$vendor = $this->administration->getVendor($vid);
-		$vendor->TypeCode = 'VID';
-		$vendor->TypeID = $vid;
+		$vendor = $this->administration->getVendors($_GET['vid']);
+		
 		$data = array(
-			'vendor' => $vendor,
-			'contacts'=>true,
-			'websites'=>WebsiteListingTable($vid, 'VID'),
-			'contactInfo'=>ContactInfoListingTable($vendor, 'VID', true),
+			'vendor' => $vendor[0],
 		);
 		$this->load->dom_view('forms/vendors/add_edit_view', $this->theme_settings['ThemeViews'],$data);
+	}
+	
+	public function edit_vendor() {
+		$this->vid = $_GET['vid'];
+		$vendor = $this->input->post();
+		$vendor_update = array(
+			'VENDOR_ID'=>$this->vid,
+			'VENDOR_Name' => $vendor['name'],
+			'VENDOR_Notes' => $vendor['notes'],
+			'VENDOR_Active'=>1
+		);
+		
+		if(!isset($vendor['newPhone'])) {
+			$phonePrimary = array();
+			foreach($vendor['phone'] as $key => $value) {
+				$phones = array(
+					'PHONE_Primary' => (isset($value['primary']) ? 1 : 0),
+					'PHONE_Type' => $value['type'],
+					'PHONE_Number'=>$value['number'],
+					'PHONE_ID'=>$key
+				);
+				
+				array_push($phonePrimary,$phones);
+			}
+		}else {
+			$phonePrimary = array(
+				array(
+					'PHONE_Primary' => 1,
+					'PHONE_Type'=>$vendor['phone']['new']['type'],
+					'PHONE_Number'=>$vendor['phone']['new']['number'],
+					'OWNER_Type'=>2,
+					'OWNER_ID'=>$this->vid,
+					'PHONE_Created'=>date('Y-m-d H:i:s')
+				)
+			);
+		}
+		
+		if(!isset($vendor['newAddress'])) {
+			$addressPrimary = array();
+			foreach($vendor['address'] as $key => $value) {
+				$address = array(
+					'ADDRESS_Primary' => (isset($value['primary']) ? 1 : 0),
+					'ADDRESS_Type' => $value['type'],
+					'ADDRESS_Street'=>$value['street'],
+					'ADDRESS_City'=>$value['city'],
+					'ADDRESS_State'=>$value['state'],
+					'ADDRESS_Zip'=>$value['zip'],
+					'ADDRESS_ID'=>$key
+				);	
+				
+				array_push($addressPrimary,$address);
+			}
+		}else {
+			$addressPrimary = array(
+				array(
+					'ADDRESS_Primary'=>1,
+					'OWNER_ID'=>$this->vid,
+					'OWNER_Type'=>2,
+					'ADDRESS_Type'=>$vendor['address']['new']['type'],
+					'ADDRESS_Street'=>$vendor['address']['new']['street'],
+					'ADDRESS_City'=>$vendor['address']['new']['city'],
+					'ADDRESS_State'=>$vendor['address']['new']['state'],
+					'ADDRESS_Zip'=>$vendor['address']['new']['zip'],
+					'ADDRESS_Created'=>date('Y-m-d H:i:s')
+				)
+			);	
+		}
+		
+		$vendor_update = array(
+			'Vendors'=>$vendor_update,
+			'PhoneNumbers'=>$phonePrimary,
+			'DirectoryAddresses'=>$addressPrimary
+		);
+		
+		$update = $this->administration->updateVendorPhonesAddresses($vendor_update);
+		
+		if($update) {
+			echo '1';	
+		}else {
+			echo '0';	
+		}
 	}
 	
 	public function view() {

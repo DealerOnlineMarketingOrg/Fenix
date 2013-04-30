@@ -330,27 +330,42 @@ class Administration extends CI_Model {
 		return ($query) ? $query->result() : FALSE;
 	}
 	
-	public function addNewUser($user,$directory,$userinfo) {
+	public function addNewUser($user) {
 		$this->load->helper('pass');
 		$this->load->helper('msg');
 		$this->load->model('members');
 		//Insert user
-		$user_insert = $this->db->insert('Users',$user);
+		$user_insert = $this->db->insert('Users',$user['Users']);
 		//grab the user id after the insert has taken place
 		$user_id = $this->db->insert_id();
+		
+		//Add the owner id to all tables
+		$user['Directories']['OWNER_ID'] = $user_id;
+		$user['DirectoryAddresses']['OWNER_ID'] = $user_id;
+		$user['EmailAddresses']['OWNER_ID'] = $user_id;
+		
+		
 		//insert the directory entry
-		$directory_insert = $this->db->insert('Directories',$directory);
+		$directory_insert = $this->db->insert('Directories',$user['Directories']);
+		
 		//grab the directory id after the insert has taken place
 		$directory_id = $this->db->insert_id();
+		
+		$address_insert = $this->db->insert('DirectoryAddresses',$user['DirectoryAddresses']);
+		$address_id = $this->db->insert_id();
+		
+		$email_insert = $this->db->insert('EmailAddresses',$user['EmailAddresses']);
+		$email_id = $this->db->insert_id();
+		
 		//if both the user and directory has been inserted successfully we need to create the user info entry
-		if($user_insert && $directory_insert) {
+		if($user_insert && $directory_insert && $email_insert) {
 			//create a random string for the password
 			$password = createRandomString();
 			//add more data because we know more....
-			$userinfo['USER_ID'] = $user_id;
-			$userinfo['DIRECTORY_ID'] = $directory_id;
-			$userinfo['USER_Password'] = encrypt_password($password);
-			$ui_insert = $this->db->insert('Users_Info',$userinfo);
+			$user['Users_Info']['USER_ID'] = $user_id;
+			$user['Users_Info']['DIRECTORY_ID'] = $directory_id;
+			$user['Users_Info']['USER_Password'] = encrypt_password($password);
+			$ui_insert = $this->db->insert('Users_Info',$user['Users_Info']);
 			if($ui_insert) {
 				$subject = 'Welcome to the Dealer Online Marketing Content Management System';
 				$msg = email_new_user($user['USER_Name'],$password);
@@ -1192,17 +1207,116 @@ class Administration extends CI_Model {
 		return $this->db->update('Passwords',$data);
 	}
 	
-	public function getVendors() {
-		$this->db->select('VENDOR_ID as ID,VENDOR_Name as Name,VENDOR_Address as Address,VENDOR_Phone as Phone,VENDOR_Notes as Notes,VENDOR_Active as Status,VENDOR_ActiveTS as LastUpdate,VENDOR_Created as Created');
-		$this->db->from('Vendors');
-		$query = $this->db->get();
-		
-		if($query) {
-			return $query->result();
+	public function getVendorContactInfo($tableName, $vid) {
+		$query = $this->db->select('*')->from($tableName)->where('OWNER_Type',2)->where('OWNER_ID',$vid)->get();
+		return ($query) ? $query->result() : FALSE;
+	}
+	
+	public function getVendors($id = false) {
+		//my collection array
+		$myVendors = array();
+		//active directory query
+		$this->db->select('v.VENDOR_ID as ID,v.VENDOR_Name as Name,v.VENDOR_Notes as Notes,v.VENDOR_Active as Status')->from('Vendors v');
+		if($id) {
+			$this->db->where('v.VENDOR_ID',$id);	
+		}
+		$vendorQuery = $this->db->get();
+		//if we have vendors in the db 
+		if($vendorQuery) {
+			//the result of the query to a array of objects
+			$vendors = $vendorQuery->result();
+			//each vendor looped 
+			foreach($vendors as $vendor) {
+				$vendor->Phones = $this->getVendorContactInfo('PhoneNumbers',$vendor->ID);
+				$vendor->Emails = $this->getVendorContactInfo('EmailAddresses',$vendor->ID);
+				$vendor->Addresses = $this->getVendorContactInfo('DirectoryAddresses',$vendor->ID);
+				//push each vendor with added indexes into the collection array to return back to the controller
+				array_push($myVendors,$vendor);
+			}
+			
+			return $myVendors;
 		}else {
-			return FALSE;
+			return FALSE;	
+		}
+	}
+	
+	public function updateVendorPhonesAddresses($data) {
+		$vendors = $data['Vendors'];
+		$phones  = $data['PhoneNumbers'];
+		$address = $data['DirectoryAddresses'];
+		
+		$updateVendors = $this->updateVendor($vendors);
+		$updatePhones  = $this->updateVendorPhones($phones);
+		$updateAddress = $this->updateVendorAddress($address);
+		
+		if($updateVendors AND $updatePhones AND $updateAddress) {
+			return TRUE;	
+		}else {
+			return FALSE;	
+		}
+	}
+	
+	public function updateVendor($data) {
+		$this->db->where('VENDOR_ID',$data['VENDOR_ID']);
+		return ($this->db->update('Vendors',$data)) ? TRUE : FALSE;
+	}
+	
+	public function updateVendorPhones($data) {
+		$array_return = array();
+		foreach($data as $phones) {
+			if(isset($phones['PHONE_ID'])) {
+				$this->db->where('PHONE_ID',$phones['PHONE_ID']);
+				if($this->db->update('PhoneNumbers',$phones)) {
+					array_push($array_return,1);	
+				}else {
+					array_push($array_return,2);	
+				}
+			}else {
+				if($this->db->insert('PhoneNumbers',$phones)) {
+					array_push($array_return,1);	
+				}else {
+					array_push($array_return,2);	
+				}
+			}
 		}
 		
+		$check = '1';
+		foreach($array_return as $return) {
+			if($return != 1) {
+				$check .= '1';
+			}
+		}
+		
+		return ($check != 1) ? FALSE : TRUE;
+	}
+	
+	public function updateVendorAddress($data) {
+		$array_return = array();
+		foreach($data as $add) {
+			if(isset($add['ADDRESS_ID'])) {
+				$this->db->where('ADDRESS_ID',$add['ADDRESS_ID']);
+				if($this->db->update('DirectoryAddresses',$add)) {
+					array_push($array_return,1);	
+				}else {
+					array_push($array_return,2);	
+				}
+			}else {
+				if($this->db->insert('DirectoryAddresses',$add)) {
+					array_push($array_return,1);	
+				}else {
+					array_push($array_return,2);	
+				}
+			}
+		}
+		
+		$check = '1';
+		foreach($array_return as $return) {
+			if($return != 1) {
+				$check .= '1';
+			}
+		}
+		
+		return ($check != 1) ? FALSE : TRUE;
 	}
 
 	public function hasVendor($vendorName) {

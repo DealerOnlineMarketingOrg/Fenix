@@ -106,12 +106,29 @@ class Users extends DOM_Controller {
 		
 		$directory_update = array(
 			'DIRECTORY_Type'=>3,
-			'OWNER_ID'=>$form['dealership'],
-			'DIRECTORY_Address'=>'street:' . $form['street'] . ',city:' . $form['city'] . ',state:' . $form['state'] . ',zipcode:' . $form['zipcode'],
-			'DIRECTORY_Tag'=>$form['team'],
-			'DIRECTORY_Email'=>'work:'.$form['username'],
-			'DIRECTORY_Primary_Email'=>$form['username']
-			
+			'DIRECTORY_FirstName'=>$form['first_name'],
+			'DIRECTORY_LastName'=>$form['last_name']
+		);
+		
+		$address_update = array(
+			'OWNER_Type' => 3,
+			'ADDRESS_Street' => $form['street'],
+			'ADDRESS_City'=>$form['city'],
+			'ADDRESS_State'=>$form['state'],
+			'ADDRESS_Zip'=>$form['zipcode'],
+			'ADDRESS_Type'=>'Home',
+			'ADDRESS_Active'=>1,
+			'ADDRESS_Primary'=>1,
+			'ADDRESS_Created'=>date('Y-m-d H:i:s')
+		);
+		
+		$email_update = array(
+			'OWNER_Type'=>3,
+			'EMAIL_Address' => $form['username'],
+			'EMAIL_Primary' => 1,
+			'EMAIL_Type' => 'Work',
+			'EMAIL_Active' => 1,
+			'EMAIL_Created' => date('Y-m-d H:i:s')
 		);
 		
 		$user_info_update = array(
@@ -122,7 +139,15 @@ class Users extends DOM_Controller {
 			'USER_Generated'=>1,
 		);
 		
-		$add_user = $this->administration->addNewUser($user_update,$directory_update,$user_info_update);
+		$data = array(
+			'Users'=>$user_update,
+			'Directories'=>$directory_update,
+			'DirectoryAddresses'=>$address_update,
+			'EmailAddresses'=>$email_update,
+			'Users_Info'=>$user_info_update
+		);
+		
+		$add_user = $this->administration->addNewUser($data);
 		
 		if($add_user) {
 			echo '1';	

@@ -31,6 +31,19 @@
                                 </select>
                             </div>
                         </div>
+                        <div class="rowElem noborder">
+                        	<label><span class="req">*</span> Name</label>
+                            <div class="formRight">
+                            	<div style="float:left;width:49%;margin-right:5px;">
+                                	<input type="text" class="required validate[required]" name="first_name" value="" id="firstName" />
+                                    <span class="formNote">First Name</span>
+                                </div>
+                                <div style="float:left;width:49%;margin-right:5px;">
+                                	<input type="text" class="required validate[required]" name="last_name" value="" id="lastName" />
+                                    <span class="formNote">Last Name</span>
+                                </div>
+                            </div>
+                        </div>
                     	<div class="rowElem noborder noSearch">
                         	<label><span class="req">*</span> Client</label>
                             <div class="formRight">
@@ -69,7 +82,7 @@
                             </div>
                             <div class="fix"></div>
                         </div>
-                    	<div class="rowElem noborder noSearch">
+                    	<div class="rowElem noborder">
                         	<label>State</label>
                             <div class="formRight">
                             	<?= showStates(); ?>
@@ -94,6 +107,7 @@
 <script type="text/javascript">
 
 	var $ = jQuery;
+	
 	
 	$('.tagChanger').change(function() {
 		var ele = $(this).find('option:selected');
