@@ -16,6 +16,7 @@ class Clients extends DOM_Controller {
         $this->load->helper('template');
         $this->load->helper('string_parser');
 		$this->load->model('administration');
+		$this->load->helper('websites');
 
         $this->agency_id = $this->user['DropdownDefault']->SelectedAgency;
         $this->group_id = $this->user['DropdownDefault']->SelectedGroup;

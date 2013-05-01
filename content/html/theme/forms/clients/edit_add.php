@@ -284,9 +284,11 @@
 			           </fieldset>
     				<?= form_close(); ?>
     				</div>
-    				<div id="websites" class="tab_content" style="display:none;">
-                    	<?= (isset($websites)) ? $websites : ''; ?>
-    				</div>
+                     <?php if(isset($websites)) { ?>
+                     <div id="websites" class="tab_content" style="display:none;">
+                     	<?= WebsiteListingTable($client->ClientID,1,true); ?>
+                     </div>
+                     <?php } ?>
                     <div id="loader" style="display:none;"><img src="<?= base_url() . THEMEIMGS; ?>loaders/loader2.gif" /></div>
     				<div class="fix"></div>
     			</div>	

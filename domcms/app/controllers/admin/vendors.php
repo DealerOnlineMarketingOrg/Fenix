@@ -171,10 +171,13 @@ class Vendors extends DOM_Controller {
 	}
 	
 	public function view() {
+		$this->load->helper('websites');
 		$vendor = $this->administration->getVendors($_GET['vid']);
+		
 		$data = array(
-			'vendor'=>$vendor[0],
-		);	
+			'vendor' => $vendor[0],
+			'websites'=>true,
+		);
 		$this->load->dom_view('forms/vendors/view', $this->theme_settings['ThemeViews'],$data);
 	}
 	

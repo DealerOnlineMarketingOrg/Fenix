@@ -2,9 +2,9 @@
     <div class="dialog-message popper" id="viewVendor" title="View Vendor Details">
         <div class="uiForm">
 			<style type="text/css">
-				#editVendor label{margin-top:0px;float:left;padding-top:12px;}
+				#viewVendor label{margin-top:0px;float:left;padding-top:12px;}
 				div.formError{z-index:2000 !important;}
-				#editVendor .chzn-container,textarea{margin-top:12px;}
+				#viewVendor .chzn-container,textarea{margin-top:12px;}
 				#editVendor div.widget {margin-top:0;padding-top:0;margin-bottom:10px;}
 				div.rowElem table.tableStatic tr{border-left:1px solid #d5d5d5;border-right:1px solid #d5d5d5;}
 				div.rowElem table.tableStatic tr.last{border-left:none;border-right:none;}
@@ -20,9 +20,12 @@
 				div.rowElem textarea {overflow: hidden; word-wrap: break-word; resize: horizontal; height: 112px;}
 			</style>
             
-            <div class="widget">
+            <div class="widget" style="margin-top:0;">
             	<ul class="tabs">
             		<li class="activeTab"><a href="javascript:void(0);" rel="vendorInfo">Vendor Details</a></li>
+                    <?php if(isset($websites)) { ?>
+                    	<li><a href="javascript:void(0);" rel="websites">Websites</a></li>
+                    <?php } ?>
             	</ul>
             	<div class="tab_container">
             		<div id="vendorInfo" class="tab_content">
@@ -160,6 +163,11 @@
                             </fieldset>
                         <?= form_close(); ?>
                      </div>
+                     <?php if(isset($websites)) { ?>
+                     <div id="websites" class="tab_content" style="display:none;">
+                     	<?= WebsiteListingTable($vendor->ID,2,false); ?>
+                     </div>
+                     <?php } ?>
                   </div>
                 <div class="fix"></div>			       
             </div> <? //end widget ?>
@@ -180,7 +188,68 @@
 	$(".maskPhone").mask("(999) 999-9999");
 	$(".maskPhoneExt").mask("(999) 999-9999? x99999");
 
+	$('ul.tabs li a').live('click',function() {
+		//remove all activetabs
+		$('ul.tabs').find('li.activeTab').removeClass('activeTab');
+		$(this).parent().addClass('activeTab');
+		var content = 'div#' + $(this).attr('rel');
+		
+		$('#viewVendor div.tab_container div.tab_content').hide();
+		$('#viewVendor div.tab_container').find(content).css({'display':'block'});
+		
+		var activeContent = $(this).attr('rel');
+		
+		//alert(activeContent);
+		
+		<?php if(!isset($view)) { ?>
+				
+		if(activeContent == 'contacts') {
+			if($('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addContactBtn').hasClass('hidden')) {
+				$('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addContactBtn').removeClass('hidden');
+			}
+			if($('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addWebsiteBtn').is(':visible')) {
+				$('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addWebsiteBtn').addClass('hidden');
+			}
+			if($('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addVendor').is(':visible')) {
+				$('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addVendor').addClass('hidden');
+			}
+			if($('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.saveVendor').is(':visible')) {
+				$('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.saveVendor').addClass('hidden');
+			}
+		}
+		
+		if(activeContent == 'websites') {
+			if($('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addContactBtn').is(':visible')) {
+				$('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addContactBtn').addClass('hidden');
+			}
+			if($('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addWebsiteBtn').hasClass('hidden')) {
+				$('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addWebsiteBtn').removeClass('hidden');
+			}
+			if($('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addVendor').is(':visible')) {
+				$('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addVendor').addClass('hidden');
+			}
+			if($('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.saveVendor').is(':visible')) {
+				$('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.saveVendor').addClass('hidden');
+			}
+		}
+		
+		if(activeContent == 'vendorInfo') {
+			if($('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addContactBtn').is(':visible')) {
+				$('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addContactBtn').addClass('hidden');
+			}
+			if($('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addWebsiteBtn').is(':visible')) {
+				$('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addWebsiteBtn').addClass('hidden');
+			}
+			if($('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addVendor').hasClass('hidden')) {
+				$('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addVendor').removeClass('hidden');
+			}
+			if($('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.saveVendor').hasClass('hidden')) {
+				$('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.saveVendor').removeClass('hidden');
+			}
+		}
+		<?php } ?>
 
+	});
 	$('#VendorForm').submit(function(e) {
 		e.preventDefault();
 	});
