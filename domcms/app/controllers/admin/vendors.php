@@ -25,7 +25,54 @@ class Vendors extends DOM_Controller {
 	
 	public function add() {
 		//were loading this page on a popup
-		$this->load->dom_view('forms/vendors/add_edit_view', $this->theme_settings['ThemeViews']);
+		$this->load->dom_view('forms/vendors/add', $this->theme_settings['ThemeViews']);
+	}
+	
+	public function add_new_vendor() {
+		$vendor = $this->input->post();
+		$vendor_update = array(
+			'VENDOR_Name' => $vendor['name'],
+			'VENDOR_Notes' => $vendor['notes'],
+			'VENDOR_Active'=>1
+		);
+		if(!empty($vendor['phone'])) {
+			$phonePrimary = array(
+				'PHONE_Primary' => 1,
+				'PHONE_Type'=>$vendor['phone']['type'],
+				'PHONE_Number'=>$vendor['phone']['number'],
+				'OWNER_Type'=>2,
+				'PHONE_Created'=>date('Y-m-d H:i:s')
+			);
+		}
+		if(!empty($vendor['address'])) {
+			$addressPrimary = array(
+				'ADDRESS_Primary'=>1,
+				'OWNER_Type'=>2,
+				'ADDRESS_Type'=>$vendor['address']['type'],
+				'ADDRESS_Street'=>$vendor['address']['street'],
+				'ADDRESS_City'=>$vendor['address']['city'],
+				'ADDRESS_State'=>$vendor['address']['state'],
+				'ADDRESS_Zip'=>$vendor['address']['zip'],
+				'ADDRESS_Created'=>date('Y-m-d H:i:s')
+			);
+		}
+		
+		$data['Vendors'] = $vendor_update;
+		if(isset($addressPrimary)) {
+			$data['DirectoryAddresses'] = $addressPrimary;	
+		}
+		
+		if(isset($phonePrimary)) {
+			$data['PhoneNumbers'] = $phonePrimary;	
+		}
+		
+		$add = $this->administration->addNewVendor($data);
+		if($add) {
+			return TRUE;	
+		}else {
+			return FALSE;	
+		}
+		
 	}
 	
 	public function edit() {

@@ -1449,14 +1449,22 @@ function showStates($selected = '',$disabled=false) {
 
     return $options;
 }
-function showStatesArray($selected = '',$disabled=false, $id) {
+function showStatesArray($selected = '',$disabled=false, $id = false) {
     $ci =& get_instance();
     $ci->load->model('utilities');
     $states = $ci->utilities->getStates();
 	if(!$disabled) {
-    	$options = '<select placeholder="Choose a State..." class="chzn-select" style="width:350px;" name="address[' . $id . '][state]">';
+		if($id) {
+    		$options = '<select placeholder="Choose a State..." class="chzn-select" style="width:350px;" name="address[' . $id . '][state]">';
+		}else {
+    		$options = '<select placeholder="Choose a State..." class="chzn-select" style="width:350px;" name="address[state]">';
+		}
 	}else {
-    	$options = '<select placeholder="Choose a State..." class="chzn-select" style="width:350px;" name="address[' . $id . '][state]" disabled>';
+		if($id) {
+    		$options = '<select placeholder="Choose a State..." class="chzn-select" style="width:350px;" name="address[' . $id . '][state]" disabled>';
+		}else {
+    		$options = '<select placeholder="Choose a State..." class="chzn-select" style="width:350px;" name="address[state]" disabled>';
+		}
 	}
 	$options .= '<option value=""></option>';
     foreach ($states as $state) {

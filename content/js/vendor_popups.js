@@ -3,7 +3,7 @@
 var $ = jQuery;
 
 function addVendor() {
-	$('#editVendor').remove();
+	$('#addVendor').remove();
 	$('#loader_block').slideDown('fast',function() {
 		$.ajax({
 			type:'GET',

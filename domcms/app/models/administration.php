@@ -1212,6 +1212,7 @@ class Administration extends CI_Model {
 		return ($query) ? $query->result() : FALSE;
 	}
 	
+	
 	public function getVendors($id = false) {
 		//my collection array
 		$myVendors = array();
@@ -1240,6 +1241,32 @@ class Administration extends CI_Model {
 		}
 	}
 	
+	public function addNewVendor($data) {
+		$insert = $this->db->insert('Vendors',$data['Vendors']);
+		if($insert) {
+			$vid = $this->db->insert_id();
+			$addPhone = $this->addNewVendorPhoneAddress($data['Vendors'],$vid);
+			$addAddress = $this->addNewVendorAddress($data['DirectoryAddresses'],$vid);
+			if($addPhone AND $addAddress) {
+				return TRUE;	
+			}else {
+				return FALSE;	
+			}
+		}else {
+			return FALSE;	
+		}
+	}
+	
+	public function addNewVendorPhoneAddress($data,$id) {
+		$data['OWNER_ID'] = $id;
+		return ($this->db->insert('PhoneAddress',$data)) ? TRUE : FALSE;
+	}
+	
+	public function addNewVendorAddress($data,$id) {
+		$data['OWNER_ID'] = $id;
+		return ($this->db->insert('DirectoryAddresses',$data)) ? TRUE : FALSE;
+	}
+
 	public function updateVendorPhonesAddresses($data) {
 		$vendors = $data['Vendors'];
 		$phones  = $data['PhoneNumbers'];
