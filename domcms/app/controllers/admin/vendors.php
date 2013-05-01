@@ -33,7 +33,8 @@ class Vendors extends DOM_Controller {
 		$vendor_update = array(
 			'VENDOR_Name' => $vendor['name'],
 			'VENDOR_Notes' => $vendor['notes'],
-			'VENDOR_Active'=>1
+			'VENDOR_Active'=>1,
+			'VENDOR_Created'=>date('Y-m-d H:i:s'),
 		);
 		if(!empty($vendor['phone'])) {
 			$phonePrimary = array(
@@ -66,11 +67,13 @@ class Vendors extends DOM_Controller {
 			$data['PhoneNumbers'] = $phonePrimary;	
 		}
 		
+		
 		$add = $this->administration->addNewVendor($data);
+		
 		if($add) {
-			return TRUE;	
+			echo '1';	
 		}else {
-			return FALSE;	
+			echo '0';	
 		}
 		
 	}

@@ -1245,8 +1245,8 @@ class Administration extends CI_Model {
 		$insert = $this->db->insert('Vendors',$data['Vendors']);
 		if($insert) {
 			$vid = $this->db->insert_id();
-			$addPhone = $this->addNewVendorPhoneAddress($data['Vendors'],$vid);
-			$addAddress = $this->addNewVendorAddress($data['DirectoryAddresses'],$vid);
+			$addPhone = (isset($data['PhoneNumbers'])) ? $this->addNewVendorPhoneNumber($data['PhoneNumbers'],$vid) : FALSE;
+			$addAddress = (isset($data['DirectoryAddresses'])) ? $this->addNewVendorAddress($data['DirectoryAddresses'],$vid) : FALSE;
 			if($addPhone AND $addAddress) {
 				return TRUE;	
 			}else {
@@ -1257,9 +1257,9 @@ class Administration extends CI_Model {
 		}
 	}
 	
-	public function addNewVendorPhoneAddress($data,$id) {
+	public function addNewVendorPhoneNumber($data,$id) {
 		$data['OWNER_ID'] = $id;
-		return ($this->db->insert('PhoneAddress',$data)) ? TRUE : FALSE;
+		return ($this->db->insert('PhoneNumbers',$data)) ? TRUE : FALSE;
 	}
 	
 	public function addNewVendorAddress($data,$id) {

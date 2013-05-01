@@ -639,7 +639,7 @@ function VendorListingTable($hide_actions=false,$hide_add=false) { ?>
                     <tr>
                         <td class="noWrap" style="text-align:left;"><?= $vendor->Name; ?></td>
                         <td class="noWrap">
-                        	<?php if(isset($vendor->Addresses)) { ?>
+                        	<?php if(isset($vendor->Addresses) AND (!empty($vendor->Addresses))) { ?>
 								<?php foreach($vendor->Addresses as $address) {
                                     echo (($address->ADDRESS_Primary) ? $address->ADDRESS_Street . ' ' . $address->ADDRESS_City . ', ' . $address->ADDRESS_State . ' ' . $address->ADDRESS_Zip : '');
                                 }?>
@@ -648,7 +648,7 @@ function VendorListingTable($hide_actions=false,$hide_add=false) { ?>
                             <?php } ?>
                         </td>
                         <td class="noWrap">
-                        	<?php if(isset($vendor->Phones)) : 
+                        	<?php if(isset($vendor->Phones) AND (!empty($vendor->Phones))) : 
 								foreach($vendor->Phones as $phone) { 
 									echo (($phone->PHONE_Primary) ? $phone->PHONE_Number : '');
 								}
