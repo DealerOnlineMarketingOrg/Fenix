@@ -188,7 +188,7 @@ class Clients extends DOM_Controller {
 				'client' => $client,
 				'html' => $html,
 				'tags'=>$tags,
-				'websites'=>WebsiteListingTable($client_id, 'CID'),
+				'websites'=>true,
 				'contacts'=>false,
 			);
 			//THIS IS THE DEFAULT VIEW FOR ANY BASIC FORM.
@@ -242,7 +242,7 @@ class Clients extends DOM_Controller {
 				'client' => $client,
 				'html' => $html,
 				'tags'=>$tags,
-				'websites'=>WebsiteListingTable($client_id, 'CID', false),
+				'websites'=>true,
 				'contacts'=>true,
 				'contactInfo'=>ContactInfoListingTable($client, 'CID'),
 			);

@@ -1236,7 +1236,7 @@ function ContactInfoListingTable($contact, $type, $edit = false) {
 					$fragment .= '<tr>
 						<td width="10%">'.ucwords($type).'</td>
 						<td width="80%">'.$phone.'</td>
-						<td width="10%">'.((($contact->PrimaryPhoneType) == $phone) ? 'Primary' : '').'</td>
+						<td width="10%">'.(((isset($contact->PrimaryPhoneType)) == $phone) ? 'Primary' : '').'</td>
 					</tr>';
 					}
 				$fragment .= '</tbody>
@@ -1258,7 +1258,7 @@ function ContactInfoListingTable($contact, $type, $edit = false) {
 					$fragment .= '<tr>
 						<td width="10%">'.ucwords($type).'</td>
 						<td width="80%">'.$email.'</td>
-						<td width="10%">'.((($contact->PrimaryEmailType) == $email) ? 'Primary' : '').'</td>
+						<td width="10%">'.(((isset($contact->PrimaryEmailType)) == $email) ? 'Primary' : '').'</td>
 					</tr>';
 					}
 				$fragment .= '</tbody>

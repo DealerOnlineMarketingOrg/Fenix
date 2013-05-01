@@ -7,7 +7,7 @@ class Domwebsites extends DOM_Model {
     }
 	
 	public function getWebsite($web_id) {
-		$sql = 'SELECT WEB_ID as ID, OWNER_ID as OwnerID,OWNER_Type as OwnerType,WEB_Url as URL,WEB_Notes as Notes,WEB_GoogleUACode as GoogleUACode,WEB_GoogleWebToolsMetaCode as GoogleWebToolsMetaCode,WEB_GooglePlusCode as GooglePlusCode,WEB_BingCode as BingCode,WEB_YahooCode as YahooCode,WEB_GlobalScript as GlobalScript,WEB_CallTrackingCode as CallTrackingCode,WEB_GoogleUA_Universal as GoogleUAUniversal,WEB_GoogleUA_Universal_Name as GoogleUAUniversalName FROM Websites WHERE WEB_ID = "' . $web_id . '"';
+		$sql = 'SELECT WEB_ID as ID, OWNER_ID as OwnerID,OWNER_Type as OwnerType,WEB_Url as URL,WEB_Notes as Notes,WEB_GoogleUACode as GoogleUACode,WEB_GoogleWebToolsMetaCode as GoogleWebToolsMetaCode,WEB_GooglePlusCode as GooglePlusCode,WEB_BingCode as BingCode,WEB_YahooCode as YahooCode,WEB_GlobalScript as GlobalScript,WEB_CallTrackingCode as CallTrackingCode,WEB_GoogleUA_Universal as GoogleUAUniversal,WEB_GoogleUA_Universal_Name as GoogleUAUniversalName, WEB_Vendor as VendorID FROM Websites WHERE WEB_ID = "' . $web_id . '"';
 		$query = $this->db->query($sql);
 		return (($query) ? $query->row() : FALSE);
 	}

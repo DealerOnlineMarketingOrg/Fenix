@@ -11,13 +11,12 @@
             <div class="widget" style="margin-top:0;padding-top:0;margin-bottom:10px;">
             	<ul class="tabs">
             		<li class="activeTab"><a href="javascript:void(0);" rel="clientInfo">Client Details</a></li>
-                    <?php if(isset($websites)) { ?>
+                    <?php if($websites) { ?>
                     <li><a href="javascript:void(0);" rel="websites">Websites</a></li>
-                    <?php } 
-					/*
+                    <?php }  /*
 					if(isset($contacts)) { ?>
             		<li><a href="javascript:void(0);" rel="contactInfo">Contacts</a></li>
-                    <?php } */ ?>
+                    <?php } */  ?>
             	</ul>
             	<div class="tab_container">
             		<div id="clientInfo" class="tab_content">
@@ -286,7 +285,7 @@
     				</div>
                      <?php if(isset($websites)) { ?>
                      <div id="websites" class="tab_content" style="display:none;">
-                     	<?= WebsiteListingTable($client->ClientID,1,true); ?>
+                     	<?= WebsiteListingTable($client->ClientID,1,((isset($view)) ? false : true)); ?>
                      </div>
                      <?php } ?>
                     <div id="loader" style="display:none;"><img src="<?= base_url() . THEMEIMGS; ?>loaders/loader2.gif" /></div>
