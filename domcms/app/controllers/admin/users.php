@@ -8,7 +8,7 @@ class Users extends DOM_Controller {
     public function __construct() {
         parent::__construct();
         $this->load->model(array('members','administration','utilities'));
-        $this->load->helper(array('template','msg','html','file','contactinfo'));
+        $this->load->helper(array('template','msg','html','file','contactinfo','websites'));
         $this->level = $this->user['DropdownDefault']->LevelType;
 		$this->activeNav = 'admin';
 		

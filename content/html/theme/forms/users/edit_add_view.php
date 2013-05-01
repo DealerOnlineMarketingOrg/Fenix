@@ -3,8 +3,10 @@
         <div class="uiForm">
 			<style type="text/css">
 				#editUser label{margin-top:0px;float:left;padding-top:12px;}
+				form#editWeb div.rowElem label,form#web div.rowElem label{margin-top:0!important;padding-top:0 !important;}
 				div.formError{z-index:2000 !important;}
 				#editUser .chzn-container,textarea{margin-top:12px;}
+				#websites .chzn-container{margin-top:12px;}
 				div.tab_content div.title {border:1px solid #d5d5d5;padding:5px;margin-bottom:5px;background:url('<?= base_url(); ?>imgs/leftNavBg.png') repeat-x scroll 0 0 transparent;}
 				div.tab_content div.title h5{padding-left:30px;margin-top:3px;}
 				div.tab_content div.profileRight{margin-left:130px;}
@@ -110,7 +112,7 @@
                         <?php } ?>
     				</div>
     				<div id="websites" class="tab_content" style="display:none;">
-                    	<?= $websites; ?>
+                    	<?= WebsiteListingTable($user->ID,3,((isset($view)) ? false : true)); ?>
     				</div>
                     <div id="contactInfo" class="tab_content" style="display:none;">
 						<style type="text/css">
@@ -520,7 +522,7 @@
 				{
 					class:'greenBtn hidden addWebsiteBtn',
 					text:"Add New Website",
-					click:function() { addWebsiteForm('<?= ($user) ? $user->TypeID : ''; ?>','<?= $user->TypeCode; ?>')}
+					click:function() { addWebsiteForm('<?= $user->ID;?>',3)}
 				},
 			<?php } ?>
 			<?php } ?>

@@ -469,7 +469,7 @@
 				{
 					class:'greenBtn hidden addWebsiteBtn',
 					text:"Add New Website",
-					click:function() { addWebsiteForm('<?= ($client) ? $client->TypeID : ''; ?>','<?= $client->TypeCode; ?>')}
+					click:function() { addWebsiteForm('<?= $client->ClientID;?>',1)}
 				}, <?php } ?>
 			<?php } ?>
 			<?php if(GateKeeper('Contact_Add',$this->user['AccessLevel'])) { ?>
