@@ -79,12 +79,14 @@ class Vendors extends DOM_Controller {
 	}
 	
 	public function edit() {
+		$this->load->helper('websites');
 		$vendor = $this->administration->getVendors($_GET['vid']);
 		
 		$data = array(
 			'vendor' => $vendor[0],
+			'websites'=>true,
 		);
-		$this->load->dom_view('forms/vendors/add_edit_view', $this->theme_settings['ThemeViews'],$data);
+		$this->load->dom_view('forms/vendors/edit', $this->theme_settings['ThemeViews'],$data);
 	}
 	
 	public function edit_vendor() {

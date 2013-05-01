@@ -1,6 +1,1 @@
-<?php
-	if (isset($id)) {
-		echo WebsiteListingTable($id,$type,$actions,$isVendor);
-	} else
-		echo WebsiteListingTable();
-?>
+<?= WebsiteListingTable($owner_id,$owner_type,true); ?>

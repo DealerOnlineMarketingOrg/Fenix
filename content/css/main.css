@@ -1035,3 +1035,7 @@ div.masterlistPop h5.website a:hover{color:#666;}
 div.masterlistPop div.odd {background-color:#f5f5f5;}
 div.masterlistPop div.last {margin-bottom:10px;border-bottom:1px solid #d5d5d5;}
 div.masterlistPop p.hidden{display:none;}
+table.websitesTable{width:100%;border:1px solid #d5d5d5;}
+table.websitesTable thead td {text-align:left;padding-left:10px;}
+table.websitesTable thead td.actionsCol{text-align:center;}
+table.websitesTable tbody td a{color:#06F;}

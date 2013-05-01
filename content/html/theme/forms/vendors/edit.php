@@ -228,7 +228,7 @@
                      </div>
                      <?php if(isset($websites)) { ?>
                      <div id="websites" class="tab_content" style="display:none;">
-                     	<?= $websites; ?>
+                     	<?= WebsiteListingTable($vendor->ID,2,true); ?>
                      </div>
                      <?php } ?>
                      <?php /*
@@ -410,7 +410,7 @@
 				{
 					class:'greenBtn hidden addWebsiteBtn',
 					text:"Add New Website",
-					click:function() { addWebsiteForm('<?= ($vendor) ? $vendor->ID : ''; ?>',2)}
+					click:function() { addWebsiteForm('<?= $vendor->ID;?>',2)}
 				}, <?php } ?>
 			<?php } ?>
 			<?php if(GateKeeper('Contact_Add',$this->user['AccessLevel'])) { ?>

@@ -169,7 +169,7 @@ class Administration extends CI_Model {
 		return ($this->db->update('Websites',$data) ? TRUE :FALSE);
 	}
 	
-	public function addKnownVendorWebsite($formdata,$vid) {
+	public function addKnownVendorWebsite($formdata,$owner_id,$owner_type) {
 		$data = array(
 			'ID' => $formdata['VendorID'],
 			'WEB_Vendor' => $vid,

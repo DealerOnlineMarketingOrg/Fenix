@@ -50,10 +50,11 @@ function enableWebsite(wid) {
 
 function addWebsiteForm(id,type) {
 	jQuery('#addWebsite').remove();
+	jQuery('#editWebsite').remove();
 	jQuery('#loader_block').slideDown('fast',function() {
 		jQuery.ajax({
 			type:'GET',
-			url:'/admin/websites/form?'+type+'='+id,
+			url:'/admin/websites/add_website_form?owner_type='+type+'&owner_id='+id,
 			//data:{client_id:id},
 			success:function(data) {
 				if(data){
@@ -91,23 +92,18 @@ function editWebsiteForm(id,type,wid) {
 	});
 }
 
-function editWebsite(id,type,wid) {
-	var formData = jQuery('#web').serialize();
+function editWebsite(id) {
 	jQuery('#loader_block').slideDown('fast',function() {
 		jQuery.ajax({
-			type:'POST',
-			url:'/admin/websites/edit?'+type+'='+id+'&wid='+wid,
-			data:formData,
+			type:'GET',
+			url:'/admin/websites/edit_website_form?web_id='+id,
 			success:function(data) {
 				if(data) {
 					jQuery('#loader_block').slideUp('fast',function() {
-						jAlert('The website has been successfully changed.','Success',function() {
-							window.location.reload();
-						});
+						jQuery('#addWebsiteForm').html(data);
 					});
 				}else {
-					jAlert('There was an error editing the website','Error',function() {
-						window.location.reload();
+					jAlert('There was a problem finding the website you requested. Please try again.','Error',function() {
 						jQuery('#loader_block').slideUp('fast');
 					});
 				}
@@ -164,42 +160,41 @@ function submitWebsiteForm(id,type,formData,cUrl,msg) {
 	});
 }
 
-function loadWebsiteTable(id,type) {
+function loadWebsiteTable(type,id) {
 	jQuery('#addWebsite').remove();
+	  jQuery('#editWebsite').remove();
 	//jQuery('#addWebsiteForm').dialog('close');	
 	jQuery('#websites').slideUp('fast',function() {
 		jQuery('#websites').empty();
-		jQuery('#loader').fadeIn('fast',function() {
-			jQuery('#loader').fadeIn('fast',function() {
-				jQuery.ajax({
-					type:'GET',
-					url:'/admin/websites/load_table?'+type+'='+id,
-					success:function(data) {
-						jQuery('#websites').html(data);
-						jQuery('#loader').delay(2000).fadeOut('fast',function() {
-							jQuery('#websites').slideDown('fast',function() {
-							});
-						});
-					}
-				});
+		jQuery('#loader_block').slideDown('fast',function() {
+			jQuery.ajax({
+				type:'GET',
+				url:'/admin/websites/load_table?owner_id='+id+'&owner_type='+type,
+				success:function(data) {
+					jQuery('#websites').html(data);
+					jQuery('#loader_block').slideUp('fast',function() {
+						jQuery('#websites').slideDown('fast');
+					});
+				}
 			});
 		});
 	});					
 }
 
-	function websiteListTable(id,type) {
+	function websiteListTable(type,id) {
 	  jQuery('#addWebsite').remove();
+	  jQuery('#editWebsite').remove();
 	  jQuery('#loader_block').slideDown('fast',function() {
 		jQuery.ajax({
 		  type:"GET",
-		  url:'/admin/websites/load_table?type='+type+'&id='+id,
+		  url:'/admin/websites/load_table?owner_id='+id+'&owner_type='+type,
 		  success:function(data) {
 			if(data) {
 			  jQuery('#loader_block').delay(1000).slideUp('fast',function() {
 				  jQuery('#websites').html(data);
 			  });
 			}else {
-			  jQuery('#dataClient').html('<p>No clients found at this level. Please use the Dealer Dropdown to change to a different group.</p>');
+			  jQuery('#websites').html('<p class="noData">No clients found at this level. Please use the Dealer Dropdown to change to a different group.</p>');
 			}
 		  }
 		});

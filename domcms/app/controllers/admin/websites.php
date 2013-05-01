@@ -11,120 +11,90 @@ class Websites extends DOM_Controller {
 	//if we're editing we should always have this
 	public $website_id;
 	
+	public $owner_type;
+	
+	public $owner_id;
+	
 	protected $type = '';
 
     public function __construct() {
         parent::__construct();
 		//load the admin model
 		$this->load->model('administration');
-
-		if(isset($_POST['VID'])) {
-			$this->id = $_POST['VID'];
-			$this->type = 2;
-		}elseif(isset($_GET['VID'])) {
-			$this->id = $_GET['VID'];
-			$this->type = 2;
+		$this->load->model('domwebsites');
+		$this->load->helper('websites');
+		
+		if(isset($_GET['owner_type'])) {
+			$this->owner_type = $_GET['owner_type'];
 		}
-		if(isset($_POST['CID'])) {
-			$this->id = $_POST['CID'];
-			$this->type = 1;
-		}elseif(isset($_GET['CID'])) {
-			$this->id = $_GET['CID'];
-			$this->type = 1;
-		}
-		if(isset($_POST['GID'])) {
-			$this->id = $_POST['GID'];
-			$this->type = 8;
-		}elseif(isset($_GET['GID'])) {
-			$this->contact_id = $_GET['GID'];
-			$this->type = 8;
-		}
-		if(isset($_POST['UID'])) {
-			$this->id = $_POST['UID'];
-			$this->type = 3;
-		}elseif(isset($_GET['UID'])) {
-			$this->id = $_GET['UID'];
-			$this->type = 3;
+		
+		if(isset($_GET['owner_id'])) {
+			$this->owner_id = $_GET['owner_id'];	
 		}
 	}
 	
-	public function Load_table($id=false,$type=false,$actions=true,$isVendor=false) {
-		if(isset($_GET['id']))
-			$id = $_GET['id'];
-		if(isset($_GET['type']))
-			$type = $_GET['type'];
-		if(isset($_GET['actions']))
-			$actions = ($_GET['actions'])?true:false;
-		if(isset($_GET['isVendor']))
-			$isVendor = $_GET['isVendor'];
-		
+	public function Load_table() {
 		$data = array(
-			'id'=>$id,
-			'type'=>$type,
-			'actions'=>$actions,
-			'isVendor'=>$isVendor,
+			'owner_id'=>$this->owner_id,
+			'owner_type'=>$this->owner_type,
 		);
 		$this->load->dom_view('pages/websites/table', $this->theme_settings['ThemeViews'],$data);
 	}
 	
+	public function add_website_form() {
+		$data = array(
+			'owner_id' =>   $_GET['owner_id'],
+			'owner_type' => $_GET['owner_type'],
+			'vendors' => $this->domwebsites->fillDropdownVendors(),
+		);
+		$this->load->dom_view('forms/websites/add',$this->theme_settings['ThemeViews'],$data);
+	}
+	
 	public function add() {
 		$form = $this->input->post();
-		if(isset($_GET['VID'])) {
-			$add = $this->administration->addKnownVendorWebsite($form,$_GET['VID']);
-			if($add) {
-				print 1;	
-			}else {
-				print 0;
-			}
-		}elseif(isset($_GET['CID']) || isset($_GET['GID']) || isset($_GET['UID'])) {
-			//var_dump($form);
-			$add = $this->administration->addWebsiteInfo($form,$this->type);
-			if($add) {
-				print 1;
-			}else {
-				print 0;
-			}
+		$add = $this->domwebsites->addWebsite($form,$this->owner_id,$this->owner_type);
+		if($add) {
+			echo '1';	
 		}else {
-			print 0;
+			echo '0';
 		}
+	}
+	
+	public function edit_website_form() {
+		$web_id = (int)$_GET['web_id'];
+		$website = $this->domwebsites->getWebsite($web_id);
+		$vendors = $this->domwebsites->fillDropdownVendors();
+		$data = array(
+			'website' => $website,
+			'vendors' => $vendors,
+			'web_id'=>$web_id
+		);
+		$this->load->dom_view('forms/websites/edit',$this->theme_settings['ThemeViews'],$data);
 	}
 	
 	public function edit() {
 		$form = $this->input->post();
-		if(isset($_GET['wid'])) {
-			$data = array(
-				'web_id' => $form['web_id'],
-				'ID' => $form['ID'],
-				'WEB_Url'=>$this->administration->formatUrl($form['url']),
-				'WEB_Notes'=>$form['notes'],
-				'WEB_ActiveTS'=>date(FULL_MILITARY_DATETIME),
-				//'WEB_Created'=>date(FULL_MILITARY_DATETIME)
-			);
-			if (isset($form['vendor']))
-				$data['WEB_Vendor'] = ($form['vendor']) ? $form['vendor'] : NULL;
-			if ($this->type != 'GID' && $this->type != 'UID') {
-				$otherData = array(
-					'WEB_GoogleUACode'=>$form['ua_code'],
-					'WEB_GoogleWebToolsMetaCode'=>$form['meta_code_number'],
-					'WEB_GooglePlusCode'=>$form['gplus_code'],
-					'WEB_BingCode'=>$form['bing_code'],
-					'WEB_YahooCode'=>$form['yahoo_code'],
-					'WEB_GlobalScript'=>$form['global_code'],
-				);
-			}
-			if ($this->type != 'GID' && $this->type != 'UID')
-				$data = array_merge($data,$otherData);
-			
-			$add = $this->administration->editWebsiteInfo($data,$this->type);
-			if($add) {
-				print 1;
-			}else {
-				print 0;
-			}
-		}elseif(isset($_GET['VID'])) {
+		$web_id = $_GET['web_id'];
 		
+		$data = array(
+			'WEB_Vendor'=>$form['vendor'],
+			'WEB_Url'=>$form['url'],
+			'WEB_GoogleUACode'=>$form['ua_code'],
+			'WEB_GoogleWebToolsMetaCode'=>$form['meta_code_number'],
+			'WEB_GooglePlusCode'=>$form['gplus_code'],
+			'WEB_BingCode'=>$form['bing_code'],
+			'WEB_YahooCode'=>$form['yahoo_code'],
+			'WEB_GlobalScript'=>$form['global_code'],
+			'WEB_Notes'=>$form['notes'],
+			'WEB_Active'=>1,
+			'WEB_Created'=>date('Y-m-d H:i:s')
+		);
+		
+		$edit = $this->domwebsites->updateWebsite($data,$web_id);
+		if($edit) {
+			echo '1';	
 		}else {
-			print 0;
+			echo '0';
 		}
 	}
 	

@@ -1122,54 +1122,6 @@ function getLiveChangesCount() {
 	endif;
 }
 
-function WebsiteListingTable($id = false, $type = false, $actions = true, $isVendor = false) {
-	$ci =& get_instance();
-	$ci->load->model('administration');
-	if(!$id) {$id = $ci->user['DropdownDefault']->SelectedClient;}
-		
-	if ($type == 'CID') {
-		$websites = $ci->administration->getClientWebsites($id);
-		$name = 'client';
-	}
-	if ($type == 'GID') {
-		$websites = $ci->administration->getContactWebsites($id);
-		$name = 'contact';
-	}
-	if ($type == 'VID' || $isVendor) {
-		$websites = $ci->administration->getVendorWebsites($id);
-		$name = 'vendor';
-	}
-	if ($type == 'UID') {
-		$websites = $ci->administration->getUserWebsites($id);
-		$name = 'user';
-	}
-	
-	$html = '';
-	$table = '';
-	if($websites) {
-		$table .= '<table cellpadding="0" cellspacing="0" border="0" class="tableStatic" id="example" width="100%" style="border:1px solid #d5d5d5">';
-		$table .= '<thead><tr><td style="text-align:left;padding-left:1em;">Vendor</td><td style="text-align:left;padding-left:1em;">URL</td><td style="text-align:left;padding-left:1em;">Notes</td>' . (($actions) ? '<td class="noSort" style="text-align:left;padding-left:1em;">Actions</td>' : '') . '</tr></thead>';
-		$table .= '<tbody>';
-		foreach($websites as $website) :
-			$edit_img = '<a href="javascript:editWebsiteForm(\'' . $id . '\',\'' . $type . '\',\'' . $website->ID . '\');"><img src="' . base_url() . THEMEIMGS . 'icons/color/pencil.png" alt="Edit Website" /></a>';
-			$table .= '<tr>';
-			$table .= '<td><p>' . $website->VendorName . '</p></td>';
-			$table .= '<td><a href="' . $website->URL . '" target="_blank">' . $website->URL . '</a></td>';
-			$table .= '<td class="descCell"><p id="web_' . $website->ID . '">' . $website->Description . '</p></td>';
-			if($actions) {
-				$table .= '<td style="text-align:center;">' . $edit_img . '</td>';
-			}
-			$table .= '</tr>';
-		endforeach;
-		$table .= '</tbody></table>';
-		                                    
-		$html = $table;
-	}else {
-		$html .= '<p>No websites found for this '.$name.'.' . (($actions) ? ' You can add one by clicking the add website button below.' : '') . '</p>';
-	}
-	return $html;
-}
-
 function load_client_contacts($cid) {
 	$ci =& get_instance();
 	$ci->load->helper('string_parser');
