@@ -27,9 +27,9 @@
 		//   placed in an anonymous function, or under a function name.
 		function generateLineChart($report, $report_id, &$report_element_start, &$javascript) {
 			$report_html = '<div id="lineChart" class="chart" style="height:230px"></div>';
-			
+			//JM moved data = '['  down to later string. ]
 			// Create series arrays.
-			$data = '[';
+			$data = '';
 			foreach ($report as $report_row) {
 				if ($report_row['ReportID'] == $report_id) {
 					$keys = array_keys($report_row['Cells']);
@@ -55,7 +55,7 @@
 					   'xaxis: {min:1, max:12, ticks: [[1,"Jan"],[2,"Feb"],[3,"Mar"],[4,"Apr"],[5,"May"],[6,"Jun"],[7,"Jul"],[8,"Aug"],[9,"Sep"],[10,"Oct"],[11,"Nov"],[12,"Dec"]]}' .
 					   '}';
 					   
-			$plot = '$.plot($("#lineChart"),' . $data . ',' . $options . ');';
+			$plot = '$.plot($("#lineChart"),[' . $data . ',' . $options . ');';
 
 			$javascript = $plot;
 			return $report_html;
@@ -71,9 +71,9 @@
 		//   placed in an anonymous function, or under a function name.
 		function generatePieChart($report, $report_id, &$report_element_start, &$javascript) {
 			$report_html = '<div id="pieChart" class="pieWidget" style="height:220px"></div><div id="pieLegend" style="width:150px"></div>';
-			
+			//JM moved data = '['  down to later string. ]
 			// Create series arrays.
-			$data = '[';
+			$data = '';
 			foreach ($report as $report_row) {
 				if ($report_row['ReportID'] == $report_id) {
 					$keys = array_keys($report_row['Cells']);
@@ -101,7 +101,7 @@
 						'legend:{container:$("#pieLegend")}' .
 						'}';
 					   
-			$plot = '$.plot($("#pieChart"),' . $data . ',' . $options . ');';
+			$plot = '$.plot($("#pieChart"),[' . $data . ',' . $options . ');';
 
 			$javascript = $plot;
 			return $report_html;
