@@ -24,13 +24,127 @@ class System_contacts extends DOM_Model {
 		$this->load->model('administration','adminQueries');
     }
 	
-	//get user information from directory
-	function getUserDirectoryInfo($uid) {
-		//the where array, multiple where statements require the arguments to be presented from an array.
-		$where = array('OWNER_ID'=>$uid,'DIRECTORY_Type',3);
+	public function getDirectoryInformation($type = false,$id = false) {
+		$select = 'd.DIRECTORY_ID as ContactID,
+				   d.OWNER_ID as OwnerID,
+				   d.TITLE_ID as TitleID,
+				   ti.TITLE_Name as TitleName,
+				   d.JobTitle as JobTitle,
+				   d.DIRECTORY_Type as OwnerType,
+				   d.DIRECTORY_FirstName as FirstName,
+				   d.DIRECTORY_LastName as LastName,
+				   d.DIRECTORY_Notes as Notes';
+				   
+		$this->db->select($select)->from('Directories d')->join('xTitles ti','d.TITLE_ID = ti.TITLE_ID');
+		if($type and !$id) {
+			$this->db->where('d.DIRECTORY_Type',$type);	
+		}elseif(!$type and $id) {
+			$this->db->where('d.OWNER_ID',$id);	
+		}else {
+			$this->db->where('d.OWNER_ID',$id)->where('d.DIRECTORY_Type',$type);	
+		}
 		
+		$query = $this->db->get();
+		return ($query) ? $query->result() : FALSE;
+	}
+	
+	function getContactsForTable($owner_type = false,$owner_id = false) {
+		
+	}
+	
+	//get websites
+	public function buildContactTable() {
+		
+		$dsql = 'SELECT d.DIRECTORY_ID as DID,
+					(SELECT 
+						TITLE_Name as JobTitle 
+						FROM xTitles 
+						WHERE 
+						d.TITLE_ID = xTitles.TITLE_ID
+					) AS Title,
+					(SELECT 
+						xc.TYPE_Name 
+						FROM xContactType xc 
+						WHERE 
+						d.DIRECTORY_Type = xc.TYPE_ID 
+							AND 
+						xc.TYPE_Active = 1
+					) AS ContactType,
+					CONCAT(d.DIRECTORY_LastName,", ", d.DIRECTORY_FirstName) AS Name,
+					CONCAT(da.ADDRESS_Street," ",da.ADDRESS_City,", ",da.ADDRESS_State," ",da.ADDRESS_Zip) as Address,
+					ph.PHONE_Number as PhoneNumber,
+					em.EMAIL_Address as EmailAddress
+					
+					FROM Directories d 
+					JOIN DirectoryAddresses da ON da.OWNER_ID = d.OWNER_ID AND da.OWNER_Type = d.DIRECTORY_Type AND da.ADDRESS_Primary = 1
+					JOIN PhoneNumbers ph ON ph.OWNER_ID = d.OWNER_ID AND ph.OWNER_Type = d.DIRECTORY_Type AND ph.PHONE_Primary = 1
+					JOIN EmailAddresses em ON em.OWNER_ID = d.OWNER_ID AND em.OWNER_Type = d.DIRECTORY_Type AND em.EMAIL_Primary = 1';
+					
+					$bkup = '					(SELECT 
+						xc.TYPE_Name 
+						FROM xContactType xc 
+						WHERE 
+						d.DIRECTORY_Type = xc.TYPE_ID 
+							AND 
+						xc.TYPE_Active = 1
+					) AS ContactType,
+					CONCAT(d.DIRECTORY_LastName,", ", d.DIRECTORY_FirstName) AS Name,
+					(SELECT 
+						CONCAT(ADDRESS_Street, " " , ADDRESS_City, ", " , ADDRESS_State, " ", ADDRESS_Zip) AS Address 
+						FROM DirectoryAddresses 
+						WHERE 
+						OWNER_Type = d.DIRECTORY_Type 
+							AND 
+						OWNER_ID = d.OWNER_ID 
+							AND 
+						ADDRESS_Primary = 1 
+							AND 
+						ADDRESS_Active = 1
+					) AS Address,
+					(SELECT 
+						EMAIL_Address 
+						FROM EmailAddresses 
+						WHERE 
+						OWNER_Type = d.DIRECTORY_Type 
+							AND 
+						OWNER_ID = d.OWNER_ID 
+							AND 
+						EMAIL_Primary = 1 
+							AND EMAIL_Active = 1
+					) AS EmailAddress,
+					(SELECT
+						PHONE_Number
+						FROM PhoneNumbers
+						WHERE 
+						OWNER_Type = d.DIRECTORY_Type
+							AND
+						OWNER_ID = d.OWNER_ID
+							AND
+						PHONE_Primary = 1
+							AND
+						PHONE_Active = 1
+					) AS PhoneNumber,
+					d.DIRECTORY_Notes AS Notes,
+					(SELECT TAG_ClassName FROM xTags WHERE TAG_ID = d.DIRECTORY_Tag) AS ClassName	
+';
+		$query = $this->db->query($dsql);
+		return ($query) ? $query->result() : FALSE;
+	}	
+	
+	//Should cover all contacts
+	function getSystemContacts($type,$id) {
+		$directories = $this->getDirectoryInformation($type,$id);
+		foreach($directories as $directory) {
+			$directory->Phones = $this->getContactPhoneNumbers($directory->OwnerID,$type);	
+			$directory->Emails = $this->getContactEmailAddresses($directory->OwnerID,$type);
+			$directory->Addresses = $this->getContactPhysicalAddresses($directory->OwnerID,$type);
+		}
+	}
+		
+	//get user information from directory
+	function getUserDirectoryInfo($uid) {		
 		//query using active record codeigniter method
-		$query = $this->db->select('DIRECTORY_ID as did,DIRECTORY_FirstName as FirstName,DIRECTORY_LastName as LastName,DIRECTORY_Tag as tid')->
+		$query = $this->db->select('DIRECTORY_ID as did,DIRECTORY_FirstName as FirstName,DIRECTORY_LastName as LastName,DIRECTORY_Tag as tid,OWNER_ID as OwnerID,DIRECTORY_Type as OwnerType')->
 				 from('Directories')->
 				 where('OWNER_ID',$uid)->
 				 where('DIRECTORY_Type',3)->
@@ -51,11 +165,11 @@ class System_contacts extends DOM_Model {
 		//if the directory information is found and results are returned
 		if(!empty($directory_info)) {
 			//users contact numbers
-			$phoneNumbers   = (($this->getContactPhoneNumbers($directory_info->did))      ? $this->getContactPhoneNumbers($directory_info->did)         : FALSE);
+			$phoneNumbers   = (($this->getContactPhoneNumbers($directory_info->OwnerID,3))      ? $this->getContactPhoneNumbers($directory_info->OwnerID,3)         : FALSE);
 			//users email addresses
-			$emails 	    = (($this->getContactEmailAddresses($directory_info->did))    ? $this->getContactEmailAddresses($directory_info->did)    : FALSE);
+			$emails 	    = (($this->getContactEmailAddresses($directory_info->OwnerID,3))    ? $this->getContactEmailAddresses($directory_info->OwnerID,3)    : FALSE);
 			//users physical addresses
-			$address 		= (($this->getContactPhysicalAddresses($directory_info->did)) ? $this->getContactPhysicalAddresses($directory_info->did) : FALSE);
+			$address 		= (($this->getContactPhysicalAddresses($directory_info->OwnerID,3)) ? $this->getContactPhysicalAddresses($directory_info->OwnerID,3) : FALSE);
 			
 			$contact_info['directory'] = $directory_info;
 			$contact_info['phones']    = (!empty($phoneNumbers)) ? $phoneNumbers : FALSE;
@@ -82,11 +196,13 @@ class System_contacts extends DOM_Model {
 	}
 	
 	//get contact phone numbers as object (could be multiple, could be none or one)
-	function getContactPhoneNumbers($did) {
+	function getContactPhoneNumbers($oid,$otype) {
 		//query using the active record codeigniter method
 		$query = $this->db->select('*')->
 				 from('PhoneNumbers')->
-				 where('OWNER_ID',$did)->
+				 where('OWNER_ID',$oid)->
+				 where('OWNER_Type',$otype)->
+				 where('PHONE_Active',1)->
 				 get();
 		
 		//we return the results back to the caller...if found return the object, if not return FALSE		 
@@ -127,10 +243,12 @@ class System_contacts extends DOM_Model {
 	}
 	
 	//get contact email addresses as object (could be multiple, could be none or one)
-	function getContactEmailAddresses($did) {
+	function getContactEmailAddresses($oid,$otype) {
 		$query = $this->db->select('*')->
 				 from('EmailAddresses')->
-				 where('OWNER_ID',$did)->
+				 where('OWNER_ID',$oid)->
+				 where('OWNER_Type',$otype)->
+				 where('EMAIL_Active',1)->
 				 get();	
 				 
 		return ($query) ? $query->result() : FALSE;
@@ -141,16 +259,19 @@ class System_contacts extends DOM_Model {
 		$query = $this->db->select('*')->
 				 from('EmailAddresses')->
 				 where('EMAIL_ID',$eid)->
+				 where('EMAIL_Active',1)->
 				 get();	
 				 
 		return ($query) ? $query->row() : FALSE;
 	}
 	
 	//get contact physical address as object (could be multiple, could be none or one)
-	function getContactPhysicalAddresses($did) {
+	function getContactPhysicalAddresses($oid,$otype) {
 		$query = $this->db->select('*')->
 				 from('DirectoryAddresses')->
-				 where('OWNER_ID',$did)->
+				 where('OWNER_ID',$oid)->
+				 where('OWNER_Type',$otype)->
+				 where('ADDRESS_Active',1)->
 				 get();
 				 
 		return ($query) ? $query->result() : FALSE;	

@@ -8,6 +8,7 @@ class Contacts extends DOM_Controller {
     public function __construct() {
         parent::__construct();
 		$this->load->model('administration');
+		$this->load->model('system_contacts');
 
         $this->agency_id = $this->user['DropdownDefault']->SelectedAgency;
 		$this->group_id = $this->user['DropdownDefault']->SelectedGroup;
@@ -45,6 +46,11 @@ class Contacts extends DOM_Controller {
     public function index() {
 		$this->LoadTemplate('pages/contacts/listing');
     }
+	
+	public function test() {
+		$table = $this->system_contacts->buildContactTable();
+		print_object($table);
+	}
 	
 	public function load_table() {
 		$contacts = $this->administration->getAllContactsInAgency($this->agency_id);

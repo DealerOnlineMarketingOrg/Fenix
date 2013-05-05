@@ -479,6 +479,7 @@ class Administration extends CI_Model {
 		return $contact;
 	}
 	
+	
 	private function getContacts($type = false, $id = false) {
 		$sql = 'SELECT
 				d.DIRECTORY_ID as ContactID,
@@ -530,57 +531,31 @@ class Administration extends CI_Model {
     }
 	
 	public function getMyUser($id) {
+		$this->load->model('system_contacts','contactinfo');
 		//our user select
-    	$selects = "u.USER_ID as ID,
-				    u.USER_Name as Username,
-					u.USER_Name as EmailAddress,
-					ui.USER_Active as Status,
-					ui.USER_Created as JoinDate,
-					ui.USER_ActiveTS as LastUpdate,
-					ui.USER_Modules as Modules,
-					ui.USER_Avatar as Avatar,
-					ui.Google_Avatar,
-					ui.USER_GravatarEmail as Gravatar,
-					d.DIRECTORY_ID as DirectoryID,
-					d.DIRECTORY_Type as UserType,
-					d.DIRECTORY_FirstName as FirstName,
-					d.DIRECTORY_LastName as LastName,
-					d.DIRECTORY_Address as Address,
-					d.DIRECTORY_Email as Emails,
-					e.EMAIL_Address as PrimaryEmail,
-					e.EMAIL_Type as PrimaryEmailType,
-					p.PHONE_Number as PrimaryPhone,
-					p.PHONE_Type as PrimaryPhoneType,
-					d.DIRECTORY_Phone as Phones,
-					d.DIRECTORY_Notes as Notes,
-					d.TITLE_ID as TitleID,
-					a.ACCESS_NAME as AccessName,
-					a.ACCESS_Level as AccessLevel,
-					a.ACCESS_ID as AccessID,
-					c.CLIENT_ID as ClientID,
-					c.CLIENT_Name as Dealership,
-					c.CLIENT_Address as CompanyAddress,
-					t.TAG_ID as TagID,
-					t.TAG_Name as TeamName,
-					t.TAG_ClassName as ClassName,
-					t.TAG_Color as Color";
-					
-		$query = $this->db->select($selects)
-			 	 ->from('Users u')
-			 	 ->join('Users_Info ui','ui.USER_ID = u.USER_ID','inner')
-			 	 ->join('xSystemAccess a','ui.ACCESS_ID = a.ACCESS_ID','inner')
-			 	 ->join('Directories d','ui.DIRECTORY_ID = d.DIRECTORY_ID','inner')
-				 ->join('PhoneNumbers p','ui.DIRECTORY_ID = p.OWNER_ID','inner')
-				 ->join('EmailAddresses e','ui.DIRECTORY_ID = e.OWNER_ID','inner')
-			 	 ->join('Clients c','c.CLIENT_ID = ui.CLIENT_ID','inner')
-			 	 ->join('xTags t','t.TAG_ID = u.Team','inner')
-			 	 ->where('u.USER_ID',$id)->where('p.PHONE_Primary',1)->where('e.EMAIL_Primary',1)->get();
+    	$selects = 'u.USER_ID as ID,u.USER_Name as Username,u.USER_Name as EmailAddress,ui.USER_Active as Status,ui.USER_Created as JoinDate,ui.USER_ActiveTS as LastUpdate,ui.USER_Modules as Modules,ui.USER_Avatar as Avatar,ui.Google_Avatar,ui.USER_GravatarEmail as Gravatar,d.DIRECTORY_ID as DirectoryID,d.DIRECTORY_Type as UserType,d.DIRECTORY_FirstName as FirstName,d.DIRECTORY_LastName as LastName,d.DIRECTORY_Address as Address,d.DIRECTORY_Email as Emails,d.DIRECTORY_Phone as Phones,d.DIRECTORY_Notes as Notes,d.TITLE_ID as TitleID,a.ACCESS_NAME as AccessName,a.ACCESS_Level as AccessLevel,a.ACCESS_ID as AccessID,c.CLIENT_ID as ClientID,c.CLIENT_Name as Dealership,c.CLIENT_Address as CompanyAddress,t.TAG_ID as TagID,t.TAG_Name as TeamName,t.TAG_ClassName as ClassName,t.TAG_Color as Color';
+		//query using the active record method
+		$u = $this->db->select($selects)
+			 ->from('Users u')
+			 ->join('Users_Info ui','ui.USER_ID = u.USER_ID')
+			 ->join('xSystemAccess a','ui.ACCESS_ID = a.ACCESS_ID')
+			 ->join('Directories d','ui.DIRECTORY_ID = d.DIRECTORY_ID')
+			 ->join('Clients c','c.CLIENT_ID = ui.CLIENT_ID')
+			 ->join('xTags t','t.TAG_ID = u.Team')
+			 ->where('u.USER_ID',$id)->get();
+		if($u) :
+			$u = $u->row();
+			$u->Phones = $this->contactinfo->getContactPhoneNumbers($u->ID,$u->UserType);
+			$u->Emails = $this->contactinfo->getContactEmailAddresses($u->ID,$u->UserType);
+			$u->Addresses = $this->contactinfo->getContactPhysicalAddresses($u->ID,$u->UserType);
+		endif;
+			 
+		//GET email,phones and addresses
 		
-		return ($query) ? $query->row() : FALSE;
+		return (!empty($u)) ? $u : FALSE;
 	}
 	
     public function getUsers($id = false,$client_id = false) {
-		
     	$selects = "u.USER_ID as ID,u.USER_Name as Username,u.USER_Name as EmailAddress,ui.USER_Active as Status,ui.USER_Created as JoinDate,ui.USER_ActiveTS as LastUpdate,ui.USER_Modules as Modules,ui.USER_Avatar as Avatar,ui.Google_Avatar,ui.USER_GravatarEmail as Gravatar,d.DIRECTORY_ID as DirectoryID,d.DIRECTORY_Type as UserType,d.DIRECTORY_FirstName as FirstName,d.DIRECTORY_LastName as LastName,d.DIRECTORY_Address as Address,d.DIRECTORY_EMAIL as Emails,d.DIRECTORY_Phone as Phones,d.DIRECTORY_Notes as Notes,d.TITLE_ID as TitleID,a.ACCESS_NAME as AccessName,a.ACCESS_Level as AccessLevel,a.ACCESS_ID as AccessID,c.CLIENT_Name as Dealership,c.CLIENT_Address as CompanyAddress,t.TAG_ID as TagID,t.TAG_Name as TeamName,t.TAG_ClassName as ClassName,t.TAG_Color as Color";
     	$this->db->select($selects);
 		$this->db->from('Users u');

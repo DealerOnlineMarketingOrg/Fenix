@@ -941,6 +941,7 @@ function ArrayToTable($array, $num_columns) {
 	return $table;
 }
 
+
 /* removeEmpty removes any empty-string key=>value from array */
 /* deepArray is for arrays where the key->value pair is set one array level */
 /*   deeper, for purposes of allowing duplicate keys. */

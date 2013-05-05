@@ -71,10 +71,16 @@
                                     <td class="icon"><img src="<?= base_url(); ?>imgs/icons/dark/building.png" alt="" /></td>
                                     <td class="info"><span>Company:</span> <?= $user->Dealership; ?></td>
                                 </tr>
-                                <?php if(!empty($user->Address)) { ?>
+                                <?php if(!empty($user->Addresses)) { ?>
                                     <tr class="odd">
                                         <td class="icon"><img src="<?= base_url(); ?>imgs/icons/dark/home.png" alt="" /></td>
-                                        <td class="info"><span>Address:</span> <?= $user->Address['street'] . ' ' . $user->Address['city'] . ', ' . $user->Address['state'] . ' ' . $user->Address['zipcode']; ?></td> 
+                                        <td class="info">
+                                        <?php foreach($user->Addresses as $address) {
+												if($address->ADDRESS_Primary == 1) { ?>
+                                        			<span>Address:</span> <?= $address->ADDRESS_Street . ' ' . $address->ADDRESS_City . ', ' . $address->ADDRESS_State . ' ' . $address->ADDRESS_Zip; ?>
+                                            <?php }
+										} ?>
+                                        </td> 
                                     </tr>
                                 <?php } ?>
                                 <tr class="even">
@@ -86,15 +92,23 @@
                                     <td class="info"><span>Member Since:</span> <?= date('m/d/Y',strtotime($user->JoinDate)); ?></td>
                                 </td>
                                 <tr class="even">
-                                    <td class="icon"><img src="<?= base_url(); ?>imgs/icons/dark/mail.png" alt="" /></td>
+                                    <td class="icon"><img src="<?= base_url(); ?>imgs/icons/dark/phone.png" alt="" /></td>
                                     <td class="info">
-                                        <span>Primary Email:</span><span id="priEmail"><a href="mailto:'<?= $user->PrimaryEmail; ?>"><?= $user->PrimaryEmail; ?></a></span>
+                                    	<?php foreach($user->Phones as $phone) { 
+												if($phone->PHONE_Primary == 1) { ?>
+													<span>Primary Phone:</span><span id="priPhone"><?= $phone->PHONE_Number; ?></span>
+										  <?php }
+											  } ?>
                                      </td>
                                 </td>
                                 <tr class="odd">
-                                    <td class="icon"><img src="<?= base_url(); ?>imgs/icons/dark/phone.png" alt="" /></td>
+                                    <td class="icon"><img src="<?= base_url(); ?>imgs/icons/dark/mail.png" alt="" /></td>
                                     <td class="info">
-                                       <span>Primary Phone:</span><span id="priPhone"><?= $user->PrimaryPhone; ?></span>
+                                    	<?php foreach($user->Emails as $email) { 
+												if($email->EMAIL_Primary == 1) { ?>
+													<span>Primary Email:</span><span id="priEmail"><a href="mailto:<?= $email->EMAIL_Address; ?>"><?= $email->EMAIL_Address; ?></a></span>
+										  <?php }
+											  } ?>
                                 	</td>
                                 </td>
                             </table>
@@ -118,7 +132,7 @@
                             #contactInfo div.head h5 {width:115px;margin:0 auto;display:block;float:none;}
                         </style>
 						<?php if(isset($view)) { ?>
-                            <?php if(!empty($contactInfo['phones'])) { ?>
+                            <?php if(!empty($user->Phones)) { ?>
                                 <div style="margin-top:10px;margin-bottom:20px;">
                                     <div class="head"><h5 class="iPhone">Phone Numbers</h5></div>
                                     <table cellpadding="0" cellspacing="0" width="100%" class="tableStatic" style="border:1px solid #d5d5d5;">
@@ -129,7 +143,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <?php foreach ($contactInfo['phones'] as $phone) { ?>
+                                            <?php foreach ($user->Phones as $phone) { ?>
                                                 <tr>
                                                     <td width="10%"><?= $phone->PHONE_Type; ?></td>
                                                     <td width="80%"><?= $phone->PHONE_Number; ?></td>
@@ -145,7 +159,7 @@
                                     <p class="noData" style="text-align:center;">No phone numbers found for this user.</p>
                                 </div>
                             <?php } ?>
-                            <?php if(!empty($contactInfo['emails'])) { ?>
+                            <?php if(!empty($user->Emails)) { ?>
                                 <div style="margin-top:10px;margin-bottom:60px;">
                                     <div class="head"><h5 class="iPhone">Email Addresses</h5></div>
                                     <table cellpadding="0" cellspacing="0" width="100%" class="tableStatic" style="border:1px solid #d5d5d5;">
@@ -156,7 +170,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <?php foreach ($contactInfo['emails'] as $email) { ?>
+                                            <?php foreach ($user->Emails as $email) { ?>
                                                 <tr>
                                                     <td width="10%"><?= $email->EMAIL_Type; ?></td>
                                                     <td width="80%"><?= $email->EMAIL_Address; ?></td>
@@ -520,7 +534,7 @@
 				{
 					class:'greenBtn hidden addWebsiteBtn',
 					text:"Add New Website",
-					click:function() { addWebsiteForm('<?= ($user) ? $user->TypeID : ''; ?>','<?= $user->TypeCode; ?>')}
+					click:function() { addWebsiteForm('<?= $user->ID; ?>','3')}
 				},
 			<?php } ?>
 			<?php } ?>
