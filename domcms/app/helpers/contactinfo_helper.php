@@ -3,18 +3,8 @@
 		$ci =& get_instance();
 		$ci->load->model('system_contacts','syscontacts');
 		$user = $ci->administration->getMyUser($uid);
-		$user->ContactID = $user->DirectoryID;
-		$user->Address = mod_parser($user->Address);
-		$user->CompanyAddress = mod_parser($user->CompanyAddress);
-		$user->Email = mod_parser($user->Emails,false,true);
-		$user->Phone = mod_parser($user->Phones,false,true);
-		$user->Modules = ParseModulesInReadableArray($user->Modules);
-		$avatar = $ci->members->get_user_avatar($user->ID);
-		$user->TypeCode = substr($user->UserType,0,3);
-		$user->TypeID = substr($user->UserType,4);
-	 	$contactInfo = $ci->syscontacts->getUserContactInfo($uid)
 		?>
-		<?php if(!empty($contactInfo['phones'])) { ?>
+		<?php if(!empty($user->Phones)) { ?>
             <div style="margin-top:10px;margin-bottom:30px;">
                 <div class="head"><h5 class="iPhone">Phone Numbers</h5></div>
                 <table cellpadding="0" cellspacing="0" width="100%" class="tableStatic" style="border:1px solid #d5d5d5;">
@@ -26,7 +16,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($contactInfo['phones'] as $phone) { ?>
+                        <?php foreach ($user->Phones as $phone) { ?>
                             <tr>
                                 <td width="10%" style="text-align:center;">
                                     <input 
@@ -50,16 +40,16 @@
             </div>
         <?php } ?>
         <?php if(!$view) {?>
-            <a href="javascript:addUserPhone('<?= $contactInfo['directory']->did; ?>');" class="greenBtn floatRight button" style="margin-top:-20px;">Add New Phone Number</a>
+            <a href="javascript:addUserPhone('<?= $user->ID; ?>');" class="greenBtn floatRight button" style="margin-top:-20px;">Add New Phone Number</a>
         <? } ?>
 	<? }
 	
 	function LoadUserEmailAddresses($view = false,$uid) { 
 		$ci =& get_instance();
 		$ci->load->model('system_contacts','syscontacts');
-	 	$contactInfo = $ci->syscontacts->getUserContactInfo($uid)
+		$user = $ci->administration->getMyUser($uid);
 		?>
-		<?php if(!empty($contactInfo['emails'])) { ?>
+		<?php if(!empty($user->Emails)) { ?>
             <div style="margin-top:10px;margin-bottom:0px;">
                 <div class="head"><h5 class="iPhone">Email Addresses</h5></div>
                 <table cellpadding="0" cellspacing="0" width="100%" class="tableStatic" style="border:1px solid #d5d5d5;">
@@ -71,7 +61,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($contactInfo['emails'] as $email) { ?>
+                        <?php foreach ($user->Emails as $email) { ?>
                             <tr>
                                 <td width="10%" style="text-align:center;">
                                     <input 
@@ -95,7 +85,7 @@
             </div>
         <?php } ?>
         <?php if(!$view) { ?>
-            <a href="javascript:addUserEmail('<?= $contactInfo['directory']->did; ?>');" class="greenBtn floatRight button" style="margin-top:10px;">Add New Email</a>
+            <a href="javascript:addUserEmail('<?= $user->ID; ?>');" class="greenBtn floatRight button" style="margin-top:10px;">Add New Email</a>
         <?php } ?>
 	<?php }
 ?>

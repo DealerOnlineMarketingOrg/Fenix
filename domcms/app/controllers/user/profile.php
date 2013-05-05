@@ -13,42 +13,25 @@ class Profile extends DOM_Controller {
     }
 
 	public function View($msg = false) {
+		$this->load->model('domwebsites');
 		if($this->input->post('user_id')) {
 			$user_id = $this->input->post('user_id');
 		}else {
 			$user_id = $this->user['UserID'];
 		}
 		
-		$user                   	= $this->administration->getUsers($user_id);
+		$user = $this->administration->getMyUser($user_id);
+		$user->Modules = ParseModulesInReadableArray($user->Modules);
+		$avatar = $this->members->get_user_avatar($user->ID);
 		
-		
-		$user->UserID           	= $user->ID;
-		$user->Edit       			= ($this->user['UserID'] == $user->UserID OR $this->user['AccessLevel'] >= 600000) ? TRUE : FALSE;
-		
-		$user->TypeCode = 'UID';
-		$user->TypeID = $user->ID;
-		
-		//Grab avatar
-        $user->Avatar 				= $this->members->get_user_avatar($user->ID);
-        $user->Address 				= mod_parser($user->CompanyAddress); 
-		$user->viewCompany 			= $user->Dealership;
-		$user->CompanyAddress		= mod_parser($user->CompanyAddress);
-		$user->viewCompanyAddress   = ArrayWithTextIndexToString($user->CompanyAddress, true);
-		$user->Emails				= mod_parser($user->Emails, 'home,work', true);
-		$user->viewEmails 		    = OrderArrayForTableDisplay($user->Emails,false,true);
-		$user->Phones				= mod_parser($user->Phones, 'home,mobile,work,fax', true);
-		$user->viewPhones 			= OrderArrayForTableDisplay($user->Phones,false,true);
-		$user->viewUserModules 		= ParseModulesInReadableArray($user->Modules);
-		$websites					= $this->administration->getUserWebsites($user->ID);
-		$user->websites = array();
-		foreach ($websites as $website)
-			$user->websites[] = $website->URL;
-		
-		$msg = (($msg) ? $msg : FALSE);
 		$data = array(
-			'user' => $user,
-			'msg' => $msg,
-			'admin' => $this->user
+			'user'=>$user,
+			'avatar'=>$avatar,
+			'allMods'=>$this->administration->getAllModules(),
+			'websites'=>$this->domwebsites->getUserWebsites($user->ID),
+			'edit'=>(($user->ID == $this->user['UserID'] || $this->user['AccessLevel'] >= 600000) ? TRUE : FALSE),
+			//'contact'=>$user,
+			//'contactInfo'=>$this->syscontacts->getUserContactInfo($uid),
 		);
 
 		$this->LoadTemplate('pages/users/profile',$data);

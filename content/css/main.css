@@ -1039,3 +1039,4 @@ table.websitesTable{width:100%;border:1px solid #d5d5d5;}
 table.websitesTable thead td {text-align:left;padding-left:10px;}
 table.websitesTable thead td.actionsCol{text-align:center;}
 table.websitesTable tbody td a{color:#06F;}
+table.tableStatic thead tr td.profileAssets{text-align:left !important;padding-left:10px;color:#b55D5C;font-weight:bold;}
