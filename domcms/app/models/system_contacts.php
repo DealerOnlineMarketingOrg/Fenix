@@ -33,9 +33,10 @@ class System_contacts extends DOM_Model {
 				   d.DIRECTORY_Type as OwnerType,
 				   d.DIRECTORY_FirstName as FirstName,
 				   d.DIRECTORY_LastName as LastName,
-				   d.DIRECTORY_Notes as Notes';
+				   d.DIRECTORY_Notes as Notes,
+				   t.TAG_ClassName as ClassName';
 				   
-		$this->db->select($select)->from('Directories d')->join('xTitles ti','d.TITLE_ID = ti.TITLE_ID');
+		$this->db->select($select)->from('Directories d')->join('xTitles ti','d.TITLE_ID = ti.TITLE_ID')->join('xTags t','d.DIRECTORY_Tag = t.TAG_ID');
 		if($type and !$id) {
 			$this->db->where('d.DIRECTORY_Type',$type);	
 		}elseif(!$type and $id) {
@@ -52,102 +53,154 @@ class System_contacts extends DOM_Model {
 		
 	}
 	
+	function getVendorsFromClientWebsites($cid) {
+		
+	}
+	
+	function getAllClientsInAgency($aid) {
+		$clients = array();
+		$aQuery = $this->db->select('GROUP_ID as ID')->from('Groups')->where('AGENCY_ID',$aid)->get();
+		if($aQuery) {
+			$groups = $aQuery->result();
+			foreach($groups as $group) {
+				$cQuery = $this->db->select('CLIENT_ID as ID')->from('Clients')->where('GROUP_ID',$group->ID)->get();
+				if($cQuery) {
+					$clientGroup = $cQuery->result();	
+					foreach($clientGroup as $client) {
+						array_push($clients,$client);	
+					}
+				}
+			}
+		}
+		
+		if(!empty($clients)) {
+			return $clients;	
+		}else {
+			return FALSE;	
+		}
+	}
+	
+	public function getAllClientsInGroup($gid) {
+		$clients = array();
+		$gQuery = $this->db->select('CLIENT_ID as ID')->from('Clients')->where('GROUP_ID',$gid)->get();
+		if($gQuery) {
+			$clientsGroup = $gQuery->result();
+			foreach($clientsGroup as $client) {
+				array_push($clients,$client);	
+			}
+		}
+		
+		if(!empty($clients)) {
+			return $clients;
+		}else {
+			return FALSE;	
+		}
+			
+	}
+	
+	public function getClientInfo($cid) {
+		$query = $this->db->select('CLIENT_ID as ID')->from('Clients')->where('CLIENT_ID',$cid)->get();	
+		if($query) {
+			return $query->result();	
+		}else {
+			return FALSE;	
+		}
+	}
+		
+	public function queryChangerForAnythingOtherThanClientLevel() {
+		$_level_type = $this->user['DropdownDefault']->LevelType;
+		switch($_level_type) :
+			case 'a' : $query = $this->getAllClientsInAgency($this->user['DropdownDefault']->SelectedAgency); break;
+			case 'g' : $query = $this->getAllClientsInGroup($this->user['DropdownDefault']->SelectedGroup); break;
+			default : $query = $this->getClientInfo($this->user['DropdownDefault']->SelectedClient); break;
+		endswitch;	
+		return $query;
+	}
+	
+	public function getUsersAsContacts($cid) {
+		$query = $this->db->select('USER_ID as ID')->from('Users_Info')->where('CLIENT_ID',$cid)->get();
+		return ($query) ? $query->result() : FALSE;
+	}
+	
+	public function getVendorsFromClientWebsite($cid) {
+		$query = $this->db->select('WEB_Vendor as ID')->from('Websites')->where('OWNER_ID',$cid)->where('OWNER_Type',1)->get();
+		return ($query) ? $query->result() : FALSE;
+	}
+	
+	public function getDealershipName($cid) {
+		$query = $this->db->select('CLIENT_Name as Dealership')->from('Clients')->where('CLIENT_ID',$cid)->get()->row();
+		return ($query) ? $query : FALSE;	
+	}
+	
+	public function getVendorName($vid) {
+		$query = $this->db->select('VENDOR_Name as Vendor')->from('Vendors')->where('VENDOR_ID',$vid)->get();
+		return ($query) ? $query->result() : FALSE;	
+	}
+	
 	//get websites
 	public function buildContactTable() {
-		
-		$dsql = 'SELECT d.DIRECTORY_ID as DID,
-					(SELECT 
-						TITLE_Name as JobTitle 
-						FROM xTitles 
-						WHERE 
-						d.TITLE_ID = xTitles.TITLE_ID
-					) AS Title,
-					(SELECT 
-						xc.TYPE_Name 
-						FROM xContactType xc 
-						WHERE 
-						d.DIRECTORY_Type = xc.TYPE_ID 
-							AND 
-						xc.TYPE_Active = 1
-					) AS ContactType,
-					CONCAT(d.DIRECTORY_LastName,", ", d.DIRECTORY_FirstName) AS Name,
-					CONCAT(da.ADDRESS_Street," ",da.ADDRESS_City,", ",da.ADDRESS_State," ",da.ADDRESS_Zip) as Address,
-					ph.PHONE_Number as PhoneNumber,
-					em.EMAIL_Address as EmailAddress
-					
-					FROM Directories d 
-					JOIN DirectoryAddresses da ON da.OWNER_ID = d.OWNER_ID AND da.OWNER_Type = d.DIRECTORY_Type AND da.ADDRESS_Primary = 1
-					JOIN PhoneNumbers ph ON ph.OWNER_ID = d.OWNER_ID AND ph.OWNER_Type = d.DIRECTORY_Type AND ph.PHONE_Primary = 1
-					JOIN EmailAddresses em ON em.OWNER_ID = d.OWNER_ID AND em.OWNER_Type = d.DIRECTORY_Type AND em.EMAIL_Primary = 1';
-					
-					$bkup = '					(SELECT 
-						xc.TYPE_Name 
-						FROM xContactType xc 
-						WHERE 
-						d.DIRECTORY_Type = xc.TYPE_ID 
-							AND 
-						xc.TYPE_Active = 1
-					) AS ContactType,
-					CONCAT(d.DIRECTORY_LastName,", ", d.DIRECTORY_FirstName) AS Name,
-					(SELECT 
-						CONCAT(ADDRESS_Street, " " , ADDRESS_City, ", " , ADDRESS_State, " ", ADDRESS_Zip) AS Address 
-						FROM DirectoryAddresses 
-						WHERE 
-						OWNER_Type = d.DIRECTORY_Type 
-							AND 
-						OWNER_ID = d.OWNER_ID 
-							AND 
-						ADDRESS_Primary = 1 
-							AND 
-						ADDRESS_Active = 1
-					) AS Address,
-					(SELECT 
-						EMAIL_Address 
-						FROM EmailAddresses 
-						WHERE 
-						OWNER_Type = d.DIRECTORY_Type 
-							AND 
-						OWNER_ID = d.OWNER_ID 
-							AND 
-						EMAIL_Primary = 1 
-							AND EMAIL_Active = 1
-					) AS EmailAddress,
-					(SELECT
-						PHONE_Number
-						FROM PhoneNumbers
-						WHERE 
-						OWNER_Type = d.DIRECTORY_Type
-							AND
-						OWNER_ID = d.OWNER_ID
-							AND
-						PHONE_Primary = 1
-							AND
-						PHONE_Active = 1
-					) AS PhoneNumber,
-					d.DIRECTORY_Notes AS Notes,
-					(SELECT TAG_ClassName FROM xTags WHERE TAG_ID = d.DIRECTORY_Tag) AS ClassName	
-';
-		$query = $this->db->query($dsql);
-		return ($query) ? $query->result() : FALSE;
+		$contacts = array();
+		$parent = $this->queryChangerForAnythingOtherThanClientLevel();
+		if(!empty($parent)) {
+			foreach($parent as $owner) {
+				$sys = $this->getSystemContacts(1,$owner->ID);
+				$users = $this->getUsersAsContacts($owner->ID);
+				$vendors = $this->getVendorsFromClientWebsite($owner->ID);
+				if(!empty($users)) {
+					foreach($users as $user) {
+						$uContact = $this->getSystemContacts(3,$user->ID);	
+						if($uContact) {
+							foreach($uContact as $userContact) {
+								$userContact->Owner = $this->getDealershipName($owner->ID)->Dealership;
+								array_push($contacts,$userContact);	
+							}
+						}
+					}
+				}
+				if(!empty($vendors)) {
+					foreach($vendors as $vendor) {
+						$vContact = $this->getSystemContacts(2,$vendor->ID);	
+						if($vContact) {
+							foreach($vContact as $vendorContact) {
+								$vContact->Owner = $this->getVendorName($vendor->ID)->Vendor;
+								array_push($contacts,$vendorContact);	
+							}
+						}
+					}
+				}
+				if(!empty($sys)) {
+					foreach($sys as $c) {
+						$c->Owner = $this->getDealershipName($owner->ID)->Dealership;
+						array_push($contacts,$c);	
+					}
+				}
+			}
+		}
+			
+		if(!empty($contacts)) { return $contacts; }else { return FALSE; }
 	}	
 	
 	//Should cover all contacts
-	function getSystemContacts($type,$id) {
+	public function getSystemContacts($type,$id) {
 		$directories = $this->getDirectoryInformation($type,$id);
-		foreach($directories as $directory) {
-			$directory->Phones = $this->getContactPhoneNumbers($directory->OwnerID,$type);	
-			$directory->Emails = $this->getContactEmailAddresses($directory->OwnerID,$type);
-			$directory->Addresses = $this->getContactPhysicalAddresses($directory->OwnerID,$type);
+		if($directories) { 
+			foreach($directories as $directory) {
+				$directory->Phones = $this->getContactPhoneNumbers($directory->OwnerID,$type);	
+				$directory->Emails = $this->getContactEmailAddresses($directory->OwnerID,$type);
+				$directory->Addresses = $this->getContactPhysicalAddresses($directory->OwnerID,$type);
+			}
 		}
+		return $directories;
 	}
 		
 	//get user information from directory
 	function getUserDirectoryInfo($uid) {		
 		//query using active record codeigniter method
-		$query = $this->db->select('DIRECTORY_ID as did,DIRECTORY_FirstName as FirstName,DIRECTORY_LastName as LastName,DIRECTORY_Tag as tid,OWNER_ID as OwnerID,DIRECTORY_Type as OwnerType')->
-				 from('Directories')->
-				 where('OWNER_ID',$uid)->
-				 where('DIRECTORY_Type',3)->
+		$query = $this->db->select('d.DIRECTORY_ID as did,d.DIRECTORY_FirstName as FirstName,d.DIRECTORY_LastName as LastName,d.DIRECTORY_Tag as tid,d.OWNER_ID as OwnerID,d.DIRECTORY_Type as OwnerType,t.TAG_ClassName as ClassName')->
+				 from('Directories d')->
+				 join('xTags t','d.DIRECTORY_Tag = t.TAG_ID')->
+				 where('d.OWNER_ID',$uid)->
+				 where('d.DIRECTORY_Type',3)->
 				 get();
 		
 		//we should only find one result because the user id is unique to the user so we only return the row()

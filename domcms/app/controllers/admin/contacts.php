@@ -44,6 +44,7 @@ class Contacts extends DOM_Controller {
 	}
 	
     public function index() {
+		$this->load->helper('contacts');
 		$this->LoadTemplate('pages/contacts/listing');
     }
 	

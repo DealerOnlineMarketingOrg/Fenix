@@ -7,7 +7,12 @@
 				div.formError{z-index:2000 !important;}
 				#editUser .chzn-container,textarea{margin-top:12px;}
 				#websites .chzn-container{margin-top:12px;}
-				div.tab_content div.title {border:1px solid #d5d5d5;padding:5px;margin-bottom:5px;background:url('<?= base_url(); ?>imgs/leftNavBg.png') repeat-x scroll 0 0 transparent;}
+				div.tab_content div.title {
+					border:1px solid #d5d5d5;
+					padding:5px;
+					margin-bottom:5px;
+					background:url('<?= base_url(); ?>imgs/leftNavBg.png') repeat-x scroll 0 0 transparent;
+				}
 				div.tab_content div.title h5{padding-left:30px;margin-top:3px;}
 				div.tab_content div.profileRight{margin-left:130px;}
 				div.tab_content img.profileAvatar{float:left;border:1px solid #d5d5d5;}
@@ -35,7 +40,7 @@
 				#importGoogleAvatar{background:url('<?= base_url(); ?>imgs/icons/color/google_icon.png') no-repeat top left;background-size:12px 12px;}
 				#importGoogleAvatar span {display:none;}
 				div.tab_content div.head {background:none;border:none;width:14em;margin:0 auto;}
-				</style>
+			</style>
             <div class="widget" style="margin-top:0;padding-top:0;margin-bottom:10px;">
             	<ul class="tabs">
             		<li class="activeTab"><a href="javascript:void(0);" rel="userInfo">User Details</a></li>

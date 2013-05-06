@@ -1,1 +1,1 @@
-<?= ContactsListingTable(false,false); ?>
+<?= ContactsMainTable($this->user['DropdownDefault']->SelectedAgency,1); ?>

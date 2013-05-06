@@ -1,7 +1,7 @@
 <div id="loader_block">
 	<div id="client_loader"><img src="<?= base_url() . THEMEIMGS; ?>loaders/loader2.gif" /></div>
 </div>
-<div class="content hideTagFilter">
+<div class="content">
     <div id="loader_block">
         <div id="contact_loader"><img src="<?= base_url() . THEMEIMGS; ?>loaders/loader2.gif" /></div>
     </div>
@@ -10,7 +10,7 @@
     <?php include FCPATH . 'html/global/breadcrumb.php'; ?>
     <div class="table" style="margin-top:5px;">
         <div class="head"><h5 class="iView">View All Contacts</h5></div>
-        	<div id="groupTable"><?= ContactsListingTable(); ?></div>
+        	<div id="groupTable"><?= ContactsMainTable($this->user['DropdownDefault']->SelectedAgency,1,false,false); ?></div>
         </div>
     </div>
     <div class="fix"></div>
