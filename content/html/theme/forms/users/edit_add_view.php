@@ -65,44 +65,70 @@
                         </div>
                         <div class="profileRight">
                             <table width="100%" cellpadding="0" cellspacing="0" border="0" class="profile">
+                            	<?php if(!empty($user->Username)) { ?>
                                 <tr class="odd">
                                     <td class="icon"><img src="<?= base_url(); ?>imgs/icons/dark/user.png" alt="" /></td>
                                     <td class="info"><span>Username:</span> <a href="mailto:<?= $user->Username; ?>"><?= $user->Username; ?></a></td>
                                 </tr>
+                                <?php } ?>
+                                <?php if(!empty($user->Dealership)) { ?>
                                 <tr class="even">
                                     <td class="icon"><img src="<?= base_url(); ?>imgs/icons/dark/building.png" alt="" /></td>
                                     <td class="info"><span>Company:</span> <?= $user->Dealership; ?></td>
                                 </tr>
-                                <?php if(!empty($user->Address)) { ?>
-                                    <tr class="odd">
-                                        <td class="icon"><img src="<?= base_url(); ?>imgs/icons/dark/home.png" alt="" /></td>
-                                        <td class="info"><span>Address:</span> <?= $user->Address['street'] . ' ' . $user->Address['city'] . ', ' . $user->Address['state'] . ' ' . $user->Address['zipcode']; ?></td> 
-                                    </tr>
                                 <?php } ?>
+                                <?php if(!empty($user->Addresses)) { ?>
+                                	<tr class="odd">
+                                        <td class="icon"><img src="<?= base_url(); ?>imgs/icons/dark/home.png" alt="" /></td>
+                                        <td class="info">
+                                        <?php foreach($user->Addresses as $address) { ?>
+                                        	<?php if($address->ADDRESS_Primary == 1) { ?>
+                                        		<span>Address:</span> <?= $address->ADDRESS_Street . ' ' . $address->ADDRESS_City . ', ' . $address->ADDRESS_State . ' ' . $address->ADDRESS_Zip; ?>
+                                        	<?php } ?>
+                                        <?php } ?>
+                                        </td>
+                                	</tr>
+                                <?php } ?>
+                                <?php if(!empty($user->AccessName)) { ?>
                                 <tr class="even">
                                     <td class="icon"><img src="<?= base_url(); ?>imgs/icons/dark/locked2.png" alt="" /></td>
                                     <td class="info"><span>Security:</span> <?= $user->AccessName; ?></td>
                                 </tr>
+                                <?php } ?>
+                                <?php if(!empty($user->JoinDate)) { ?>
                                 <tr class="odd">
                                     <td class="icon"><img src="<?= base_url(); ?>imgs/icons/dark/dayCalendar.png" alt="" /></td>
                                     <td class="info"><span>Member Since:</span> <?= date('m/d/Y',strtotime($user->JoinDate)); ?></td>
                                 </td>
-                                <tr class="even">
-                                    <td class="icon"><img src="<?= base_url(); ?>imgs/icons/dark/mail.png" alt="" /></td>
-                                    <td class="info">
-                                        <span>Primary Email:</span><span id="priEmail"><a href="mailto:'<?= $user->PrimaryEmail; ?>"><?= $user->PrimaryEmail; ?></a></span>
-                                     </td>
-                                </td>
-                                <tr class="odd">
-                                    <td class="icon"><img src="<?= base_url(); ?>imgs/icons/dark/phone.png" alt="" /></td>
-                                    <td class="info">
-                                       <span>Primary Phone:</span><span id="priPhone"><?= $user->PrimaryPhone; ?></span>
-                                	</td>
-                                </td>
+                                <?php } ?>
+                                <?php if(!empty($user->Emails)) { ?>
+                                    <tr class="even">
+                                        <td class="icon"><img src="<?= base_url(); ?>imgs/icons/dark/mail.png" alt="" /></td>
+                                        <td class="info">
+                                            <?php foreach($user->Emails as $email) { ?>
+                                                <?php if($email->EMAIL_Primary == 1 ) { ?>
+                                            <span>Primary Email:</span><span id="priEmail"><a href="mailto:'<?= $email->EMAIL_Address; ?>"><?= $email->EMAIL_Address; ?></a></span>
+                                                <?php } ?>
+                                            <?php } ?>
+                                         </td>
+                                    </tr>
+                                <?php } ?>
+                                <?php if(!empty($user->Phones)) { ?>
+                                    <tr class="odd">
+                                        <td class="icon"><img src="<?= base_url(); ?>imgs/icons/dark/phone.png" alt="" /></td>
+                                        <td class="info">
+                                            <?php foreach($user->Phones as $phone) { ?>
+                                                <?php if($phone->PHONE_Primary == 1) { ?>
+                                                    <span>Primary Phone:</span><span id="priPhone"><?= $phone->PHONE_Number; ?></span>
+                                                <?php } ?>
+                                            <?php } ?>
+                                        </td>
+                                    </tr>
+                                <?php } ?>
                             </table>
                             <div class="fix"></div>
                         </div>
-                        <?php if((!isset($view)) AND ($this->user['AccessLevel'] >= 600000 || $user->ID == $this->user['UserID'])) { ?>
+                        <?php if($this->user['AccessLevel'] >= 600000 || $user->ID == $this->user['UserID']) { ?>
                             <div class="password_buttons">
                             	<a href="javascript:changeMyPass('<?= $user->ID; ?>')" class="greenBtn button">Change Password</a>
                                 <?php if(($this->user['AccessLevel'] >= 600000) AND ($user->ID != $this->user['UserID'])) { ?>
@@ -112,125 +138,59 @@
                         <?php } ?>
     				</div>
     				<div id="websites" class="tab_content" style="display:none;">
-                    	<?= WebsiteListingTable($user->ID,3,((isset($view)) ? false : true)); ?>
+                    	<?= WebsiteListingTable($user->ID,3,true); ?>
     				</div>
                     <div id="contactInfo" class="tab_content" style="display:none;">
 						<style type="text/css">
                             #contactInfo div.head {background:none;border:none;width:100%;margin:0 auto;}
                             #contactInfo div.head h5 {width:115px;margin:0 auto;display:block;float:none;}
                         </style>
-						<?php if(isset($view)) { ?>
-                            <?php if(!empty($contactInfo['phones'])) { ?>
-                                <div style="margin-top:10px;margin-bottom:20px;">
-                                    <div class="head"><h5 class="iPhone">Phone Numbers</h5></div>
-                                    <table cellpadding="0" cellspacing="0" width="100%" class="tableStatic" style="border:1px solid #d5d5d5;">
-                                        <thead>
-                                            <tr>
-                                                <td width="10%" style="text-align:left;padding-left:10px;">Type</td>
-                                                <td width="90%" colspan="2" style="text-align:left;padding-left:10px;">Phone Number</td>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php foreach ($contactInfo['phones'] as $phone) { ?>
-                                                <tr>
-                                                    <td width="10%"><?= $phone->PHONE_Type; ?></td>
-                                                    <td width="80%"><?= $phone->PHONE_Number; ?></td>
-                                                    <td width="10%"><?= ($phone->PHONE_Primary != 0) ? 'Primary' : ''; ?></td>
-                                                </tr>
-                                            <?php } ?>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            <?php }else { ?>
-                                <div style="margin-top:10px;margin-bottom:0px;">
-                                    <div class="head"><h5 class="iPhone">Phone Numbers</h5></div>
-                                    <p class="noData" style="text-align:center;">No phone numbers found for this user.</p>
-                                </div>
-                            <?php } ?>
-                            <?php if(!empty($contactInfo['emails'])) { ?>
-                                <div style="margin-top:10px;margin-bottom:60px;">
-                                    <div class="head"><h5 class="iPhone">Email Addresses</h5></div>
-                                    <table cellpadding="0" cellspacing="0" width="100%" class="tableStatic" style="border:1px solid #d5d5d5;">
-                                        <thead>
-                                            <tr>
-                                                <td width="10%" style="text-align:left;padding-left:10px;">Type</td>
-                                                <td width="90%" colspan="2" style="text-align:left;padding-left:10px;">Email Address</td>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php foreach ($contactInfo['emails'] as $email) { ?>
-                                                <tr>
-                                                    <td width="10%"><?= $email->EMAIL_Type; ?></td>
-                                                    <td width="80%"><?= $email->EMAIL_Address; ?></td>
-                                                    <td width="10%"><?= ($email->EMAIL_Primary != 0) ? 'Primary' : ''; ?></td>
-                                                </tr>
-                                            <?php } ?>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            <?php }else { ?>
-                                <div style="margin-top:10px;margin-bottom:60px;">
-                                    <div class="head"><h5 class="iPhone">Email Addressess</h5></div>
-                                    <p class="noData" style="text-align:center">No email addresses found for this user.</p>
-                                </div>
-                            <?php } ?>
-                        <?php }else { ?>
-                        	<div id="phone_table">
-								<?= LoadUserPhoneNumberTable(false,$user->ID); ?> 
-                            </div>
-                            <div id="email_table">
-                            	<?= LoadUserEmailAddresses(false,$user->ID); ?>
-                            </div>
-                        <?php } ?>                         
+                        <div id="phone_table">
+                            <?= LoadUserPhoneNumberTable(false,$user->ID); ?> 
+                        </div>
+                        <div id="email_table">
+                            <?= LoadUserEmailAddresses(false,$user->ID); ?>
+                        </div>
                     <div class="fix"></div>
                     </div>
                     <div id="modules" class="tab_content" style="display:none;">
-                    	<?php if(isset($view)) { ?>
-                        	<?= ModulesToEvenlyDesignedTable($user->Modules); ?>
-                            <script type="text/javascript">
-								jQuery('ul.modulesTable:even').addClass('even');
-								jQuery('ul.modulesTable:odd').addClass('odd');
-								jQuery('ul.modulesTable:first').addClass('first');
-							</script>
-                        <?php }else { ?>
-                        	<?= form_open('/admin/users/edit_user_modules?uid=' . $user->ID,array('name'=>'userMods','id'=>'userMods','style'=>'text-align:left;')); ?>
-                    			<?= ModulesToEvenlyDesignedTableWithForm($user->Modules,$user->ID,$allMods); ?>
-                                <div class="fix"></div>
-                                <div class="submitForm">
-                                    <input type="submit" value="submit" class="redBtn" />
-                                </div>
-                            <?= form_close(); ?>
-                            <script type="text/javascript">
-								jQuery('ul.modulesTable:even').addClass('even');
-								jQuery('ul.modulesTable:odd').addClass('odd');
-								jQuery('ul.modulesTable:first').addClass('first');
-								jQuery('input.mod').change(function() {
-									if(jQuery(this).is(':checked')) {
-										jQuery(this).prev().val('1');
-										jQuery(this).val('1');	
-									}else {
-										jQuery(this).prev().val('0');
-										jQuery(this).val('0');	
-									}
-								});
-								jQuery('#userMods').submit(function(e) {
-									e.preventDefault();
-									var formData = jQuery(this).serialize();
-									jQuery.ajax({
-										type:'POST',
-										url:'<?= ((!isset($view)) ? '/admin/users/submit_user_edit_modules?uid=' . $user->ID : '/admin/users/submit_user_modules'); ?>',
-										data:formData,
-										success:function(data) {
-											if(data == '1') {
-												jAlert('Module edits made successfully.','Success');
-											}else {
-												jAlert('Something went wrong!. Try Again.','Error');	
-											}
-										}
-									});
-								});
-							</script>
-                        <?php } ?>
+						<?= form_open('/admin/users/edit_user_modules?uid=' . $user->ID,array('name'=>'userMods','id'=>'userMods','style'=>'text-align:left;')); ?>
+                            <?= ModulesToEvenlyDesignedTableWithForm($user->Modules,$user->ID,$allMods); ?>
+                            <div class="fix"></div>
+                            <div class="submitForm">
+                                <input type="submit" value="submit" class="redBtn" />
+                            </div>
+                        <?= form_close(); ?>
+                        <script type="text/javascript">
+                            jQuery('ul.modulesTable:even').addClass('even');
+                            jQuery('ul.modulesTable:odd').addClass('odd');
+                            jQuery('ul.modulesTable:first').addClass('first');
+                            jQuery('input.mod').change(function() {
+                                if(jQuery(this).is(':checked')) {
+                                    jQuery(this).prev().val('1');
+                                    jQuery(this).val('1');	
+                                }else {
+                                    jQuery(this).prev().val('0');
+                                    jQuery(this).val('0');	
+                                }
+                            });
+                            jQuery('#userMods').submit(function(e) {
+                                e.preventDefault();
+                                var formData = jQuery(this).serialize();
+                                jQuery.ajax({
+                                    type:'POST',
+                                    url:'<?= ((!isset($view)) ? '/admin/users/submit_user_edit_modules?uid=' . $user->ID : '/admin/users/submit_user_modules'); ?>',
+                                    data:formData,
+                                    success:function(data) {
+                                        if(data == '1') {
+                                            jAlert('Module edits made successfully.','Success');
+                                        }else {
+                                            jAlert('Something went wrong!. Try Again.','Error');	
+                                        }
+                                    }
+                                });
+                            });
+                        </script>
                     </div>
                     <div id="loader" style="display:none;"><img src="<?= base_url() . THEMEIMGS; ?>loaders/loader2.gif" /></div>
     				<div class="fix"></div>
@@ -256,15 +216,11 @@
 
 	var $ = jQuery;
 	
-	<?php if(isset($view)) { ?>
-	
-	<?php }else { ?>
 		$('#tagChanger').change(function() {
 			var ele = $(this).find('option:selected');
 			var classname = ele.attr('rel');
 			$('#tagThumb').attr('class',classname);
 		});
-	<?php } ?>
 
 
 	$('#editUsersAvatar').click(function() {
@@ -460,10 +416,6 @@
 		
 		var activeContent = $(this).attr('rel');
 		
-		<?php if(isset($view)) { ?>
-		
-		<?php }else{ ?>
-		
 		if(activeContent == 'userInfo') {
 			if($('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addWebsiteBtn').is(':visible')) {
 				$('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addWebsiteBtn').addClass('hidden');
@@ -500,7 +452,6 @@
 			}
 		}
 		
-		<?php } ?>
 	});
 	
 	//jQuery("div[class^='widget']").simpleTabs();
@@ -517,14 +468,12 @@
 				text:'Close',
 				click:function() {$(this).dialog('close')}
 			},
-			<?php if(!isset($view)) { ?>
 			<?php if(GateKeeper('Website_Add',$this->user['AccessLevel'])) { ?>
 				{
 					class:'greenBtn hidden addWebsiteBtn',
 					text:"Add New Website",
 					click:function() { addWebsiteForm('<?= $user->ID;?>',3)}
 				},
-			<?php } ?>
 			<?php } ?>
 			<?php if(!isset($view)) { ?>
 				{

@@ -26,7 +26,7 @@ function editUser(uid) {
 	$('#loader_block').slideDown('fast',function() {
 		$.ajax({
 			type:"GET",
-			url:'/admin/users/edit?UID='+uid,
+			url:'/admin/users/edit?uid='+uid,
 			success:function(data) {
 				if(data) {
 					$('#loader_block').slideUp('fast',function() {
@@ -62,7 +62,7 @@ function viewUser(uid) {
 	$('#loader_block').slideDown('fast',function() {
 		$.ajax({
 			type:"GET",
-			url:'/admin/users/view_popup?UID='+uid,
+			url:'/admin/users/view?uid='+uid,
 			success:function(data) {
 				if(data) {
 					$('#loader_block').slideUp('fast',function() {

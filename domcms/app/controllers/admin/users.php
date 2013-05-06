@@ -158,30 +158,14 @@ class Users extends DOM_Controller {
 	
 	public function Edit() {
 		$this->load->model('system_contacts','syscontacts');
-		if(isset($_GET['UID'])) {
-			$uid = $_GET['UID'];
-		}
-		
-		echo $uid;
-		$user = $this->administration->getMyUser($uid);
-		//$user->ContactID = $user->DirectoryID;
-		//$user->Address = mod_parser($user->Address);
-		//$user->CompanyAddress = mod_parser($user->CompanyAddress);
-		
-		//print_object($user);
-		
+		$user = $this->administration->getMyUser($this->user_id);
 		$user->Modules = ParseModulesInReadableArray($user->Modules);
 		$avatar = $this->members->get_user_avatar($user->ID);
-		//$user->TypeCode = substr($user->UserType,0,3);
-		//$user->TypeID = substr($user->UserType,4);
-		
 		$data = array(
 			'user'=>$user,
 			'avatar'=>$avatar,
 			'allMods'=>$this->administration->getAllModules(),
 			'websites'=>true,
-			'contact'=>$user,
-			'contactInfo'=>$this->syscontacts->getUserContactInfo($uid),
 		);
 		$this->load->dom_view('forms/users/edit_add_view', $this->theme_settings['ThemeViews'], $data);
 	}
@@ -426,35 +410,6 @@ class Users extends DOM_Controller {
 		
 	}
 	
-	public function View_popup() {
-		$this->load->model('system_contacts','syscontacts');
-		if(isset($_GET['UID'])) {
-			$uid = $_GET['UID'];
-		}
-		
-		$user = $this->administration->getMyUser($uid);
-		$user->ContactID = $user->DirectoryID;
-		$user->Address = mod_parser($user->Address);
-		$user->CompanyAddress = mod_parser($user->CompanyAddress);
-		$user->Email = mod_parser($user->Emails,false,true);
-		$user->Phone = mod_parser($user->Phones,false,true);
-		$user->Modules = ParseModulesInReadableArray($user->Modules);
-		$avatar = $this->members->get_user_avatar($user->ID);
-		
-		$user->TypeCode = substr($user->UserType,0,3);
-		$user->TypeID = substr($user->UserType,4);
-		
-		$data = array(
-			'user'=>$user,
-			'view'=>TRUE,
-			'avatar'=>$avatar,
-			'allMods'=>$this->administration->getAllModules(),
-			'websites'=>WebsiteListingTable($uid, 'UID', false),
-			'contact'=>$user,
-			'contactInfo'=>$this->syscontacts->getUserContactInfo($uid),
-		);
-		$this->load->dom_view('forms/users/edit_add_view', $this->theme_settings['ThemeViews'], $data);
-	}
 	
 	public function Change_pass_form() {
 		$user = $this->administration->getMyUser($this->user_id);
@@ -520,30 +475,19 @@ class Users extends DOM_Controller {
 	}
 	
 	public function View() {
-		//the user posted to the view.
-		$user_id = $this->input->post('user_id');
-		$user = $this->administration->getUsers($user_id);
-		//print_object($user);
-		$user->Name = $user->FirstName . ' ' . $user->LastName;
-		$users_address = '';
+		$this->load->helper('websites');
+		$this->load->model('system_contacts','syscontacts');
+		$user = $this->administration->getMyUser($this->user_id);
+		$user->Modules = ParseModulesInReadableArray($user->Modules);
+		$avatar = $this->members->get_user_avatar($this->user_id);
 		
-		$user->TypeCode = substr($user->UserType,0,3);
-		$user->TypeID = substr($user->UserType,4);
-		
-		if($user->Address['street'] != '') {
-			foreach($user->Address as $address) {
-				$users_address .= $address . ' ';
-			}
-		}else {
-			$users_address = FALSE;	
-		}
-		
-		$user->Address = $users_address;		
-		$user->Notes = (($user->Notes) ? $user->Notes : FALSE);
 		$data = array(
-			'display' => $user,
+			'user'=>$user,
+			'avatar'=>$avatar,
+			'allMods'=>$this->administration->getAllModules(),
+			'websites'=>true,
 		);
-		$this->LoadTemplate('pages/users/view',$data);
+		$this->load->dom_view('forms/users/view', $this->theme_settings['ThemeViews'], $data);
 	}
 	
 }
