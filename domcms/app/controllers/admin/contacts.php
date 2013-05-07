@@ -9,12 +9,15 @@ class Contacts extends DOM_Controller {
         parent::__construct();
 		$this->load->model('administration');
 		$this->load->model('system_contacts');
+		$this->load->helper('websites');
 
         $this->agency_id = $this->user['DropdownDefault']->SelectedAgency;
 		$this->group_id = $this->user['DropdownDefault']->SelectedGroup;
 		$this->client_id = $this->user['DropdownDefault']->SelectedClient;
         $this->level     = $this->user['DropdownDefault']->LevelType;
 		$this->activeNav = 'admin';
+		
+		$this->contact_id = ((isset($_GET['did'])) ? $_GET['did'] : FALSE);
     }
 
 	private function formatContactInfo(&$contact) {
@@ -47,11 +50,6 @@ class Contacts extends DOM_Controller {
 		$this->load->helper('contacts');
 		$this->LoadTemplate('pages/contacts/listing');
     }
-	
-	public function test() {
-		$table = $this->system_contacts->buildContactTable();
-		print_object($table);
-	}
 	
 	public function load_table() {
 		$contacts = $this->administration->getAllContactsInAgency($this->agency_id);
@@ -150,34 +148,15 @@ class Contacts extends DOM_Controller {
 	}
 	
 	public function Edit() {
-		if(isset($_GET['id'])) {
-			$id = $_GET['id'];
-			$type = $_GET['type'];
-		}
-		
-		$contact = $this->administration->getContactByTypeID($type, $id);
-		$contact_id = $contact->ContactID;
-		$this->formatContactInfo($contact);
-		$clients = $this->administration->getAllClientsInAgency($this->user['DropdownDefault']->SelectedAgency);
-		$vendors = $this->administration->getAllVendors();
-		$types = $this->administration->getTypeList();
-		$tags = $this->administration->getAllTags();
-
-		if($contact) {
-			$data = array(
-				'page'=>'edit',
-				'contact'=>$contact,
-				'clients'=>$clients,
-				'vendors'=>$vendors,
-				'types'=>$types,
-				'tags'=>$tags,
-				'websites'=>WebsiteListingTable($id, $type),
-				'contactInfo'=>ContactInfoListingTable($contact, $type, true),
-			);
-			$this->load->dom_view('forms/contacts/edit_add', $this->theme_settings['ThemeViews'], $data);
-		}else {
-			echo '0';	
-		}
+		$this->load->model('system_contacts','domcontacts');
+		$this->load->helper('contactinfo');
+		$data = array(
+			'clients'=>$this->administration->getAllClientsInAgency($this->user['DropdownDefault']->SelectedAgency),
+			'vendors'=>$this->administration->getVendors(),
+			'contact'=>$this->domcontacts->preparePopupInfo($this->contact_id),
+			'jobtitles'=>$this->domcontacts->getJobTitles()
+		);
+		$this->load->dom_view('forms/contacts/edit',$this->theme_settings['ThemeViews'],$data);
 	}
 	
 }

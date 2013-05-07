@@ -24,7 +24,12 @@ class System_contacts extends DOM_Model {
 		$this->load->model('administration','adminQueries');
     }
 	
-	public function getDirectoryInformation($type = false,$id = false) {
+	public function getJobTitles() {
+		$query = $this->db->select('TITLE_ID as Id,TITLE_Name as Name')->from('xTitles')->get();
+		return ($query) ? $query->result() : FALSE;	
+	}
+	
+	public function getDirectoryInformation($type = false,$id = false,$did = false) {
 		$select = 'd.DIRECTORY_ID as ContactID,
 				   d.OWNER_ID as OwnerID,
 				   d.TITLE_ID as TitleID,
@@ -37,16 +42,34 @@ class System_contacts extends DOM_Model {
 				   t.TAG_ClassName as ClassName';
 				   
 		$this->db->select($select)->from('Directories d')->join('xTitles ti','d.TITLE_ID = ti.TITLE_ID')->join('xTags t','d.DIRECTORY_Tag = t.TAG_ID');
+		
+		
 		if($type and !$id) {
 			$this->db->where('d.DIRECTORY_Type',$type);	
 		}elseif(!$type and $id) {
 			$this->db->where('d.OWNER_ID',$id);	
+		}elseif(!$type and !$id and $did) {
+			$this->db->where('d.DIRECTORY_ID',$did);	
 		}else {
 			$this->db->where('d.OWNER_ID',$id)->where('d.DIRECTORY_Type',$type);	
 		}
 		
 		$query = $this->db->get();
 		return ($query) ? $query->result() : FALSE;
+	}
+	
+	public function preparePopupInfo($did) {
+		$directory = $this->getDirectoryInformation(false,false,$did);
+		
+		//were only expecting one, but it returns as an array so we need to push the one to the contact array.
+		foreach($directory as $myContact) :
+			$myContact->Phones = $this->getContactPhoneNumbers($myContact->OwnerID,$myContact->OwnerType);	
+			$myContact->Emails = $this->getContactEmailAddresses($myContact->OwnerID,$myContact->OwnerType);
+			$myContact->Addresses = $this->getContactPhysicalAddresses($myContact->OwnerID,$myContact->OwnerType);
+		endforeach;
+		
+		//were only expecting one result, but it returns as an array, so just return the first index. which is always 0
+		return $directory[0];
 	}
 	
 	function getContactsForTable($owner_type = false,$owner_id = false) {

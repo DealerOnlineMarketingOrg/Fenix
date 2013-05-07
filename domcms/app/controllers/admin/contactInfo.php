@@ -1,195 +1,175 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 class ContactInfo extends DOM_Controller {
-
-	public $agency_id;
-	public $id;
+	
+	public $user_id;
+	public $directory_id;
+	public $phone_id;
+	public $email_id;
+	public $address_id;
 
     public function __construct() {
         parent::__construct();
 		$this->load->model('administration');
-
-        $this->agency_id = $this->user['DropdownDefault']->SelectedAgency;
-		$this->group_id = $this->user['DropdownDefault']->SelectedGroup;
-		$this->client_id = $this->user['DropdownDefault']->SelectedClient;
-        $this->level     = $this->user['DropdownDefault']->LevelType;
-		$this->activeNav = 'admin';
+		$this->load->model('system_contacts','syscontacts');
+		
+		$this->user_id = ((isset($_GET['uid'])) ? $_GET['uid'] : FALSE);
+		$this->directory_id = ((isset($_GET['did'])) ? $_GET['did'] : FALSE);
+		$this->phone_id = ((isset($_GET['pid'])) ? $_GET['pid'] : FALSE);
+		$this->email_id = ((isset($_GET['eid'])) ? $_GET['eid'] : FALSE);
+		$this->address_id = ((isset($_GET['aid'])) ? $_GET['aid'] : FALSE);
     }
 	
-    public function index() { }
-	
-	public function Load_table($id=false,$type=false) {
-		if(isset($_GET['id']))
-			$id = $_GET['id'];
-		if(isset($_GET['type']))
-			$type = $_GET['type'];
-		if(isset($_GET['page']))
-			$page = $_GET['page'];			
-		
-		$contact = $this->administration->getContactByTypeID($type,$id);
-		$contact->Email = mod_parser($contact->Email,false,true);
-		$contact->Phone = mod_parser($contact->Phone,false,true);
+	public function load_phone_table() {
 		$data = array(
-			'contact'=>$contact,
-			'type'=>$type,
-			'page'=>$page,
+			'uid'=>$this->user_id
 		);
-		$this->load->dom_view('pages/contactInfo/table', $this->theme_settings['ThemeViews'], $data);
+		$this->load->dom_view('pages/users/phone_listing',$this->theme_settings['ThemeViews'],$data);
 	}
 	
-	public function FormPhone() {
-		$form = $this->security->xss_clean($this->input->post());
-		
-		if(isset($_GET['page'])) {
-			$page = $_GET['page'];
-		} else {
-			$page = 'add';
-			$id = '';
-		}
-
-		$id = $form['contact_id'];		
-		$type = $form['type'];
-		$oldValue = $form['old'];
-		$newValue = $form['phone'];
-		$phone = $type.':'.$newValue;
-
-		if ($page == 'edit')
-			$ret = $this->administration->editContactInfoPhone($id, $oldValue, $phone);
-		else
-			$ret = $this->administration->addContactInfoPhone($id, $phone);
-		if($id && $ret) {
-			echo '1';
-		}else {
-			echo '0';
-		}
-	}
-	
-	public function FormEmail() {
-		$form = $this->security->xss_clean($this->input->post());
-		
-		if(isset($_GET['page'])) {
-			$page = $_GET['page'];
-		} else {
-			$page = 'add';
-			$id = '';
-		}
-
-		$id = $form['contact_id'];		
-		$type = $form['type'];
-		$oldValue = $form['old'];
-		$newValue = $form['email'];
-		$email = $type.':'.$newValue;
-
-		if ($page == 'edit')
-			$ret = $this->administration->editContactInfoEmail($id, $oldValue, $email);
-		else
-			$ret = $this->administration->addContactInfoEmail($id, $email);
-		if($id && $ret) {
-			echo '1';
-		}else {
-			echo '0';
-		}
-	}
-
-	public function PhoneAdd() {
-		if(isset($_GET['id'])) {
-			$id = $_GET['id'];
-		}
-		
-		$contact = $this->administration->getContact($id);
-		$contact->TypeCode = substr($contact->Type,0,3);
-		$contact->TypeID = substr($contact->Type,4);
-		
+	public function load_email_table() {
 		$data = array(
-			'page'=>'add',
-			'contact'=>$contact,
-			'type'=>'',
+			'uid'=>$this->user_id
 		);
-		
-		$this->load->dom_view('forms/contactInfo/edit_add_phone', $this->theme_settings['ThemeViews'], $data);
+		$this->load->dom_view('pages/users/email_listing',$this->theme_settings['ThemeViews'],$data);
+	}
+	public function Edit_phone_form() {
+		$phone = $this->syscontacts->getSingleContactPhoneNumber($this->phone_id);
+		$data = array(
+			'phone'=>$phone
+		);
+		//print_object($phones);
+		$this->load->dom_view('forms/users/edit_phone', $this->theme_settings['ThemeViews'], $data);	
 	}
 	
-	public function PhoneEdit() {
-		if(isset($_GET['id'])) {
-			$id = $_GET['id'];
-			$type = $_GET['type'];
-			$value = $_GET['value'];
-		}
+	public function Add_phone_form() {
+		$data = array(
+			'did'=>$this->directory_id
+		);
+		//print_object($phones);
+		$this->load->dom_view('forms/users/add_phone', $this->theme_settings['ThemeViews'], $data);	
+	}
+	
+	public function Add_email_form() {
+		$data = array(
+			'did'=>$this->directory_id
+		);
+		//print_object($phones);
+		$this->load->dom_view('forms/users/add_email', $this->theme_settings['ThemeViews'], $data);	
+	}
+	
+	public function Edit_email_form() {
+		$email = $this->syscontacts->getSingleContactEmailAddress($this->email_id);
+		$data = array(
+			'email'=>$email
+		);
+		//print_object($phones);
+		$this->load->dom_view('forms/users/edit_email', $this->theme_settings['ThemeViews'], $data);	
+	}
+	
+	public function Update_primary_phone() {
+		$form = $this->input->post();
+		//$pid,$did,$primary
+		$reset_primary = $this->syscontacts->updatePrimaryPhone($form['phone_id'],$form['directory_id'],1);
 		
-		$contact = $this->administration->getContact($id);
-		$contact->TypeCode = substr($contact->Type,0,3);
-		$contact->TypeID = substr($contact->Type,4);
-		
-		if($contact) {
-			$data = array(
-				'page'=>'edit',
-				'contact'=>$contact,
-				'type'=>$type,
-				'value'=>$value,
-			);	
-			$this->load->dom_view('forms/contactInfo/edit_add_phone', $this->theme_settings['ThemeViews'], $data);
+		if($reset_primary) {
+			echo '1';	
 		}else {
 			echo '0';	
-		}		
+		}
 	}
 	
-	public function EmailAdd() {
-		if(isset($_GET['id'])) {
-			$id = $_GET['id'];
-		}
+	public function Update_primary_email() {
+		$form = $this->input->post();
+		//$pid,$did,$primary
+		$reset_primary = $this->syscontacts->updatePrimaryEmail($form['email_id'],$form['directory_id'],1);
 		
-		$contact = $this->administration->getContact($id);
-		$contact->TypeCode = substr($contact->Type,0,3);
-		$contact->TypeID = substr($contact->Type,4);
-		
-		$data = array(
-			'page'=>'add',
-			'contact'=>$contact,
-			'type'=>'',
-		);
-		
-		$this->load->dom_view('forms/contactInfo/edit_add_email', $this->theme_settings['ThemeViews'], $data);
-	}
-	
-	public function EmailEdit() {
-		if(isset($_GET['id'])) {
-			$id = $_GET['id'];
-			$type = $_GET['type'];
-			$value = $_GET['value'];
-		}
-		
-		$contact = $this->administration->getContact($id);
-		$contact->TypeCode = substr($contact->Type,0,3);
-		$contact->TypeID = substr($contact->Type,4);
-
-		if($contact) {
-			$data = array(
-				'page'=>'edit',
-				'contact'=>$contact,
-				'type'=>$type,
-				'value'=>$value,
-			);
-			$this->load->dom_view('forms/contactInfo/edit_add_email', $this->theme_settings['ThemeViews'], $data);
+		if($reset_primary) {
+			echo '1';	
 		}else {
 			echo '0';	
-		}		
+		}
 	}
-
-	public function FormPrimary() {
+	
+	public function Update_phone_number() {
+		$pid = $this->input->post('phone_id');
+		$number = $this->input->post('number');
+		$type = $this->input->post('type');	
 		
-		if(isset($_GET['id'])) {
-			$id = $_GET['id'];
-			$phonePrimary = $_GET['phone'];
-			$emailPrimary = $_GET['email'];
-		} else
-			$id = '';
-			
-		$ret = $this->administration->editPrimaryPhoneEmail($id, $phonePrimary, $emailPrimary);
-		
-		if($id && $ret) {
+		$data = array(
+			'PHONE_Number'=>$number,
+			'PHONE_Type'=>$type
+		);
+				
+		$update = $this->syscontacts->updateSingleContactPhoneNumber($pid,$data);
+		if($update) {
 			echo '1';	
 		}else {
 			echo '0';
 		}
 	}
+	
+	public function Add_phone_number() {
+		$number = $this->input->post('number');
+		$type = $this->input->post('type');	
+		
+		$data = array(
+			'OWNER_Type'=>3,
+			'OWNER_ID'=>$this->directory_id,
+			'PHONE_Number'=>$number,
+			'PHONE_Type'=>$type,
+			'PHONE_Created'=>date('Y-m-d H:i:s'),
+			
+		);
+	
+		$add = $this->syscontacts->addSingleContactPhoneNumber($data);
+		if($add) {
+			echo '1';	
+		}else {
+			echo '0';
+		}
+	}
+	
+	public function Add_user_email() {
+		$email = $this->input->post('email');
+		$type = $this->input->post('type');	
+		
+		$data = array(
+			'OWNER_Type'=>3,
+			'OWNER_ID'=>$this->directory_id,
+			'EMAIL_Address'=>$email,
+			'EMAIL_Type'=>$type,
+			'EMAIL_Created'=>date('Y-m-d H:i:s'),
+			
+		);
+	
+		$add = $this->syscontacts->addSingleEmailAddress($data);
+		if($add) {
+			echo '1';	
+		}else {
+			echo '0';
+		}
+	}
+
+	
+	public function Update_user_email() {
+		$eid = $this->input->post('email_id');
+		$email = $this->input->post('email');
+		$type = $this->input->post('type');	
+		
+		$data = array(
+			'EMAIL_Address'=>$email,
+			'EMAIL_Type'=>$type
+		);
+		
+				
+		$update = $this->syscontacts->updateSingleEmailAddress($eid,$data);
+		if($update) {
+			echo '1';	
+		}else {
+			echo '0';
+		}
+		
+	}
+		
 }

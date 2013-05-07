@@ -1,11 +1,16 @@
 <?php
-	function LoadUserPhoneNumberTable($view = false,$uid) { 
+	function LoadUserPhoneNumberTable($view = false,$uid,$type = 3) { 
 		$ci =& get_instance();
 		$ci->load->model('system_contacts','syscontacts');
-		$user = $ci->administration->getMyUser($uid);
+		if($type != 3) {
+			$user = $ci->administration->getMyUser($uid);
+		}else {
+			$user = $ci->syscontacts->preparePopupInfo($uid);	
+		}
 		?>
 		<?php if(!empty($user->Phones)) { ?>
             <div style="margin-top:10px;margin-bottom:30px;">
+            	<script type="text/javascript" src="<?= base_url(); ?>js/contact_info_phone.js"></script>
                 <div class="head"><h5 class="iPhone">Phone Numbers</h5></div>
                 <table cellpadding="0" cellspacing="0" width="100%" class="tableStatic" style="border:1px solid #d5d5d5;">
                     <thead>
@@ -22,12 +27,15 @@
                                     <input 
                                         type="radio" 
                                         name="phone" 
-                                        onclick="javascript:executePrimaryPhone('<?=$phone->PHONE_ID;?>','<?=$phone->OWNER_ID;?>','<?=$phone->PHONE_Primary;?>')"
+                                        onclick="javascript:primaryPhone('<?=$phone->PHONE_ID;?>','<?=$phone->OWNER_ID;?>','<?=$phone->PHONE_Primary;?>')"
                                         value="<?= $phone->PHONE_Number; ?>" 
                                         <?= ($phone->PHONE_Primary != 0) ? 'checked' : ''; ?> class="change_primary_phone" />
                                 </td>
                                 <td width="80%"><?= $phone->PHONE_Number; ?></td>
-                                <td width="10%" class="actionsCol"><a title="Edit User Phone" href="javascript:editUserPhone('<?= $phone->PHONE_ID; ?>');" class="actions_link"><img src="<?= base_url() . THEMEIMGS; ?>icons/color/pencil.png" alt="" /></a></td>
+                                <td width="10%" class="actionsCol">
+                                        <a title="Edit Contact Phone" href="javascript:editPhone('<?= $phone->PHONE_ID; ?>');" class="actions_link">
+                                    	<img src="<?= base_url() . THEMEIMGS; ?>icons/color/pencil.png" alt="" /></a>
+                                    </td>
                             </tr>
                         <?php } ?>
                     </tbody>
@@ -40,16 +48,21 @@
             </div>
         <?php } ?>
         <?php if(!$view) {?>
-            <a href="javascript:addUserPhone('<?= $user->ID; ?>');" class="greenBtn floatRight button" style="margin-top:-20px;">Add New Phone Number</a>
+            <a href="javascript:addPhone('<?= ((isset($user->ID)) ? $user->ID : $user->OwnerID); ?>','<?= $type; ?>');" class="greenBtn floatRight button" style="margin-top:-20px;">Add New Phone Number</a>
         <? } ?>
 	<? }
 	
-	function LoadUserEmailAddresses($view = false,$uid) { 
+	function LoadUserEmailAddresses($view = false,$uid,$type = 3) { 
 		$ci =& get_instance();
 		$ci->load->model('system_contacts','syscontacts');
-		$user = $ci->administration->getMyUser($uid);
+		if($type != 3) {
+			$user = $ci->syscontacts->preparePopupInfo($uid);	
+		}else { 
+			$user = $ci->administration->getMyUser($uid);
+		}
 		?>
 		<?php if(!empty($user->Emails)) { ?>
+        	<script type="text/javascript" src="<?= base_url(); ?>js/contact_info_email.js"></script>
             <div style="margin-top:10px;margin-bottom:0px;">
                 <div class="head"><h5 class="iPhone">Email Addresses</h5></div>
                 <table cellpadding="0" cellspacing="0" width="100%" class="tableStatic" style="border:1px solid #d5d5d5;">
@@ -67,12 +80,12 @@
                                     <input 
                                         type="radio" 
                                         name="email" 
-                                        onclick="javascript:executePrimaryEmail('<?=$email->EMAIL_ID;?>','<?=$email->OWNER_ID;?>','<?=$email->EMAIL_Primary;?>')"
+                                        onclick="javascript:primaryEmail('<?=$email->EMAIL_ID;?>','<?=$email->OWNER_ID;?>','<?=$email->EMAIL_Primary;?>')"
                                         value="<?= $email->EMAIL_Address; ?>" 
                                         <?= ($email->EMAIL_Primary != 0) ? 'checked' : ''; ?> class="change_primary_email" />
                                 </td>
                                 <td width="80%"><?= $email->EMAIL_Address; ?></td>
-                                <td width="10%" style="text-align:center;"><a title="Edit User Email" href="javascript:editUserEmail('<?= $email->EMAIL_ID; ?>');" class="actions_link"><img src="<?= base_url() . THEMEIMGS; ?>icons/color/pencil.png" alt="" /></a></td>
+                                <td width="10%" style="text-align:center;"><a title="Edit User Email" href="javascript:editEmail('<?= $email->EMAIL_ID; ?>');" class="actions_link"><img src="<?= base_url() . THEMEIMGS; ?>icons/color/pencil.png" alt="" /></a></td>
                             </tr>
                         <?php } ?>
                     </tbody>
@@ -85,7 +98,7 @@
             </div>
         <?php } ?>
         <?php if(!$view) { ?>
-            <a href="javascript:addUserEmail('<?= $user->ID; ?>');" class="greenBtn floatRight button" style="margin-top:10px;">Add New Email</a>
+            <a href="javascript:addEmail('<?= ((isset($user->ID)) ? $user->ID : $user->OwnerID); ?>','<?= $type; ?>');" class="greenBtn floatRight button" style="margin-top:10px;">Add New Email</a>
         <?php } ?>
 	<?php }
 ?>

@@ -12,7 +12,7 @@ function ContactsMainTable($id,$type,$actions = false,$tab) {
 	$listingPriv 		 = GateKeeper('Contact_List',$userPermissionLevel);
 	
 	$contacts = $ci->domcontacts->buildContactTable($id,$type);
-	
+	//print_object($contacts);
 	if($addPriv) { ?>
 		<a href="javascript:addContact();" class="greenBtn floatRight button addButtonTop">Add New Contact</a>	
 	<?php }
@@ -53,7 +53,7 @@ function ContactsMainTable($id,$type,$actions = false,$tab) {
                           </td>
                           <td><?= (!empty($contact->Owner) ? $contact->Owner : '...'); ?></td>
                           <td><?= (!empty($contact->JobTitle) ? $contact->JobTitle : '...'); ?></td>
-                          <td><?= $contact->FirstName . ' ' . $contact->LastName; ?></td>
+                          <td><a href="javascript:viewContact('<?= $contact->ContactID; ?>');"><?= $contact->FirstName . ' ' . $contact->LastName; ?></a></td>
                           <td class="">
                           	<?php if(!empty($contact->Emails)) { ?>
                             	<?php foreach($contact->Emails as $email) { ?>

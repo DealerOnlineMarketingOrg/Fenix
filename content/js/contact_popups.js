@@ -25,7 +25,7 @@ function addContact() {
 	});
 }
 
-function editContact(id,type) {
+function editContact(id) {
 	$('#addContactInfo').remove();
 	$('#editContactInfo').remove();
 	$('#viewContactInfo').remove();
@@ -33,7 +33,7 @@ function editContact(id,type) {
 	jQuery('#loader_block').slideDown('fast',function() {
 		$.ajax({
 			type:'GET',
-			url:'/admin/contacts/edit?id='+id+'&type='+type,
+			url:'/admin/contacts/edit?did='+id,
 			success:function(code) {
 				if(code == '0') {
 					jAlert('The Contact can not be found. Please try again','Error',function() {

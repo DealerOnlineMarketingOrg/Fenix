@@ -500,7 +500,7 @@ function VendorListingTable($hide_actions=false,$hide_add=false) { ?>
             <tbody>
                 <?php foreach($vendors as $vendor) { ?>
                     <tr>
-                        <td class="noWrap" style="text-align:left;"><?= $vendor->Name; ?></td>
+                        <td class="noWrap" style="text-align:left;"><a href="javascript:viewVendor('<?= $vendor->ID; ?>')"><?= $vendor->Name; ?></a></td>
                         <td class="noWrap">
                         	<?php if(isset($vendor->Addresses) AND (!empty($vendor->Addresses))) { ?>
 								<?php foreach($vendor->Addresses as $address) {
@@ -609,7 +609,7 @@ function ClientsListingTable() {
                     <tr class="tagElement <?= $client->ClassName; ?> ">
                     	<td class="tags"><div class="<?= $client->ClassName; ?>">&nbsp;</div><span style="display:none;"><?= $client->ClassName; ?></span></td>
                         <td><?= $client->ClientCode; ?></td>
-                        <td class="alignTextLeft"><?= $client->Name; ?></td>
+                        <td class="alignTextLeft"><a href="javascript:viewClient('<?= $client->ClientID; ?>');"><?= $client->Name; ?></a></td>
                         <td><?= $client->GroupName; ?></td>
                         <td class="alignTextLeft" style="width:30px;"><?= (($client->Status) ? 'Active' : 'Disable'); ?></td>
                         <?php if($editPriv) { ?>
@@ -718,12 +718,14 @@ function UserListingTable($client_id = false,$hide_actions = false) { ?>
                     <tr class="tagElement <?= $user->ClassName; ?>">
                     	<td class="tags" style="vertical-align: middle;"><div class="<?= $user->ClassName; ?>">&nbsp;</div></td>
                         <td style="text-align:center;vertical-align: middle;">
-                        	<div style="text-align:center;margin-top:5px;">
-                            	<img src="<?= $avatar; ?>" style="width:30px;" alt="<?= $user->FirstName . ' ' . $user->LastName; ?>" />
-                            </div>
+                        	<a href="javascript:viewUser('<?= $user->ID; ?>');">
+                                <div style="text-align:center;margin-top:5px;">
+                                    <img src="<?= $avatar; ?>" style="width:30px;" alt="<?= $user->FirstName . ' ' . $user->LastName; ?>" />
+                                </div>
+                            </a>
                         </td>
                         <td style="text-align:left;vertical-align: middle;"><a href="mailto:<?= $user->Username; ?>"><?= $user->Username; ?></a></td>
-                        <td style="vertical-align:middle;"><?= $user->FirstName . ' ' . $user->LastName; ?></td>
+                        <td style="vertical-align:middle;"><a href="javascript:viewUser('<?= $user->ID; ?>');"><?= $user->FirstName . ' ' . $user->LastName; ?></a></td>
                         <td style="width:30px;text-align:center;vertical-align: middle;"><?= (($user->Status) ? 'Active' : 'Disable'); ?></td>
                         <?php if($editPriv) { ?>
                         <td class="actionsCol noSort" style="width:60px;text-align:center;vertical-align: middle;">
