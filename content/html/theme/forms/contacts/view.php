@@ -258,7 +258,7 @@
 				{
 					class:'greyButton saveContactBtn',
 					text:"Close",
-					click:function() { $('#editContactDetails').submit(); }
+					click:function() { $('#viewContactInfo').dialog('close'); }
 				},
 		]
 	});
