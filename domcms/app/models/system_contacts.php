@@ -29,6 +29,56 @@ class System_contacts extends DOM_Model {
 		return ($query) ? $query->result() : FALSE;	
 	}
 	
+	public function getJobTitleText($id) {
+		$query = $this->db->select('TITLE_Name as Name')->from('xTitles')->where('TITLE_ID',$id)->get();
+		return ($query) ? $query->row()->Name : FALSE;	
+	}
+	
+	public function updatePrimaryAddress($address_id,$data) {
+		$this->db->where('ADDRESS_ID',$address_id);
+		return ($this->db->where('DirectoryAddresses',$data)) ? TRUE : FALSE;
+	}
+	
+	public function addContact($data) {
+		$add_phone = $data['PhoneNumbers'];
+		$add_address = $data['DirectoryAddresses'];
+		$directory = $data['Directories'];
+		
+		$add_directory_entry_id = (($this->db->insert('Directories',$directory)) ? $this->db->insert_id() : FALSE);
+		
+		if($add_directory_entry_id) {
+			if($directory['OWNER_Type'] > 2) {
+				$add_phone['DIRECTORY_ID'] = $add_directory_entry_id;
+				$add_address = $add_directory_entry_id;	
+			}
+			
+			return (($this->db->insert('PhoneNumbers',$add_phone) AND $this->db->insert('DirectoryAddresses',$add_address)) ? TRUE : FALSE);
+		}else {
+			return FALSE;	
+		}
+		
+	}
+	
+	public function updateDirectoryInformation($data) {
+		$update_address = $this->updatePrimaryAddress($data['AddressID'],$data['PrimaryAddress']);
+		$updateInfo = $this->updateDirectoryInfo($data['DirectoryID'],$data['Directories']);
+		
+		if(!$update_address AND !$updateInfo) {
+			return FALSE;	
+		}elseif(!$update_address AND $updateInfo) {
+			return FALSE;	
+		}elseif($update_address AND !$updateInfo) {
+			return FALSE;	
+		}else{
+			return TRUE;
+		}
+	}
+	
+	public function updateDirectoryInfo($did,$data) {
+		$this->db->where('DIRECTORY_ID',$did);
+		return ($this->db->update('Directories',$data)) ? TRUE : FALSE;	
+	}
+	
 	public function getDirectoryInformation($type = false,$id = false,$did = false) {
 		$select = 'd.DIRECTORY_ID as ContactID,
 				   d.OWNER_ID as OwnerID,
@@ -63,9 +113,15 @@ class System_contacts extends DOM_Model {
 		
 		//were only expecting one, but it returns as an array so we need to push the one to the contact array.
 		foreach($directory as $myContact) :
-			$myContact->Phones = $this->getContactPhoneNumbers($myContact->OwnerID,$myContact->OwnerType);	
-			$myContact->Emails = $this->getContactEmailAddresses($myContact->OwnerID,$myContact->OwnerType);
-			$myContact->Addresses = $this->getContactPhysicalAddresses($myContact->OwnerID,$myContact->OwnerType);
+			if($myContact->OwnerType > 2) {
+				$myContact->Phones = $this->getContactPhoneNumbers(false,false,$myContact->ContactID);
+				$myContact->Emails = $this->getContactEmailAddresses(false,false,$myContact->ContactID);
+				$myContact->Addresses = $this->getContactPhysicalAddresses(false,false,$myContact->ContactID);
+			}else {
+				$myContact->Phones = $this->getContactPhoneNumbers($myContact->OwnerID,$myContact->OwnerType);	
+				$myContact->Emails = $this->getContactEmailAddresses($myContact->OwnerID,$myContact->OwnerType);
+				$myContact->Addresses = $this->getContactPhysicalAddresses($myContact->OwnerID,$myContact->OwnerType);
+			}
 		endforeach;
 		
 		//were only expecting one result, but it returns as an array, so just return the first index. which is always 0
@@ -272,14 +328,19 @@ class System_contacts extends DOM_Model {
 	}
 	
 	//get contact phone numbers as object (could be multiple, could be none or one)
-	function getContactPhoneNumbers($oid,$otype) {
+	function getContactPhoneNumbers($oid,$otype,$did = false) {
 		//query using the active record codeigniter method
-		$query = $this->db->select('*')->
-				 from('PhoneNumbers')->
-				 where('OWNER_ID',$oid)->
-				 where('OWNER_Type',$otype)->
-				 where('PHONE_Active',1)->
-				 get();
+		$this->db->select('*')->from('PhoneNumbers');
+		
+		if(!$did) {
+			$this->db->where('OWNER_ID',$oid);
+			$this->db->where('OWNER_Type',$otype);
+			$this->db->where('PHONE_Active',1);
+		}else {
+			$this->db->where('DIRECTORY_ID',$did);	
+		}
+		
+		$query = $this->db->get();
 		
 		//we return the results back to the caller...if found return the object, if not return FALSE		 
 		return ($query) ? $query->result() : FALSE;
@@ -319,13 +380,17 @@ class System_contacts extends DOM_Model {
 	}
 	
 	//get contact email addresses as object (could be multiple, could be none or one)
-	function getContactEmailAddresses($oid,$otype) {
-		$query = $this->db->select('*')->
-				 from('EmailAddresses')->
-				 where('OWNER_ID',$oid)->
-				 where('OWNER_Type',$otype)->
-				 where('EMAIL_Active',1)->
-				 get();	
+	function getContactEmailAddresses($oid,$otype,$did = false) {
+		$this->db->select('*')->from('EmailAddresses');
+		if(!$did) {
+			$this->db->where('OWNER_ID',$oid);
+			$this->db->where('OWNER_Type',$otype);
+			$this->db->where('EMAIL_Active',1);
+		}else {
+			$this->db->where('DIRECTORY_ID',$did);	
+		}
+		
+		$query = $this->db->get();	
 				 
 		return ($query) ? $query->result() : FALSE;
 	}
@@ -342,13 +407,16 @@ class System_contacts extends DOM_Model {
 	}
 	
 	//get contact physical address as object (could be multiple, could be none or one)
-	function getContactPhysicalAddresses($oid,$otype) {
-		$query = $this->db->select('*')->
-				 from('DirectoryAddresses')->
-				 where('OWNER_ID',$oid)->
-				 where('OWNER_Type',$otype)->
-				 where('ADDRESS_Active',1)->
-				 get();
+	function getContactPhysicalAddresses($oid,$otype,$did = false) {
+		$this->db->select('*')->from('DirectoryAddresses');
+		if(!$did) {
+			$this->db->where('OWNER_ID',$oid);
+			$this->db->where('OWNER_Type',$otype);
+			$this->db->where('ADDRESS_Active',1);
+		}else {
+			$this->db->where('DIRECTORY_ID',$did);	
+		}
+		$query = $this->db->get();
 				 
 		return ($query) ? $query->result() : FALSE;	
 	}

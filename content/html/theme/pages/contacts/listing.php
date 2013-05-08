@@ -10,7 +10,7 @@
     <?php include FCPATH . 'html/global/breadcrumb.php'; ?>
     <div class="table" style="margin-top:5px;">
         <div class="head"><h5 class="iView">View All Contacts</h5></div>
-        	<div id="groupTable"><?= ContactsMainTable($this->user['DropdownDefault']->SelectedAgency,1,false,false); ?></div>
+        	<div id="contactTable"><?= ContactsMainTable(false,false); ?></div>
         </div>
     </div>
     <div class="fix"></div>

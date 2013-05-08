@@ -1,5 +1,5 @@
 <div class="uDialog">
-    <div class="dialog-message popper" id="editContactInfo" title="Edit Contact">
+    <div class="dialog-message popper" id="viewContactInfo" title="View Contact">
         <div class="uiForm">
 			<style type="text/css">
 				#editClient label{margin-top:0px;float:left;padding-top:12px;}
@@ -20,11 +20,11 @@
                                     <label><span class="req">*</span> Name</label>
                                     <div class="formRight">
 										<div style="position:relative;float:left;width:48%;">
-											<?= form_input(array('class'=>'required validate[required,custom[onlyLetterSp]]','name'=>'firstname','id'=>'firstname','value'=> $contact->FirstName,'style'=>'margin:0','style'=>'width:22em !important')); ?>
+                                        	<input type="text" value="<?= $contact->FirstName; ?>" disabled />
                                             <span class="formNote" style="margin-top:-10px;">First Name</span>
                                         </div>
                                     	<div style="position:relative;float:left;margin-left:5px;width:48%;">
-											<?= form_input(array('class'=>'required validate[required,custom[onlyLetterSp]]','name'=>'lastname','id'=>'lastname','value'=>$contact->LastName,'style'=>'margin:0','style'=>'width:22em !important',)); ?>
+                                        	<input type="text" value="<?= $contact->LastName; ?>" disabled />
                                             <span class="formNote" style="margin-top:-10px;">Last Name</span>
                                         </div>
                                 	</div>
@@ -48,7 +48,7 @@
                                         <div id="contactParentClient">
                                             <label><span class="req">*</span> Client</label>
                                             <div class="formRight searchDrop noSearch">
-                                                <select class="chzn-select validate[required]" style="width:auto" name="owner_id" id="ClientID">
+                                                <select class="chzn-select validate[required]" style="width:auto" name="owner_id" id="ClientID" disabled>
                                                     <option value=""></option>
                                                     <?php 
                                                         foreach($clients as $client) : ?>
@@ -61,7 +61,7 @@
                                         <div id="contactParentVendor">
                                             <label><span class="req">*</span> Vendor</label>
                                             <div class="formRight searchDrop">
-                                                <select class="chzn-select validate[required]" style="width:auto" name="owner_id" id="VendorID">
+                                                <select class="chzn-select validate[required]" style="width:auto" name="owner_id" id="VendorID" disabled>
                                                     <option value=""></option>
                                                     <?php 
                                                         foreach($vendors as $vendor) : ?>
@@ -78,7 +78,7 @@
                                 <div class="rowElem noborder">
                                     <label>Title</label>
                                     <div class="formRight">
-                                        <select class="chzn-select validate[required]" style="width:auto" name="job_title" id="JobTitle">
+                                        <select class="chzn-select validate[required]" style="width:auto" name="job_title" id="JobTitle" disabled>
                                             <?php
                                                 foreach ($jobtitles as $jobtitle) { ?>
                                                    <option value="<?= $jobtitle->Id; ?>" <?= (($contact->TitleID == $jobtitle->Id) ? 'selected="selected"' : ''); ?>><?= $jobtitle->Name; ?></option>
@@ -94,11 +94,12 @@
                                     	<?php if(!empty($contact->Addresses)) { ?>
 											<?php foreach($contact->Addresses as $address) { ?>
                                                 <?php if($address->ADDRESS_Primary == 1) { ?>
-                                                    <?= form_input(array('class'=>'validate[custom[onlyLetterNumberSp]]','name'=>'street','id'=>'address','value' => $address->ADDRESS_Street,'style'=>'margin:0','placeholder'=>'Enter Street')); ?>
+                                                    <input type="text" value="<?= $address->ADDRESS_Street ?>" disabled />
                                                 <?php } ?>
                                             <?php } ?>
                                         <?php }else { ?>
-											<?= form_input(array('class'=>'validate[custom[onlyLetterNumberSp]]','name'=>'street','id'=>'address','value'=>'','style'=>'margin:0')); ?>               <?php } ?>
+                                            <input type="text" value="..." disabled />
+                                        <?php } ?>
                                     </div>
                                     <div class="fix"></div>
                                  </div>
@@ -108,11 +109,11 @@
                                     	<?php if(!empty($contact->Addresses)) { ?>
 											<?php foreach($contact->Addresses as $address) { ?>
                                                 <?php if($address->ADDRESS_Primary == 1) { ?>
-                                                    <?= form_input(array('class'=>'validate[custom[onlyLetterNumberSp]]','name'=>'city','id'=>'city','value' => $address->ADDRESS_City,'style'=>'margin:0')); ?>
+                                                    <input type="text" value="<?= $address->ADDRESS_City; ?>" disabled />
                                                 <?php } ?>
                                             <?php } ?>
                                         <?php }else { ?>
-											<?= form_input(array('class'=>'validate[custom[onlyLetterNumberSp]]','name'=>'city','id'=>'city','value'=>'','style'=>'margin:0')); ?>                       
+											<input type="text" value="<?= $address->ADDRESS_City; ?>" disabled />										
 										<?php } ?>
                                     </div>
                                     <div class="fix"></div>
@@ -138,11 +139,12 @@
                                     	<?php if(!empty($contact->Addresses)) { ?>
 											<?php foreach($contact->Addresses as $address) { ?>
                                                 <?php if($address->ADDRESS_Primary == 1) { ?>
-                                                    <?= form_input(array('class'=>'validate[custom[onlyLetterNumberSp]]','name'=>'zip','id'=>'zip','value' => $address->ADDRESS_Zip,'style'=>'margin:0')); ?>
-                                                <?php } ?>
+													<input type="text" value="<?= $address->ADDRESS_Zip; ?>" disabled />                                                
+												<?php } ?>
                                             <?php } ?>
                                         <?php }else { ?>
-											<?= form_input(array('class'=>'validate[custom[onlyLetterNumberSp]]','name'=>'zip','id'=>'zip','value'=>'','style'=>'margin:0')); ?>                        <?php } ?>
+											<input type="text" value="..." disabled />                                                
+                        				<?php } ?>
                                     </div>
                                     <div class="fix"></div>
                                 </div>
@@ -154,14 +156,6 @@
                                 	<div class="fix"></div>
                                 </div>
                                 <div class="submitForm">
-                                	<?php if(!empty($contact->Addresses)) { ?>
-                                    	<?php foreach($contact->Addresses as $address) { ?>
-                                        	<?php if($address->ADDRESS_Primary == 1) { ?>
-                                            	<input type="hidden" name="address_id" value="<?= $address->ADDRESS_ID; ?>" />
-                                            <?php } ?>
-                                        <?php } ?>
-                                    <?php } ?>
-                                    <input type="hidden" name="contact_id" value="<?= $contact->ContactID; ?>" />
                                 </div>
                             </fieldset>
                         <?= form_close(); ?>
@@ -169,9 +163,9 @@
                     </div>
                     <div id="websites" class="tab_content" style="display:none;">
                     	<?php if($contact->OwnerType != 3) { ?>
-                    		<?= WebsiteListingTable($contact->OwnerID,$contact->ContactType,true); ?>
+                    		<?= WebsiteListingTable($contact->OwnerID,$contact->ContactType,false); ?>
                         <?php }else { ?>
-                    		<?= WebsiteListingTable($contact->OwnerID,3,true); ?>
+                    		<?= WebsiteListingTable($contact->OwnerID,3,false); ?>
                         <?php } ?>
                     </div>
                     <div id="contactInfo" class="tab_content" style="display:none;">
@@ -181,16 +175,16 @@
                         </style>
                         <div id="phone_table">
                         	<?php if($contact->OwnerType != 3) { ?>
-                            	<?= LoadUserPhoneNumberTable(false,$contact->ContactID, $contact->OwnerType); ?>
+                            	<?= LoadUserPhoneNumberTable(true,$contact->ContactID, $contact->OwnerType); ?>
                             <?php }else { ?>
-                            	<?= LoadUserPhoneNumberTable(false,$contact->OwnerID); ?> 
+                            	<?= LoadUserPhoneNumberTable(true,$contact->OwnerID); ?> 
                             <?php } ?>
                         </div>
                         <div id="email_table">
                         	<?php if($contact->OwnerType != 3) { ?>
-                            	<?= LoadUserEmailAddresses(false,$contact->ContactID,$contact->OwnerType); ?>
+                            	<?= LoadUserEmailAddresses(true,$contact->ContactID,$contact->OwnerType); ?>
                             <?php }else { ?>
-                            	<?= LoadUserEmailAddresses(false,$contact->OwnerID); ?>
+                            	<?= LoadUserEmailAddresses(true,$contact->OwnerID); ?>
                             <?php } ?>
                         </div>
                     	<div class="fix"></div>
@@ -236,29 +230,6 @@
 	
 	$('#editContactDetails').submit(function(e) {
 		e.preventDefault();
-		var formData = $(this).serialize();
-		
-		$.ajax({
-			type:'POST',
-			data:formData,
-			url:'/admin/contacts/process_edit?did=<?= $contact->ContactID; ?>',
-			success:function(code) {
-				alert(code);
-				/*
-				var msg;
-				if(code == '1') {
-					msg = 'Your edit was made succesfully';
-					jAlert(msg,'Success',function() {
-						$("#editContactInfo").dialog('close');
-						contactListTable();
-					}); 
-				}else {
-					msg = 'There was a problem with editing the contact requested. Please try again.';
-					jAlert(msg,'Error');
-				}
-				*/
-			}
-		});
 	});
 	
 	$(".chzn-select").chosen();
@@ -270,120 +241,26 @@
 		$(this).parent().addClass('activeTab');
 		var content = 'div#' + $(this).attr('rel');
 		//alert(content);
-		$('#editContactInfo div.tab_container div.tab_content').hide();
-		$('#editContactInfo div.tab_container').find(content).css({'display':'block'});
+		$('#viewContactInfo div.tab_container div.tab_content').hide();
+		$('#viewContactInfo div.tab_container').find(content).css({'display':'block'});
 		
 		var activeContent = $(this).attr('rel');
-		
-		<?php if(isset($view)) { ?>
-		
-		<?php }else { ?>
-		
-		if(activeContent == 'contactDetails') {
-			if($('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.saveContactBtn').hasClass('hidden')) {
-				$('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.saveContactBtn').removeClass('hidden');
-			}
-			if($('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addWebsiteBtn').is(':visible')) {
-				$('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addWebsiteBtn').addClass('hidden');
-			}
-			if($('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.savePrimariesBtn').is(':visible')) {
-				$('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.savePrimariesBtn').addClass('hidden');
-			}
-		}
-		
-		if(activeContent == 'websites') {
-			if($('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.saveContactBtn').is(':visible')) {
-				$('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.saveContactBtn').addClass('hidden');
-			}
-			if($('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addWebsiteBtn').hasClass('hidden')) {
-				$('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addWebsiteBtn').removeClass('hidden');
-			}
-			if($('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.savePrimariesBtn').is(':visible')) {
-				$('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.savePrimariesBtn').addClass('hidden');
-			}
-		}
-		
-		if(activeContent == 'contactInfo') {
-			if($('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.saveContactBtn').is(':visible')) {
-				$('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.saveContactBtn').addClass('hidden');
-			}
-			if($('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addWebsiteBtn').is(':visible')) {
-				$('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addWebsiteBtn').addClass('hidden');
-			}
-			if($('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.savePrimariesBtn').hasClass('hidden')) {
-				$('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.savePrimariesBtn').removeClass('hidden');
-			}
-		}
-		<?php } ?>
 		
 		//alert(content);
 	});
 	
-	$("#editContactInfo").dialog({
+	$("#viewContactInfo").dialog({
 		minWidth:800,
 		height:500,
 		autoOpen: true,
 		modal: true,
 		buttons: [
 				{
-					class:'redBtn saveContactBtn',
-					text:"Save",
+					class:'greyButton saveContactBtn',
+					text:"Close",
 					click:function() { $('#editContactDetails').submit(); }
 				},
-			<?php if(GateKeeper('Website_Add',$this->user['AccessLevel'])) { ?>
-				{
-					class:'greenBtn hidden addWebsiteBtn',
-					text:"Add New Website",
-					click:function() { addWebsiteForm('<?= $contact->OwnerID; ?> ','<?= $contact->OwnerType; ?>')}
-				},
-			<?php } ?>
-				{
-					class:'redBtn hidden savePrimariesBtn',
-					text:"Save",
-					click:function() { updatePrimaries('<?= $contact->ContactID; ?>',$(".phonePrimary:checked").val(),$(".emailPrimary:checked").val())}
-				},
-
 		]
 	});
-	
-	function load_phone_table() {
-		$('#addPhone').remove();
-		$('#editPhone').remove();
-		$('#loader_block').slideDown('fast',function() {
-			$('#editPhone').remove();
-			$('#phone_table').html('');
-			$.ajax({
-				type:'GET',
-				url:'/admin/contacts/load_phone_table?did=<?= $contact->ContactID; ?>',
-				success:function(data) {
-					if(data) {
-						$('#loader_block').slideUp('fast',function() {
-							$('#phone_table').html(data);	
-						});
-					}
-				}
-			});
-		})
-	}
-	
-	function load_email_table() {
-		$('#addEmail').remove();
-		$('#EditEmail').remove();
-		$('#loader_block').slideDown('fast',function() {
-			$('#editEmail').remove();
-			$('#email_table').html('');
-			$.ajax({
-				type:'GET',
-				url:'/admin/contacts/load_email_table?did=<?= $contact->ContactID; ?>',
-				success:function(data) {
-					if(data) {
-						$('#loader_block').slideUp('fast',function() {
-							$('#email_table').html(data);	
-						});
-					}
-				}
-			});
-		})
-	}
 	
 </script>

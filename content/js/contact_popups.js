@@ -57,7 +57,7 @@ function viewContact(id,type) {
 	jQuery('#loader_block').slideDown('fast',function() {
 		$.ajax({
 			type:'GET',
-			url:'/admin/contacts/view?id='+id+'&type='+type,
+			url:'/admin/contacts/view?did='+id+'&type='+type,
 			success:function(code) {
 				if (code == '0') {
 					jAlert('The Contact can not be found. Please try again','Error',function() {
@@ -86,7 +86,13 @@ function contactListTable() {
 				if(data) {
 					$('#contactTable').html(data);
 					$('#loader_block').slideUp('fast',function() {
-						$('#example').dataTable();
+						$('#example').dataTable({
+							"bJQueryUI": true,
+							"sPaginationType": "full_numbers",
+							"sDom": '<""f>t<"F"lp>',
+							'iDisplayLength':1000,
+							"aLengthMenu": [[-1,10,25,50],['All',10,25,50]]
+						});
 						$('#contactTable').slideDown('fast');
 					});
 				}else {

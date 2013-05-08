@@ -19,32 +19,6 @@ class Contacts extends DOM_Controller {
 		
 		$this->contact_id = ((isset($_GET['did'])) ? $_GET['did'] : FALSE);
     }
-
-	private function formatContactInfo(&$contact) {
-		$contact->Name = $contact->FirstName . ' ' . $contact->LastName;
-		$contact->Address = (isset($contact->Address)) ? mod_parser($contact->Address) : false;
-		$contact->Phone = (isset($contact->Phone)) ? mod_parser($contact->Phone,false,true) : false;
-		// Locate primary.
-		$contact->PrimaryPhone = '';
-		foreach ($contact->Phone as $contactPhone) foreach ($contactPhone as $type => $phone) {
-			if ($phone == $contact->PrimaryPhoneType) {
-				$contact->PrimaryPhone = $phone;
-				break;
-			}
-		}
-		$contact->Email = mod_parser($contact->Email,false,true);
-		// Locate primary.
-		$contact->PrimaryEmail = '';
-		foreach ($contact->Email as $contactEmail) foreach ($contactEmail as $type => $email) {
-			if ($email == $contact->PrimaryEmailType) {
-				$contact->PrimaryEmail = $email;
-				break;
-			}
-		}
-		$contact->Parent = $contact->Dealership;
-		$contact->TypeCode = substr($contact->Type,0,3);
-		$contact->TypeID = substr($contact->Type,4);
-	}
 	
     public function index() {
 		$this->load->helper('contacts');
@@ -52,96 +26,32 @@ class Contacts extends DOM_Controller {
     }
 	
 	public function load_table() {
-		$contacts = $this->administration->getAllContactsInAgency($this->agency_id);
-		$data = array(
-			'contacts'=>$contacts
-		);
-		$this->load->dom_view('pages/contacts/table', $this->theme_settings['ThemeViews'], $data);
+		$this->load->helper('contacts');
+		$this->load->dom_view('pages/contacts/table', $this->theme_settings['ThemeViews']);
 	}
 	
 	public function View() {
-		if(isset($_GET['id'])) {
-			$id = $_GET['id'];
-			$type = $_GET['type'];
-		}
-		
-		$contact = $this->administration->getContactByTypeID($type, $id);
-		$contact_id = $contact->ContactID;
-		$this->formatContactInfo($contact);
-		
-		if($contact) {
-			$data = array(
-				'contact' => $contact,
-				'level' => $this->user['DropdownDefault']->LevelType,
-				'websites'=>WebsiteListingTable($id, $type, false),
-				'contactInfo'=>ContactInfoListingTable($contact, $type),
-			);
-			$this->load->dom_view('pages/contacts/view', $this->theme_settings['ThemeViews'], $data);
-		}
-	}
-	
-	public function Form() {
-		$contact_data = $this->security->xss_clean($this->input->post());
-		
-		if(isset($_GET['GID']))
-			$contact_id = $_GET['GID'];
-		else
-			$contact_id = '';
-		
-		$type      = $contact_data['type'] .':' . $this->user['DropdownDefault']->SelectedClient;
-		$firstname = $contact_data['firstname'];
-		$lastname  = $contact_data['lastname'];
-		$address   = 'street:' . $contact_data['street'] . ',city:' . $contact_data['city'] . ',state:' . $contact_data['state'] . ',zipcode:' . $contact_data['zip'];
-		$notes     = $contact_data['notes'];
-
-		//prepare the add/update
+		$this->load->model('system_contacts','domcontacts');
+		$this->load->helper('contactinfo');
 		$data = array(
-			'TITLE_ID' => $contact_data['jobTitleType'],
-			'DIRECTORY_Type' => $type,
-			'CLIENT_Owner' => ($contact_data['type'] == 'CID') ? $contact_data['parentClient'] : (($contact_data['type'] == 'VID') ? $contact_data['parentVendor'] : NULL),
-			'DIRECTORY_FirstName' => $firstname,
-			'DIRECTORY_LastName' => $lastname,
-			'DIRECTORY_Address' => $address,
-			'DIRECTORY_Notes' => $notes,
+			'clients'=>$this->administration->getAllClientsInAgency($this->user['DropdownDefault']->SelectedAgency),
+			'vendors'=>$this->administration->getVendors(),
+			'contact'=>$this->domcontacts->preparePopupInfo($this->contact_id),
+			'jobtitles'=>$this->domcontacts->getJobTitles()
 		);
-		if ($contact_id) {
-			$contact = $this->administration->updateContact($contact_id,$data);
-		} else {
-			$primaryEmail = $contact_data['email'];
-			$email     = 'work:' . $primaryEmail;
-			$primaryPhone = $contact_data['phone'];
-			$phone     = 'work:' . $primaryPhone;
-
-			$data['DIRECTORY_Created'] = date(FULL_MILITARY_DATETIME);
-			$data['DIRECTORY_Email'] = $email;
-			$data['DIRECTORY_Primary_Email'] = $primaryEmail;
-			$data['DIRECTORY_Phone'] = $phone;
-			$data['DIRECTORY_Primary_Phone'] = $primaryPhone;
-			$contact = $this->administration->addContact($data);
-		}
-		
-		if($contact) {
-			echo '1';	
-		}else {
-			echo '0';
-		}
+		$this->load->dom_view('forms/contacts/view',$this->theme_settings['ThemeViews'],$data);
 	}
 	
 	public function Add() {
+		$this->load->model('system_contacts','domcontacts');
 		$clients = $this->administration->getAllClientsInAgency($this->user['DropdownDefault']->SelectedAgency);
-		$vendors = $this->administration->getAllVendors();
 		$types = $this->administration->getTypeList();
-		$tags = $this->administration->getAllTags();  
 
 		$data = array(
-			'page'=>'add',
-			'contact'=>false,
-			'clients'=>$clients,
-			'vendors'=>$vendors,
+			'clients'=>$this->administration->getAllClientsInAgency($this->user['DropdownDefault']->SelectedAgency),
+			'vendors'=>$this->administration->getVendors(),
 			'types'=>$types,
-			'tags'=>$tags,
-			'websites'=>'',
-			'contactInfo'=>'',
+			'jobtitles'=>$this->domcontacts->getJobTitles()
 		);
 		
 		$this->load->dom_view('forms/contacts/edit_add', $this->theme_settings['ThemeViews'], $data);
@@ -157,6 +67,111 @@ class Contacts extends DOM_Controller {
 			'jobtitles'=>$this->domcontacts->getJobTitles()
 		);
 		$this->load->dom_view('forms/contacts/edit',$this->theme_settings['ThemeViews'],$data);
+	}
+	
+	public function Process_add() {
+		$this->load->model('system_contacts','domcontacts');
+		//the post of the form vars
+		$form = $this->input->post();
+		
+		//prepare the directories table
+		$directory_add = array(
+			'TITLE_ID' 				=> $form['job_title'],
+			'JobTitle' 				=> $this->domcontacts->getJobTitleText($form['job_title']),
+			'DIRECTORY_Type' 		=> $form['owner_type'],
+			'OWNER_ID' 				=> (($form['owner_type'] <= 2) ? (($form['owner_type'] == 1) ? $form['client_id'] : $form['vendor_id']) : $form['owner_id']),
+			'DIRECTORY_FirstName' 	=> $form['firstname'],
+			'DIRECTORY_LastName' 	=> $form['lastname'],
+			'DIRECTORY_Notes' 		=> $form['notes'],
+		    'DIRECTORY_Created' 	=> date('Y-m-d H:i:s')
+		);
+		
+		//prepare the phone table
+		$phone_add = array(
+			'OWNER_ID'				=> $directory_add['OWNER_ID'],
+			'OWNER_Type'			=> $form['owner_type'],
+			'PHONE_Number'			=> $form['phone'],
+			'PHONE_Type'			=> $form['phone_type'],
+			'PHONE_Primary'			=> 1,
+			'PHONE_Active'			=> 1,
+			'PHONE_Created'			=> date('Y-m-d H:i:s')
+		);	
+		
+		//prepare the address table
+		$address_add = array(
+			'OWNER_ID'				=> $directory_add['OWNER_ID'],
+			'OWNER_Type'			=> $form['owner_type'],
+			'ADDRESS_Street'		=> $form['street'],
+			'ADDRESS_City'			=> $form['city'],
+			'ADDRESS_State'			=> $form['state'],
+			'ADDRESS_Zip'			=> $form['zip'],
+			'ADDRESS_Type'			=> 'work',
+			'ADDRESS_Active'		=> 1,
+			'ADDRESS_Primary'		=> 1,
+			'ADDRESS_Created'		=> date('Y-m-d H:i:s')
+		);
+		$data = array(
+			'PhoneNumbers' 			=> $phone_add,
+			'DirectoryAddresses' 	=> $address_add,
+			'Directories'		 	=> $directory_add
+		);
+		
+		$add = $this->domcontacts->addContact($data);
+		
+		if($add) {
+			echo '1';	
+		}else {
+			echo '0';
+		}
+	}
+	
+	public function Process_edit() {
+		$this->load->model('system_contacts','domcontacts');
+		$address_id = $this->input->post('address_id');
+		$directory_id = $this->input->post('contact_id');
+		
+		$address = array(
+			'ADDRESS_Street'=>$this->input->post('street'),
+			'ADDRESS_City'=>$this->input->post('city'),
+			'ADDRESS_State'=>$this->input->post('state'),
+			'ADDRESS_Zip'=>$this->input->post('zip')
+		);
+		/*
+	$select = 'd.DIRECTORY_ID as ContactID,
+				   d.OWNER_ID as OwnerID,
+				   d.TITLE_ID as TitleID,
+				   ti.TITLE_Name as TitleName,
+				   d.JobTitle as JobTitle,
+				   d.DIRECTORY_Type as OwnerType,
+				   d.DIRECTORY_FirstName as FirstName,
+				   d.DIRECTORY_LastName as LastName,
+				   d.DIRECTORY_Notes as Notes,
+				   t.TAG_ClassName as ClassName';		*/
+		$directory_info = array(
+			'DIRECTORY_FirstName'=>$this->input->post('firstname'),
+			'DIRECTORY_LastName'=>$this->input->post('lastname'),
+			'DIRECTORY_Type'=>(float)$this->input->post('owner_type'),
+			'OWNER_ID'=>(float)$this->input->post('owner_id'),
+			'TITLE_ID'=>(float)$this->input->post('job_title'),
+			'JobTitle'=>$this->domcontacts->getJobTitleText($this->input->post('job_title')),
+			'DIRECTORY_Notes'=>$this->input->post('notes')
+		);
+		
+		print_object($directory_info);
+		print_object($directory_id);
+		
+		$update_address = $this->domcontacts->updatePrimaryAddress($address_id,$address);
+		$updateInfo = $this->domcontacts->updateDirectoryInformation($directory_id,$directory_info);
+
+		print_object($update_address);
+		print_object($updateInfo);
+		/*
+		if($update) {
+			echo '1';	
+		}else {
+			echo '0';	
+		}
+		*/
 	}
 	
 }
