@@ -86,7 +86,6 @@
                         	<label>State</label>
                             <div class="formRight">
                             	<?= showStates(); ?>
-                            	
                             </div>
                             <div class="fix"></div>
                         </div>

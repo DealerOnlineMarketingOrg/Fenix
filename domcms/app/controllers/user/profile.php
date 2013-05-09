@@ -2,10 +2,13 @@
 
 class Profile extends DOM_Controller {
 
+	public $user_id;
+
     public function __construct() {
         parent::__construct();
 		$this->load->helper(array('form','url','pass','file','template'));
 		$this->load->model(array('members','administration'));
+		$this->user_id = ((isset($_GET['uid'])) ? $_GET['uid'] : FALSE);
     }
 
     public function index() {
@@ -35,6 +38,14 @@ class Profile extends DOM_Controller {
 		);
 
 		$this->LoadTemplate('pages/users/profile',$data);
+	}
+	
+	public function edit_user_details() {
+		$user = $this->administration->getMyUser($this->user_id);
+		$data = array(
+			'user'=>$user
+		);
+		$this->load->dom_view('forms/userProfile/edit', $this->theme_settings['ThemeViews'], $data);
 	}
 	
 	public function Upload_avatar() {

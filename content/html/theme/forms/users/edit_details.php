@@ -8,7 +8,7 @@
 				#editUserInfo .chzn-container,textarea{margin-top:12px;}
 			</style>
             <div class="widget">
-            	<?= form_open('/admin/users/process_user_details',array('id'=>'userDetailsForm','class'=>'valid','style'=>'text-align:left;')); ?>
+            	<?= form_open('/admin/users/process_user_details',array('id'=>'userDetailsForm','class'=>'valid mainForm','style'=>'text-align:left;')); ?>
                 	<fieldset>
                     	<div class="rowElem noborder">
                         	<label><span class="req">*</span> Name</label>

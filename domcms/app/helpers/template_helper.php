@@ -504,18 +504,20 @@ function VendorListingTable($hide_actions=false,$hide_add=false) { ?>
                         <td class="noWrap">
                         	<?php if(isset($vendor->Addresses) AND (!empty($vendor->Addresses))) { ?>
 								<?php foreach($vendor->Addresses as $address) {
-                                    echo (($address->ADDRESS_Primary) ? $address->ADDRESS_Street . ' ' . $address->ADDRESS_City . ', ' . $address->ADDRESS_State . ' ' . $address->ADDRESS_Zip : '');
-                                }?>
+                                    	echo (($address->ADDRESS_Primary) ? $address->ADDRESS_Street . ' ' . $address->ADDRESS_City . ', ' . $address->ADDRESS_State . ' ' . $address->ADDRESS_Zip : '');
+                                	  }?>
                             <?php }else { ?>
                             	<span>...</span>
                             <?php } ?>
                         </td>
                         <td class="noWrap">
-                        	<?php if(isset($vendor->Phones) AND (!empty($vendor->Phones))) : 
-								foreach($vendor->Phones as $phone) { 
-									echo (($phone->PHONE_Primary) ? $phone->PHONE_Number : '');
-								}
-							endif; ?>
+                        	<?php if(!empty($vendor->Phones)) : 
+									foreach($vendor->Phones as $phone) { 
+										echo (($phone->PHONE_Primary == '1') ? $phone->PHONE_Number : '...');
+									}
+								  else:
+								  	echo '<span>...</span>'; 
+								  endif; ?>
                         </td>
                         <?php if($editPriv AND !$hide_actions) { ?>
                             <td class="actionsCol noWrap" style="width:75px;">
@@ -1250,14 +1252,18 @@ function breadcrumb($replacement = false) {
 	return $link;
 }
 
-function showStates($selected = '',$disabled=false) {
+function showStates($selected = '',$disabled=false, $width = false) {
     $ci =& get_instance();
     $ci->load->model('utilities');
     $states = $ci->utilities->getStates();
-	if(!$disabled) {
-    	$options = '<select placeholder="Choose a State..." class="chzn-select" style="width:350px;" name="state">';
+	if($width) {
+			$options = '<select placeholder="Choose a State..." class="chzn-select" style="width:' . $width . '" name="state">';
 	}else {
-    	$options = '<select placeholder="Choose a State..." class="chzn-select" style="width:350px;" name="state" disabled>';
+		if(!$disabled) {
+			$options = '<select placeholder="Choose a State..." class="chzn-select" style="width:350px;" name="state">';
+		}else {
+			$options = '<select placeholder="Choose a State..." class="chzn-select" style="width:350px;" name="state" disabled>';
+		}
 	}
 	$options .= '<option value=""></option>';
     foreach ($states as $state) {

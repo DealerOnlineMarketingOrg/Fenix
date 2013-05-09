@@ -232,56 +232,60 @@ class Members extends CI_Model {
 	   return ($query) ? mod_parser($query->row()->Modules) : FALSE;
    }
 
-   public function AuthenticateGoogleUser($email,$token) {
-   	$log = FALSE;
-	
-	//log token
-	if(isset($_SESSION['token'])) {
+	public function AuthenticateGoogleUser($email,$token) {
+		$log = FALSE;
 		
-		$data = array(
-			'oAuth_token' => $token
-		);
+		//log token
+		if(isset($_SESSION['token'])) {
+			$data = array(
+				'oAuth_token' => $token
+			);
 		
-		$this->db->where('USER_Name',$email);
-		$log = $this->db->update('Users',$data);
-	}
-	
-   	if($log) {
-   		$this->db->select('*');
-		$this->db->from('Users');
-		$this->db->join('Users_Info', 'Users.USER_ID = Users_Info.USER_ID');
-		$this->db->where('USER_Name',$email);
-		$query = $this->db->get();
+			$this->db->where('USER_Name',$email);
+			$log = $this->db->update('Users',$data);
+		}
 		
-		if($query) {
-			$user = $query->row();		
-			//print_object($user);
-			$valid_user = $this->validate($email,$user->USER_Password,false,true);
-			if($valid_user) {
-				return TRUE;
+		if($log) {
+		
+			$query = $this->db->select('u.USER_Name as Email,ui.USER_Password as Password')->
+					 from('Users u')->
+		             join('Users_Info ui','u.USER_ID = ui.USER_ID')->
+		             where('u.USER_Name',$email)->
+		             get();
+		
+			if($query) {
+				$user = $query->row();		
+				$valid_user = $this->validate($user->Email,$user->Password,false,true);
+				if($valid_user) {
+					return TRUE;
+				}else {
+					return FALSE;	
+				}
+			}else {
+				return FALSE;	
 			}
 		}
-		return FALSE;
-   	}
-   }
+	}
 
-   public function Save_google_avatar($email,$avatar) {
-   	 $uid = $this->db->select('USER_ID')->get_where('Users',array('USER_Name'=>$email));
-	 $google_avatar = array(
-	 	'Avatar'=>$avatar
-	 );
+	public function Save_google_avatar($email,$avatar) {
+		$uid = $this->db->select('USER_ID as ID')->from('Users')->where('USER_Name',$email)->get();
+		$google_avatar = array(
+			'Avatar'=>$avatar
+		);
 	 //find if user has a avatar already set
 	 if($uid) {
-		$uid = $uid->row()->USER_ID;
+		$uid = $uid->row()->ID;
 		
 		//check to see if the user has a avatar set...if not we can make the google avatar the users active avatar automatically after signin.
 		$isCustomAvatar = $this->db->select('USER_Avatar')->from('Users_Info')->where('USER_ID',$uid)->get();
 		
-		$isGoogleAvatar = $this->db->select('ID')->get_where('GoogleAvatars',array('USER_ID'=>$uid));
+		$isGoogleAvatar = ($this->db->select('ID')->from('GoogleAvatars')->where('USER_ID',$uid)->get()->row()) ? TRUE : FALSE;
 		if($isGoogleAvatar) { //yes there is an instance for the user. 
+		
 			//check to see if the avatar is the same as the one we have.
-			$ifGoogleAvatarIsSame = $this->db->select('Avatar')->get_where('GoogleAvatars',array('USER_ID'=>$uid,'Avatar'=>$avatar));
-			if(!$ifGoogleAvatarIsSame) {
+			$sys_avatar = $this->db->select('Avatar')->from('GoogleAvatars')->where('USER_ID',$uid)->get()->row()->Avatar;
+			
+			if($sys_avatar != $avatar) {
 				//if the avatar is different we update it
 				$this->db->where('USER_ID',$uid);
 				if($this->db->update('GoogleAvatars',$google_avatar)) {

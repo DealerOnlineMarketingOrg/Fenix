@@ -159,92 +159,6 @@
         </div>
     </div>
 </div>
-<div id="editInfo">
-	<style type="text/css">
-		#editInfo input{margin-top:0 !important;}
-	</style>
-    <div class="dialog-message" id="editUser" title="Edit User Info">
-        <div class="uiForm">
-        	<div class="widget" style="margin-top:-10px;padding-top:0;margin-bottom:10px;">
-				<?= form_open(base_url().'profile/update/userInfo', array('id' => 'UpdateUserInfo','class'=>'valid','style'=>'text-align:left;')); ?>
-                <fieldset>
-                	<div class="rowElem noborder">
-                    	<label>First Name</label>
-                        <div class="formRight">
-                        	<?= form_input(array('id'=>'firstname','name'=>'firstname','value'=>$user->FirstName,'class'=>'validate[required]')); ?>
-                        </div>
-                        <div class="fix"></div>
-                    </div>
-                    <div class="rowElem noborder">
-                    	<label>Last Name</label>
-                        <div class="formRight">
-                        	<?= form_input(array('id'=>'lastname','name'=>'lastname','value'=>$user->LastName,'class'=>'validate[required]')); ?>
-                        </div>
-                        <div class="fix"></div>
-                    </div>
-                    <div class="rowElem noborder">
-                    	<label>Username</label>
-                        <div class="formRight">
-                        	<?= form_input(array('id' => 'username','name'=>'username','value'=>$user->Username,'class'=>'validate[required]')); ?>
-                        </div>
-                        <div class="fix"></div>
-                    </div>
-                    <?php if($admin['AccessLevel'] >= 600000) { ?>
-                    	<div class="rowElem noborder">
-                        	<label>Security Level</label>
-                        	<?php
-								$options = array(
-									'1'=>'Super-Admin',
-									'2'=>'Admin',
-									'3'=>'Group Admin',
-									'4'=>'Client Admin',
-									'5'=>'Manager',
-									'6'=>'User'
-								);
-							?>
-                            <div class="formRight">
-                            	<?= form_dropdown('permissionlevel',$options,$user->AccessID,'style="width:100%;"'); ?>
-                            </div>
-                            <div class="fix"></div>
-                        </div>
-                    <?php } ?>
-                    <div class="rowElem noborder">
-                    	<label>Address</label>
-                        <div class="formRight">
-                        	<?= form_input(array('id'=>'street','name'=>'street','value'=>((isset($user->Address['street'])) ? $user->Address['street'] : ''))); ?>
-                        </div>
-                        <div class="fix"></div>
-                    </div>
-                    <div class="rowElem noborder">
-                    	<label>City</label>
-                        <div class="formRight">
-                        	<?= form_input(array('id'=>'city','name'=>'city','value'=>((isset($user->Address['city'])) ? $user->Address['city'] : ''))); ?>
-                        </div>
-                        <div class="fix"></div>
-                    </div>
-                    <div class="rowElem noborder">
-                    	<label>State</label>
-                        <div class="formRight">
-                        	<?= popUpStates((isset($user->Address['state'])) ? $user->Address['state'] : ''); ?>
-                        </div>
-                        <div class="fix"></div>
-                    </div>
-                    <div class="rowElem noborder">
-                    	<label>Zip</label>
-                        <div class="formRight">
-                        	<?= form_input(array('id'=>'zip','name'=>'zipcode','value'=>((isset($user->Address['zipcode'])) ? $user->Address['zipcode'] : ''))); ?>
-                        </div>
-                        <div class="fix"></div>
-                    </div>
-                    <?= form_close(); ?>
-            	</fieldset>
-                <div style="width:120px;margin:0 auto;">
-                	<a href="javascript:resetPassword('<?= $user->Username;?>');" class="button blueBtn" style="display: block; margin-top: 15px; width: 90%; float: left;text-align:center;color:#fff;">Change Password</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 <div id="editContactInfo">
     <div class="dialog-message" id="editUserContact" title="Edit User Contact Info">
         <div class="uiForm">
@@ -267,6 +181,7 @@
         </div>
     </div>
 </div>
+<div id="editInfoPop"></div>
 <div id="editUserModules"></div>
 <div id="addWebsiteForm"></div>
 <div id="addContactInfoPhonePop"></div>
@@ -308,19 +223,22 @@
 	}
 	
 	function editInfo(id) {
-		jQuery("#editUser").dialog({
-			minWidth:400,
-			width:600,
-			height:380,
-			autoOpen: true,
-			modal: true,
-			buttons: [
-				{
-					class:'redBtn',
-					text:'Save',
-					click:function() {$('#UpdateUserInfo').submit();}
-				},
-			] 
+		jQuery('#loader_block').slideDown('fast',function() {
+			jQuery.ajax({
+				type:'GET',
+				url:'/user/profile/edit_user_details?uid='+id,
+				success:function(data) {
+					if(data) {
+						$('#loader_block').slideUp('fast',function() {
+							$('#editInfoPop').html(data);
+						});
+					}else {
+						jAlert("The User wasn't found. Please Try Again.","Error",function() {
+							jQuery('#loader_block').slideUp('fast');
+						});
+					}
+				}
+			});
 		});
 	}
 	
