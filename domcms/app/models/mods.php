@@ -8,6 +8,17 @@
 			$this->load->helper('query');
 		}
 		
+		public function getUserModules($uid) {
+			$this->load->model('members');
+			$query = $this->db->select('USER_Modules')->from('Users_Info')->where('USER_ID',$uid)->get();
+			if($query) {
+				$modules = $this->members->UserModules(mod_parser($query->row()->USER_Modules));
+				return $modules;	
+			}else {
+				return FALSE;	
+			}
+		}
+		
 		public function getUsersModuleLevelByName($userMods,$q,$prm) {
 			if(!empty($userMods)) {
 				foreach($userMods as $module) {

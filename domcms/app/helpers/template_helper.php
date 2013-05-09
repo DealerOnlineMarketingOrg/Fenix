@@ -7,18 +7,17 @@ function GateKeeper($mod,$uPerm) {
 	//We need to know where codeigniter is.
 	$ci =& get_instance();
 	$ci->load->model('mods');
-	$ci->load->helper('pass');
+	$perms = FALSE;
 	
-	$userMods = $ci->user['UserModules'];
-	//print_object($userMods);
-	//print_object($userMods);
-	$perms = $ci->mods->getUsersModuleLevelByName($userMods,$mod,$uPerm);
-	//print_object($perms);
-	//load the model in the helper
-	$myperms = $ci->mods->getModLevelByName($mod);
+	$user_modules = $ci->mods->getUserModules($ci->user['UserID']);
+	foreach($user_modules as $module) {
+		if($module->MODULE_Name == $mod and $module->MODULE_Active == 1) {
+			$perms = TRUE;	
+		}
+	}
 	
-	//check the permission levels
-	if (!$perms) {
+	
+	if(!$perms) {
 		return false;
 	} else {
 		//check to see if the doesnt have any module level.
@@ -710,9 +709,7 @@ function UserListingTable($client_id = false,$hide_actions = false) { ?>
                     <th style="width:30%;">Email Address</th>
                     <th>Name</th>
                     <th>Status</th>
-                    <?php if($editPriv) { ?>
-                    	<th class="actionsCol noSort" style="text-align:center;">Actions</th>
-                    <?php } ?>
+                    <th class="actionsCol noSort" style="text-align:center;">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -729,8 +726,8 @@ function UserListingTable($client_id = false,$hide_actions = false) { ?>
                         <td style="text-align:left;vertical-align: middle;"><a href="mailto:<?= $user->Username; ?>"><?= $user->Username; ?></a></td>
                         <td style="vertical-align:middle;"><a href="javascript:viewUser('<?= $user->ID; ?>');"><?= $user->FirstName . ' ' . $user->LastName; ?></a></td>
                         <td style="width:30px;text-align:center;vertical-align: middle;"><?= (($user->Status) ? 'Active' : 'Disable'); ?></td>
+                        <td class="actionsCol noSort" style="width:60px;text-align:center;vertical-align: middle;">
                         <?php if($editPriv) { ?>
-                            <td class="actionsCol noSort" style="width:60px;text-align:center;vertical-align: middle;">
                                 <a title="Edit User" href="javascript:editUser('<?= $user->ID; ?>',1);" class="actions_link"><img src="<?= base_url() . THEMEIMGS; ?>icons/color/pencil.png" alt="" /></a>
                             <? } ?>
                         <a title="View User" href="javascript:viewUser('<?= $user->ID; ?>');" class="actions_link"><img src="<?= base_url() . THEMEIMGS; ?>icons/color/cards-address.png" alt="" /></a>
