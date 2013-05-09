@@ -54,9 +54,6 @@
             </div>
             <div class="head contactInfo">
                 <h5 class="iPhone">Contact Information</h5>
-                <?php if($edit) { ?>
-                    <div class="editButton"><a href="javascript:editUserProfile('<?= $user->ID; ?>');"><span>Edit</span></a></div>
-                <?php } ?>
             </div>
             <div class="body alignleft contactInfo">
                 <ul>
@@ -183,6 +180,7 @@
     </div>
 </div>
 <div id="editUsersForm"></div>
+<div id="editUserDetailsForm"></div>
 <div id="editUserModules"></div>
 <div id="addWebsiteForm"></div>
 <div id="addContactInfoPhonePop"></div>

@@ -124,7 +124,9 @@
                                             <?php } ?>
                                         </td>
                                     </tr>
-                                <?php } ?>
+                                <?php }else {
+									echo '<span>...</span>';	
+								}?>
                             </table>
                             <div class="fix"></div>
                         </div>

@@ -339,6 +339,12 @@ class Administration extends CI_Model {
 		//grab the user id after the insert has taken place
 		$user_id = $this->db->insert_id();
 		
+		//need to add a null record for the user 
+		$sig = array(
+			'USER_ID'=>$user_id
+		);
+		$this->db->insert('User_Prefs',$sig);
+		
 		//Add the owner id to all tables
 		$user['Directories']['OWNER_ID'] = $user_id;
 		$user['DirectoryAddresses']['OWNER_ID'] = $user_id;

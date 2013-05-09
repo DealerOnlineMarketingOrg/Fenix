@@ -350,6 +350,7 @@ class Users extends DOM_Controller {
 		$type = $this->input->post('type');	
 		
 		$data = array(
+			'DIRECTORY_ID'=>$did,
 			'OWNER_Type'=>3,
 			'OWNER_ID'=>$did,
 			'PHONE_Number'=>$number,
@@ -389,7 +390,6 @@ class Users extends DOM_Controller {
 		}
 	}
 
-	
 	public function Update_user_email() {
 		$this->load->model('system_contacts','syscontacts');
 		$eid = $this->input->post('email_id');
@@ -411,13 +411,12 @@ class Users extends DOM_Controller {
 		
 	}
 	
-	
 	public function Change_pass_form() {
 		$user = $this->administration->getMyUser($this->user_id);
 		$data = array(
 			'user'=>$user
 		);
-		$this->load->dom_view('forms/users/change_password',$data);
+		$this->load->dom_view('forms/users/change_password',$this->theme_settings['ThemeViews'],$data);
 	}
 	
 	/*This will change the users password to whatever the user wants it to be*/
@@ -455,21 +454,23 @@ class Users extends DOM_Controller {
 	public function Reset_user_password() {
 		$this->load->helper('pass');
 		$user = $this->administration->getMyUser($this->user_id);
-		//set the users primary email address
-		$user->Emails = mod_parser($user->Emails,false,true);
 		// Locate primary.
-		foreach ($user->Emails as $userEmails) foreach ($userEmails as $type => $email) {
-			if ($email == $user->PrimaryEmailType) {
-				$primaryEmail = $email;
-				break;
+		$primaryEmail = $user->Username;
+		if(!empty($user->Emails)) {
+			foreach ($user->Emails as $email) {
+				if($email->EMAIL_Primary == 1) {
+					$primaryEmail = $email->EMAIL_Address;
+				}
 			}
-		}
-		//generate a new password
-		$newPass = createRandomString();
-		//this will also email the user their email address, this is sent to the users PRIMARY email, which could differ from the email they are logging in with.
-		$reset = $this->members->simple_reset_pass($user->Username,$user->ID,$newPass);
-		if($reset) {
-			echo $newPass;	
+			//generate a new password
+			$newPass = createRandomString();
+			//this will also email the user their email address, this is sent to the users PRIMARY email, which could differ from the email they are logging in with.
+			$reset = $this->members->simple_reset_pass($primaryEmail,$user->ID,$newPass);
+			if($reset) {
+				echo $newPass;	
+			}else {
+				echo '0';	
+			}
 		}else {
 			echo '0';	
 		}
