@@ -166,6 +166,7 @@ class Users extends DOM_Controller {
 			'avatar'=>$avatar,
 			'allMods'=>$this->administration->getAllModules(),
 			'websites'=>true,
+			'show_mods'=>((isset($_GET['modules'])) ? $_GET['modules'] : FALSE)
 		);
 		$this->load->dom_view('forms/users/edit_add_view', $this->theme_settings['ThemeViews'], $data);
 	}

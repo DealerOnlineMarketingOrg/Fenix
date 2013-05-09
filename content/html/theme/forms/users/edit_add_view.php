@@ -41,7 +41,7 @@
             		<li class="activeTab"><a href="javascript:void(0);" rel="userInfo">User Details</a></li>
                     <li><a href="javascript:void(0);" rel="websites">Websites</a></li>
                      <li><a href="javascript:void(0);" rel="contactInfo">Contact Info</a></li>
-                    <li><a href="javascript:void(0);" rel="modules">Modules</a></li>
+                    <?php if(isset($show_mods) AND $show_mods) { ?><li><a href="javascript:void(0);" rel="modules">Modules</a></li><?php } ?>
             	</ul>
             	<div class="tab_container">
             		<div id="userInfo" class="tab_content">

@@ -1,5 +1,6 @@
 
 <script type="text/javascript" src="<?= base_url(); ?>js/userProfile_popups.js"></script>
+<script type="text/javascript" src="<?= base_url(); ?>js/user_popups.js"></script>
 <script type="text/javascript" src="<?= base_url(); ?>js/websites_popups.js"></script>
 <script type="text/javascript" src="<?= base_url(); ?>js/contactInfo_popups.js"></script>
 <div id="loader_block">
@@ -25,7 +26,7 @@
             <div class="head info">
                 <h5 class="iUser"><?= $user->LastName . ', ' . $user->FirstName; ?></h5>
                 <?php if($edit) { ?>
-                    <div class="editButton bar"><a href="javascript:editInfo('<?= $user->ID; ?>');"><span>Edit</span></a></div>
+                    <div class="editButton bar"><a href="javascript:editUser('<?= $user->ID; ?>',0);"><span>Edit</span></a></div>
                 <?php } ?>
             </div>
             <div class="body alignleft">
@@ -181,7 +182,7 @@
         </div>
     </div>
 </div>
-<div id="editInfoPop"></div>
+<div id="editUsersForm"></div>
 <div id="editUserModules"></div>
 <div id="addWebsiteForm"></div>
 <div id="addContactInfoPhonePop"></div>
@@ -222,19 +223,20 @@
 		});
 	}
 	
-	function editInfo(id) {
-		jQuery('#loader_block').slideDown('fast',function() {
-			jQuery.ajax({
-				type:'GET',
-				url:'/user/profile/edit_user_details?uid='+id,
+	function editInfo(uid) {
+		$('#editUser').remove();
+		$('#loader_block').slideDown('fast',function() {
+			$.ajax({
+				type:"GET",
+				url:'/admin/users/edit?uid='+uid+'&modules=false',
 				success:function(data) {
 					if(data) {
 						$('#loader_block').slideUp('fast',function() {
-							$('#editInfoPop').html(data);
+							$('#editUsersForm').html(data);
 						});
 					}else {
-						jAlert("The User wasn't found. Please Try Again.","Error",function() {
-							jQuery('#loader_block').slideUp('fast');
+						jAlert('There was an error finding the user in our system. Please try again.','View Error',function() {
+							$('#loader_block').slideUp('fast');	
 						});
 					}
 				}

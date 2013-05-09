@@ -731,7 +731,7 @@ function UserListingTable($client_id = false,$hide_actions = false) { ?>
                         <td style="width:30px;text-align:center;vertical-align: middle;"><?= (($user->Status) ? 'Active' : 'Disable'); ?></td>
                         <?php if($editPriv) { ?>
                         <td class="actionsCol noSort" style="width:60px;text-align:center;vertical-align: middle;">
-                            <a title="Edit User" href="javascript:editUser('<?= $user->ID; ?>');" class="actions_link"><img src="<?= base_url() . THEMEIMGS; ?>icons/color/pencil.png" alt="" /></a>
+                            <a title="Edit User" href="javascript:editUser('<?= $user->ID; ?>',1);" class="actions_link"><img src="<?= base_url() . THEMEIMGS; ?>icons/color/pencil.png" alt="" /></a>
                             <a title="View User" href="javascript:viewUser('<?= $user->ID; ?>');" class="actions_link"><img src="<?= base_url() . THEMEIMGS; ?>icons/color/cards-address.png" alt="" /></a>
                         </td>
                         <?php } ?>

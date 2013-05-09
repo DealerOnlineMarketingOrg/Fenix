@@ -21,12 +21,12 @@ function addUser() {
 	});
 }
 
-function editUser(uid) {
+function editUser(uid,mods) {
 	$('#editUser').remove();
 	$('#loader_block').slideDown('fast',function() {
 		$.ajax({
 			type:"GET",
-			url:'/admin/users/edit?uid='+uid,
+			url:'/admin/users/edit?uid='+uid+'&modules='+mods,
 			success:function(data) {
 				if(data) {
 					$('#loader_block').slideUp('fast',function() {
