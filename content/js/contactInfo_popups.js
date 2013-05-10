@@ -1,3 +1,5 @@
+
+/*
 function getPhoneEmailName(type) {
 	switch (type) {
 		case 'cid': return 'Client';
@@ -105,7 +107,7 @@ function addEmail(id, type) {
 	jQuery('#loader_block').slideDown('fast',function() {
 		$.ajax({
 			type:'GET',
-			url:'/admin/contactInfo/EmailAdd?id='+id,
+			url:'/admin/contactInfo/add_email_form?id='+id,
 			success:function(code) {
 				if(code == '0') {
 					jAlert('The '+getPhoneEmailName(type)+' can not be found. Please try again','Error',function() {
@@ -162,6 +164,7 @@ function updatePrimaries(id, type, phonePrimary, emailPrimary) {
 		});
 	});
 }
+*/
 
 	function contactInfoListTable(page,id,type) {
 	  jQuery('#loader_block').slideDown('fast',function() {

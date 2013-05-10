@@ -44,18 +44,20 @@ class ContactInfo extends DOM_Controller {
 	
 	public function Add_phone_form() {
 		$data = array(
-			'did'=>$this->directory_id
+			'did'=>$this->directory_id,
+			'type'=>((isset($_GET['type'])) ? $_GET['type'] : $this->domcontacts->getContactType($this->directory_id))
 		);
 		//print_object($phones);
-		$this->load->dom_view('forms/users/add_phone', $this->theme_settings['ThemeViews'], $data);	
+		$this->load->dom_view('forms/contactInfo/add_phone', $this->theme_settings['ThemeViews'], $data);	
 	}
 	
 	public function Add_email_form() {
 		$data = array(
-			'did'=>$this->directory_id
+			'did'=>$this->directory_id,
+			'type'=>((isset($_GET['type'])) ? $_GET['type'] : $this->domcontacts->getContactType($this->directory_id))
 		);
 		//print_object($phones);
-		$this->load->dom_view('forms/users/add_email', $this->theme_settings['ThemeViews'], $data);	
+		$this->load->dom_view('forms/contactInfo/add_email', $this->theme_settings['ThemeViews'], $data);	
 	}
 	
 	public function Edit_email_form() {
@@ -64,7 +66,7 @@ class ContactInfo extends DOM_Controller {
 			'email'=>$email
 		);
 		//print_object($phones);
-		$this->load->dom_view('forms/users/edit_email', $this->theme_settings['ThemeViews'], $data);	
+		$this->load->dom_view('forms/contactInfo/edit_email', $this->theme_settings['ThemeViews'], $data);	
 	}
 	
 	public function Update_primary_phone() {
@@ -135,6 +137,7 @@ class ContactInfo extends DOM_Controller {
 		$type = $this->input->post('type');	
 		
 		$data = array(
+			'DIRECTORY_ID'=>$this->directory_id,
 			'OWNER_Type'=>3,
 			'OWNER_ID'=>$this->directory_id,
 			'EMAIL_Address'=>$email,

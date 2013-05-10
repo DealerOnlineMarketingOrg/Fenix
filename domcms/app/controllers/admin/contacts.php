@@ -127,26 +127,33 @@ class Contacts extends DOM_Controller {
 	
 	public function Process_edit() {
 		$this->load->model('system_contacts','domcontacts');
-		$address_id = $this->input->post('address_id');
-		$directory_id = $this->input->post('contact_id');
+		$form = $this->input->post();
+		
+		$address_id   = (($form['address_id'] != '-1') ? $form['address_id'] : $this->domcontacts->insertBlankAddress($form['owner_id'],$form['owner_type'],$form['directory_id']));
+		$directory_id = $form['directory_id'];
 		
 		$address = array(
-			'ADDRESS_Street'=>$this->input->post('street'),
-			'ADDRESS_City'=>$this->input->post('city'),
-			'ADDRESS_State'=>$this->input->post('state'),
-			'ADDRESS_Zip'=>$this->input->post('zip')
+			'ADDRESS_Street' 	  => $form['street'],
+			'ADDRESS_City' 		  => $form['city'],
+			'ADDRESS_State' 	  => $form['state'],
+			'ADDRESS_Zip' 		  => $form['zip'],
+			'ADDRESS_Active' 	  => 1
 		);
+		
 		$directory_info = array(
-			'DIRECTORY_FirstName'=>$this->input->post('firstname'),
-			'DIRECTORY_LastName'=>$this->input->post('lastname'),
-			'DIRECTORY_Type'=>(float)$this->input->post('owner_type'),
-			'OWNER_ID'=>(float)$this->input->post('owner_id'),
-			'TITLE_ID'=>(float)$this->input->post('job_title'),
-			'JobTitle'=>$this->domcontacts->getJobTitleText($this->input->post('job_title')),
-			'DIRECTORY_Notes'=>$this->input->post('notes')
+			'DIRECTORY_FirstName' => (string)$form['firstname'],
+			'DIRECTORY_LastName'  => (string)$form['lastname'],
+			'DIRECTORY_Type'      => (int)$form['owner_type'],
+			'OWNER_ID'            => (int)(($form['owner_type'] <= 2) ? (($form['owner_type'] == 1) ? $form['client_id'] : $form['vendor_id']) : $form['owner_id']),
+			'TITLE_ID'            => (int)$form['job_title'],
+			'JobTitle'            => (string)$this->domcontacts->getJobTitleText($form['job_title']),
+			'DIRECTORY_Notes'     => (string)$form['notes']
 		);
+		
 		$update_address = $this->domcontacts->updatePrimaryAddress($address_id,$address);
-		$updateInfo = $this->domcontacts->updateDirectoryInformation($directory_id,$directory_info);
+		$updateInfo 	= $this->domcontacts->updateDirectoryInformation($directory_id,$directory_info);
+		
+		//echo 'Did the address update? ' . (($update_address) ? 'Yes!' : 'No :(') . ' Did the Directory Information update? ' . (($updateInfo) ? 'Yes!' : ' No :(');		
 		if($update_address AND $updateInfo) {
 			echo '1';	
 		}else {

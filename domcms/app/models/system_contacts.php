@@ -59,24 +59,15 @@ class System_contacts extends DOM_Model {
 		
 	}
 	
-	public function updateDirectoryInformation($data) {
-		$update_address = $this->updatePrimaryAddress($data['AddressID'],$data['PrimaryAddress']);
-		$updateInfo = $this->updateDirectoryInfo($data['DirectoryID'],$data['Directories']);
-		
-		if(!$update_address AND !$updateInfo) {
-			return FALSE;	
-		}elseif(!$update_address AND $updateInfo) {
-			return FALSE;	
-		}elseif($update_address AND !$updateInfo) {
-			return FALSE;	
-		}else{
-			return TRUE;
-		}
+	public function getContactType($did) {
+		$query = $this->db->select('DIRECTORY_Type as Type')->from('Directories')->where('DIRECTORY_ID',$did)->get();
+		return ($query) ? $query->row()->Type : FALSE;	
 	}
 	
-	public function updateDirectoryInfo($did,$data) {
-		$this->db->where('DIRECTORY_ID',$did);
-		return ($this->db->update('Directories',$data)) ? TRUE : FALSE;	
+	public function updateDirectoryInformation($did,$data) {
+		$sql = 'UPDATE Directories SET DIRECTORY_FirstName = "' . $data['DIRECTORY_FirstName'] . '",DIRECTORY_LastName="' . $data['DIRECTORY_LastName'] . '",DIRECTORY_Type = "' . $data['DIRECTORY_Type'] . '",OWNER_ID = "' . $data['OWNER_ID'] . '",TITLE_ID = "' . $data['TITLE_ID'] . '", JobTitle = "' . $data['JobTitle'] . '",DIRECTORY_Notes = "' . $data['DIRECTORY_Notes'] . '" WHERE DIRECTORY_ID = "' . $did . '"';
+		$query = $this->db->query($sql);
+		return ($query) ? TRUE : FALSE;	
 	}
 	
 	public function getDirectoryInformation($type = false,$id = false,$did = false) {
@@ -153,6 +144,18 @@ class System_contacts extends DOM_Model {
 		}else {
 			return FALSE;	
 		}
+	}
+	
+	public function insertBlankAddress($oid,$otype,$did) {
+		$data = array(
+			'DIRECTORY_ID'=>$did,
+			'OWNER_ID' => $oid,
+			'OWNER_Type'=>$otype,
+			'ADDRESS_Primary'=>1,
+			'ADDRESS_Created'=>date('Y-m-d H:i:s'),
+			'ADDRESS_Type'=>'work'
+		);
+		return ($this->db->insert('DirectoryAddresses',$data)) ? $this->db->insert_id() : FALSE;
 	}
 	
 	public function getAllClientsInGroup($gid) {

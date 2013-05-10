@@ -40,3 +40,21 @@
 			}
 		});
 	}
+
+	function reload_phone_table(did) {
+		$('#loader_block').slideDown('fast',function() {
+			$.ajax({
+				type:'GET',
+				url:'/admin/contactInfo/load_phone_table?did='+did,
+				success:function(data) {
+					if(data) {
+						$('#phone_numbers_table').html(data);
+					}else {
+						jAlert('There was an error finding the contacts phone numbers. Please refresh and try again.','Error',function() {
+							$('#loader_block').slideUp('fast');
+						});
+					}
+				}
+			});
+		});
+	}

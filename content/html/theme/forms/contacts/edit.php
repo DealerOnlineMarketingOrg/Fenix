@@ -8,9 +8,9 @@
 			</style>
             <div class="widget" style="margin-top:0px;padding-top:0;margin-bottom:10px;">
                 <ul class="tabs">
-	                    <li class="activeTab"><a href="javascript:void(0);" rel="contactDetails">Contact Details</a></li>
-                    	<li><a href="javascript:void(0);" rel="websites">Websites</a></li>
-	                    <li><a href="javascript:void(0);" rel="contactInfo">Contact Info</a></li>
+                    <li class="activeTab"><a href="javascript:void(0);" rel="contactDetails">Contact Details</a></li>
+                    <li><a href="javascript:void(0);" rel="websites">Websites</a></li>
+                    <li><a href="javascript:void(0);" rel="contactInfo">Contact Info</a></li>
                 </ul>
                 <div class="tab_container">
             		<div id="contactDetails" class="tab_content">
@@ -33,47 +33,41 @@
                                 <div class="rowElem noborder noSearch">
                                     <label><span class="req">*</span>Type</label>
                                     <div class="formRight searchDrop">
-                                        <select id="contactType" class="chzn-select validate[required]" style="width:auto" name="owner_type" disabled>
+                                        <select id="contactType" class="chzn-select validate[required]" style="width:auto" name="owner_type" <?= (($contact->OwnerType == 3) ? 'disabled' : ''); ?>>
                                             <option <?= (($contact->OwnerType == 1) ? 'selected="selected"' : ''); ?> value="1">Client</option>
                                             <option <?= (($contact->OwnerType == 2) ? 'selected="selected"' : ''); ?> value="2">Vendor</option>
                                             <option <?= (($contact->OwnerType == 3) ? 'selected="selected"' : ''); ?> value="3">User</option>
-                                            <option <?= (($contact->OwnerType == 4) ? 'selected="Selected"' : ''); ?> value="4">General</option>
+                                            <option <?= (($contact->OwnerType == 4) ? 'selected="selected"' : ''); ?> value="4">General</option>
                                         </select>
-                                        <input type="hidden" name="owner_type" value="<?=$contact->OwnerType;?>" />
                                     </div>
+                                    <input id="owner_id" type="hidden" name="owner_id" value="<?= $contact->OwnerID; ?>" />
+                                    <input id="directory_id" type="hidden" name="directory_id" value="<?= $contact->ContactID; ?>" />
                                     <div class="fix"></div>
-                                 </div>
-                                 <div class="rowElem noborder noSearch">
-                                    <?php if($contact->OwnerType == 1) { ?>
-                                        <div id="contactParentClient">
-                                            <label><span class="req">*</span>Client</label>
-                                            <div class="formRight searchDrop noSearch">
-                                                <select class="chzn-select validate[required]" style="width:auto" name="owner_id" id="ClientID">
-                                                    <option value=""></option>
-                                                    <?php 
-                                                        foreach($clients as $client) : ?>
-                                                            <option <?= (($contact->OwnerID == $client->ClientID) ? 'selected="selected"' : ''); ?> value="<?= $client->ClientID; ?>"><?= $client->Name; ?></option>
-                                                        <?php endforeach; ?>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    <?php }elseif($contact->OwnerType == 2) { ?>
-                                        <div id="contactParentVendor">
-                                            <label><span class="req">*</span>Vendor</label>
-                                            <div class="formRight searchDrop">
-                                                <select class="chzn-select validate[required]" style="width:auto" name="owner_id" id="VendorID">
-                                                    <option value=""></option>
-                                                    <?php 
-                                                        foreach($vendors as $vendor) : ?>
-                                                            <option <?= (($contact->OwnerID == $vendor->ID) ? 'selected="selected"' : ''); ?> value="<?= $vendor->ID; ?>"><?= $vendor->Name; ?></option>
-                                                       <?php  endforeach;  ?>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    <?php }else { ?>
-                                    	<input type="hidden" value="<?= $contact->OwnerType; ?>" name="owner_id" />
-                                    <?php } ?>
-                                    <div class="fix"></div>
+                                </div>
+                                <div class="rowElem noborder" id="client_dropdown" style=" <?= (($contact->OwnerType == 1) ? 'display:block;' : 'display:none;'); ?>">
+                                    <label style="padding-top:5px !important;"><span class="req">*</span>Client</label>
+                                    <div class="formRight noSearch">
+                                        <select class="chzn-select" name="client_id" style="width:175px !important" id="ClientID">
+                                            <option value="">Choose a Client</option>
+                                            <?php foreach($clients as $client) : ?>
+                                                <option <?= (($client->ClientID == $contact->OwnerID) ? 'selected="selected"' : ''); ?> value="<?= $client->ClientID; ?>"><?= $client->Name; ?></option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                	<div class="fix"></div>
+                                </div>
+                                <div class="rowElem noborder" id="vendor_dropdown" style=" <?= (($contact->OwnerType == 2) ? 'display:block;' : 'display:none;'); ?>">
+                                	<label style="padding-top:5px !important;"><span class="req">*</span>Vendor</label>
+                                    <div class="formRight noSearch">
+                                    	<select class="chzn-select" style="width:175px !important" name="vendor_id" id="VendorID">
+                                        	<option value="">Choose a Vendor</option>
+                                            <?php foreach($vendors as $vendor):?>
+                                            	<option <?= (($vendor->ID == $contact->OwnerID) ? 'selected="selected"' : ''); ?> value="<?=$vendor->ID;?>">
+													<?=$vendor->Name;?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
                                 </div>
                                 <div class="rowElem noborder">
                                     <label>Title</label>
@@ -94,11 +88,13 @@
                                     	<?php if(!empty($contact->Addresses)) { ?>
 											<?php foreach($contact->Addresses as $address) { ?>
                                                 <?php if($address->ADDRESS_Primary == 1) { ?>
+                                                	<input type="hidden" name="address_id" id="address_id" value="<?= $address->ADDRESS_ID; ?>" />
                                                     <?= form_input(array('class'=>'validate[custom[onlyLetterNumberSp]]','name'=>'street','id'=>'address','value' => $address->ADDRESS_Street,'style'=>'margin:0','placeholder'=>'Enter Street')); ?>
                                                 <?php } ?>
                                             <?php } ?>
                                         <?php }else { ?>
-											<?= form_input(array('class'=>'validate[custom[onlyLetterNumberSp]]','name'=>'street','id'=>'address','value'=>'','style'=>'margin:0')); ?>               <?php } ?>
+                                        	<input type="hidden" name="address_id" value="-1" />
+											<?= form_input(array('class'=>'validate[custom[onlyLetterNumberSp]]','name'=>'street','id'=>'address','value'=>'')); ?>               		<?php } ?>
                                     </div>
                                     <div class="fix"></div>
                                  </div>
@@ -216,6 +212,32 @@
 <script type="text/javascript">
 	//re initialize jQuery
 	var $ = jQuery.noConflict();
+	$('#client_dropdown,#vendor_dropdown').find('div.chzn-container').css({'width':'200px'});
+	$('#contactType').change(function() {
+		if($(this).val() == '1') {
+			$('#client_dropdown').slideDown('fast');
+			$('#vendor_dropdown').slideUp('fast');
+			$('#client_dropdown').find('select').addClass('validate[required]');
+			$('#vendor_dropdown').find('select').removeClass('validate[required]');
+		}
+		
+		if($(this).val() == '2') {
+			$('#client_dropdown').slideUp('fast');
+			$('#vendor_dropdown').slideDown('fast');	
+			$('#client_dropdown').find('select').removeClass('validate[required]');
+			$('#vendor_dropdown').find('select').addClass('validate[required]');
+		}
+		
+		if($(this).val() != '1' && $(this).val() != '2') {
+			$('#client_dropdown,#vendor_dropdown').slideUp('fast');	
+			$('#client_dropdown,#vendor_dropdown').find('select').removeClass('validate[required]');
+		}
+	});
+	
+	$('#client_dropdown select,#vendor_dropdown select').change(function() {
+		var owner_id = $(this).val();
+		$('#owner_id').val(owner_id);
+	});
 	
 	$.mask.definitions['~'] = "[+-]";
 	$(".maskPhoneExt").mask("(999) 999-9999? x99999");
@@ -243,8 +265,6 @@
 			data:formData,
 			url:'/admin/contacts/process_edit?did=<?= $contact->ContactID; ?>',
 			success:function(code) {
-				alert(code);
-				/*
 				var msg;
 				if(code == '1') {
 					msg = 'Your edit was made succesfully';
@@ -256,7 +276,6 @@
 					msg = 'There was a problem with editing the contact requested. Please try again.';
 					jAlert(msg,'Error');
 				}
-				*/
 			}
 		});
 	});
