@@ -149,6 +149,7 @@ class Clients extends DOM_Controller {
     }
 	
 	public function Edit() {
+		$this->load->helper('contacts');
 		$this->load->helper('template');
 		$level = $this->user['DropdownDefault']->LevelType;
 		
@@ -189,7 +190,6 @@ class Clients extends DOM_Controller {
 				'html' => $html,
 				'tags'=>$tags,
 				'websites'=>true,
-				'contacts'=>false,
 			);
 			//THIS IS THE DEFAULT VIEW FOR ANY BASIC FORM.
 			$this->load->dom_view('forms/clients/edit_add', $this->theme_settings['ThemeViews'], $data);		
@@ -200,7 +200,8 @@ class Clients extends DOM_Controller {
 	}
 	
 	
-	public function View() {			
+	public function View() {	
+		$this->load->helper('contacts');		
 		$this->load->helper('template');
 		$level = $this->user['DropdownDefault']->LevelType;
 		

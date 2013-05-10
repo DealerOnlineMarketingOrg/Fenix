@@ -11,12 +11,8 @@
             <div class="widget" style="margin-top:0;padding-top:0;margin-bottom:10px;">
             	<ul class="tabs">
             		<li class="activeTab"><a href="javascript:void(0);" rel="clientInfo">Client Details</a></li>
-                    <?php if($websites) { ?>
                     <li><a href="javascript:void(0);" rel="websites">Websites</a></li>
-                    <?php }  /*
-					if(isset($contacts)) { ?>
-            		<li><a href="javascript:void(0);" rel="contactInfo">Contacts</a></li>
-                    <?php } */  ?>
+            		<li><a href="javascript:void(0);" rel="contacts">Contacts</a></li>
             	</ul>
             	<div class="tab_container">
             		<div id="clientInfo" class="tab_content">
@@ -283,11 +279,14 @@
 			           </fieldset>
     				<?= form_close(); ?>
     				</div>
-                     <?php if(isset($websites)) { ?>
                      <div id="websites" class="tab_content" style="display:none;">
                      	<?= WebsiteListingTable($client->ClientID,1,((isset($view)) ? false : true)); ?>
+                        <div class="fix"></div>
                      </div>
-                     <?php } ?>
+                     <div id="contacts" class="tab_content" style="display:none;padding-bottom:10px;">
+                     	<?= ContactsMainTable(((isset($view)) ? true : false),true,$client->ClientID); ?>
+                        <div class="fix"></div>
+                     </div>
                     <div id="loader" style="display:none;"><img src="<?= base_url() . THEMEIMGS; ?>loaders/loader2.gif" /></div>
     				<div class="fix"></div>
     			</div>	
@@ -464,7 +463,7 @@
 				click:function() {$('#clientForm').submit()}
 			},
 			<?php }; ?>
-			<?php if(GateKeeper('Website_Add',$this->user['AccessLevel'])) { ?>
+			<?php if(GateKeeper('Website_Add',$this->user['AccessLevel']) AND !isset($view)) { ?>
 				<?php if(isset($client->Status)) { ?>
 				{
 					class:'greenBtn hidden addWebsiteBtn',
@@ -472,7 +471,7 @@
 					click:function() { addWebsiteForm('<?= $client->ClientID;?>',1)}
 				}, <?php } ?>
 			<?php } ?>
-			<?php if(GateKeeper('Contact_Add',$this->user['AccessLevel'])) { ?>
+			<?php if(GateKeeper('Contact_Add',$this->user['AccessLevel']) AND !isset($view)) { ?>
 				<?php if(isset($client->Status)) { ?>
 				{
 					class:'greenBtn hidden addContactBtn',

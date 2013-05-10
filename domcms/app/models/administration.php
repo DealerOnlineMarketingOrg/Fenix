@@ -373,9 +373,9 @@ class Administration extends CI_Model {
 			$user['Users_Info']['USER_Password'] = encrypt_password($password);
 			$ui_insert = $this->db->insert('Users_Info',$user['Users_Info']);
 			if($ui_insert) {
-				$subject = 'Welcome to the Dealer Online Marketing Content Management System';
-				$msg = email_new_user($user['USER_Name'],$password);
-                $emailed = $this->members->email_results($user['USER_Name'], $subject, $msg);
+				$subject = 'Welcome to Dealer Online Marketing';
+				$msg = email_new_user($user['Users']['USER_Name'],$password);
+                $emailed = $this->members->email_results($user['Users']['USER_Name'], $subject, $msg);
 
 				return TRUE;	
 			}else {

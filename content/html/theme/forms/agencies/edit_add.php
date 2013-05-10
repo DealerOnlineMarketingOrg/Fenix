@@ -26,7 +26,7 @@
                     <fieldset>
                             <?php if(isset($agency->Name)) { ?>
                                 <div class="rowElem noborder">
-                                    <label><span class="req">*</span> Name</label>
+                                    <label><span class="req">*</span>Name</label>
                                     <div class="formRight">
                                         <input type="text" class="required validate[required]" name="name" id="name" value="<?= $agency->Name; ?>" />
                                     </div>
@@ -34,7 +34,7 @@
                                 </div>
                             <?php }else { ?>
                                 <div class="rowElem noborder">
-                                    <label><span class="req">*</span> Name</label>
+                                    <label><span class="req">*</span>Name</label>
                                     <div class="formRight">
                                         <input type="text" class="required validate[required]" name="name" id="name" value="" />
                                     </div>

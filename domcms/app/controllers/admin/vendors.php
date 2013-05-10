@@ -80,11 +80,13 @@ class Vendors extends DOM_Controller {
 	
 	public function edit() {
 		$this->load->helper('websites');
+		$this->load->helper('contacts');
 		$vendor = $this->administration->getVendors($_GET['vid']);
 		
 		$data = array(
 			'vendor' => $vendor[0],
 			'websites'=>true,
+			'contacts'=>true
 		);
 		$this->load->dom_view('forms/vendors/edit', $this->theme_settings['ThemeViews'],$data);
 	}
@@ -172,11 +174,13 @@ class Vendors extends DOM_Controller {
 	
 	public function view() {
 		$this->load->helper('websites');
+		$this->load->helper('contacts');
 		$vendor = $this->administration->getVendors($_GET['vid']);
 		
 		$data = array(
 			'vendor' => $vendor[0],
 			'websites'=>true,
+			'contacts'=>true
 		);
 		$this->load->dom_view('forms/vendors/view', $this->theme_settings['ThemeViews'],$data);
 	}

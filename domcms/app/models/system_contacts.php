@@ -132,10 +132,6 @@ class System_contacts extends DOM_Model {
 		
 	}
 	
-	function getVendorsFromClientWebsites($cid) {
-		
-	}
-	
 	function getAllClientsInAgency($aid) {
 		$clients = array();
 		$aQuery = $this->db->select('GROUP_ID as ID')->from('Groups')->where('AGENCY_ID',$aid)->get();
@@ -186,13 +182,18 @@ class System_contacts extends DOM_Model {
 		}
 	}
 		
-	public function queryChangerForAnythingOtherThanClientLevel() {
-		$_level_type = $this->user['DropdownDefault']->LevelType;
-		switch($_level_type) :
-			case 'a' : $query = $this->getAllClientsInAgency($this->user['DropdownDefault']->SelectedAgency); break;
-			case 'g' : $query = $this->getAllClientsInGroup($this->user['DropdownDefault']->SelectedGroup); break;
-			default : $query = $this->getClientInfo($this->user['DropdownDefault']->SelectedClient); break;
-		endswitch;	
+	public function queryChangerForAnythingOtherThanClientLevel($id = false) {
+		if(!$id) :
+			$_level_type = $this->user['DropdownDefault']->LevelType;
+			switch($_level_type) :
+				case 'a' : $query = $this->getAllClientsInAgency($this->user['DropdownDefault']->SelectedAgency); break;
+				case 'g' : $query = $this->getAllClientsInGroup($this->user['DropdownDefault']->SelectedGroup); break;
+				default : $query = $this->getClientInfo($this->user['DropdownDefault']->SelectedClient); break;
+			endswitch;
+		else :
+			$query = $this->getClientInfo($id);
+		endif;	
+		
 		return $query;
 	}
 	
@@ -206,6 +207,11 @@ class System_contacts extends DOM_Model {
 		return ($query) ? $query->result() : FALSE;
 	}
 	
+	public function getVendorsByID($vid) {
+		$query = $this->db->select('VENDOR_ID as ID,VENDOR_Name as VendorName')->from('Vendors')->where('VENDOR_ID',$vid)->get();
+		return ($query) ? $query->result() : FALSE;	
+	}
+	
 	public function getDealershipName($cid) {
 		$query = $this->db->select('CLIENT_Name as Dealership')->from('Clients')->where('CLIENT_ID',$cid)->get()->row();
 		return ($query) ? $query : FALSE;	
@@ -217,40 +223,55 @@ class System_contacts extends DOM_Model {
 	}
 	
 	//get websites
-	public function buildContactTable() {
+	public function buildContactTable($id = false, $is_vendor = false) {
 		$contacts = array();
-		$parent = $this->queryChangerForAnythingOtherThanClientLevel();
-		if(!empty($parent)) {
-			foreach($parent as $owner) {
-				$sys = $this->getSystemContacts(1,$owner->ID);
-				$users = $this->getUsersAsContacts($owner->ID);
-				$vendors = $this->getVendorsFromClientWebsite($owner->ID);
-				if(!empty($users)) {
-					foreach($users as $user) {
-						$uContact = $this->getSystemContacts(3,$user->ID);	
-						if($uContact) {
-							foreach($uContact as $userContact) {
-								$userContact->Owner = $this->getDealershipName($owner->ID)->Dealership;
-								array_push($contacts,$userContact);	
+		if(!$is_vendor) { 
+			$parent = $this->queryChangerForAnythingOtherThanClientLevel($id);
+			if(!empty($parent)) {
+				foreach($parent as $owner) {
+					$sys = $this->getSystemContacts(1,$owner->ID);
+					$users = $this->getUsersAsContacts($owner->ID);
+					$vendors = $this->getVendorsFromClientWebsite($owner->ID);
+					if(!empty($users)) {
+						foreach($users as $user) {
+							$uContact = $this->getSystemContacts(3,$user->ID);	
+							if($uContact) {
+								foreach($uContact as $userContact) {
+									$userContact->Owner = $this->getDealershipName($owner->ID)->Dealership;
+									array_push($contacts,$userContact);	
+								}
 							}
 						}
 					}
-				}
-				if(!empty($vendors)) {
-					foreach($vendors as $vendor) {
-						$vContact = $this->getSystemContacts(2,$vendor->ID);	
-						if($vContact) {
-							foreach($vContact as $vendorContact) {
-								$vContact->Owner = $this->getVendorName($vendor->ID)->Vendor;
-								array_push($contacts,$vendorContact);	
+					if(!empty($vendors)) {
+						foreach($vendors as $vendor) {
+							$vContact = $this->getSystemContacts(2,$vendor->ID);	
+							if($vContact) {
+								foreach($vContact as $vendorContact) {
+									$vContact->Owner = $this->getVendorName($vendor->ID)->Vendor;
+									array_push($contacts,$vendorContact);	
+								}
 							}
 						}
 					}
+					if(!empty($sys)) {
+						foreach($sys as $c) {
+							$c->Owner = $this->getDealershipName($owner->ID)->Dealership;
+							array_push($contacts,$c);	
+						}
+					}
 				}
-				if(!empty($sys)) {
-					foreach($sys as $c) {
-						$c->Owner = $this->getDealershipName($owner->ID)->Dealership;
-						array_push($contacts,$c);	
+			}
+		}else {
+			$vendors = $this->getVendorsByID($id);
+			if(!empty($vendors)) {
+				foreach($vendors as $vendor) {
+					$vContact = $this->getSystemContacts(2,$vendor->ID);
+					if($vContact) {
+						foreach($vContact as $vendorContact) {
+							$vContact->Owner = $vendor->VendorName;
+							array_push($contacts,$vendorContact);	
+						}
 					}
 				}
 			}
@@ -551,14 +572,28 @@ class System_contacts extends DOM_Model {
 	}
 	
 	function updatePrimaryPhone($pid,$did,$primary) {
-		$reset_primary = 'UPDATE PhoneNumbers SET PHONE_Primary = "0" WHERE OWNER_ID = "' . $did . '"';
-		$reset_query = $this->db->query($reset_primary);
-		if($reset_query) {
-			$sql = 'UPDATE PhoneNumbers SET PHONE_Primary = "' . $primary . '" WHERE PHONE_ID = "' . $pid . '"';
-			$query = $this->db->query($sql);
-			if($query) {
-				return TRUE;	
-			}
+		
+		$all_update = array(
+			'PHONE_Primary'=>0,
+		);
+		
+		$new_primary = array(
+			'PHONE_Primary'=>1
+		);
+		
+		$directory_id = $did;
+		
+		$get_did = $this->db->select('DIRECTORY_ID')->from('PhoneNumbers')->where('PHONE_ID',$pid)->get();
+		if($get_did) {
+			$directory_id = $get_did->row()->DIRECTORY_ID;	
+		}
+		
+		$this->db->where('DIRECTORY_ID',$directory_id);
+		$reset_primaries = $this->db->update('PhoneNumbers',$all_update);
+		
+		if($reset_primaries) {
+			$this->db->where('PHONE_ID',$pid);
+			return ($this->db->update('PhoneNumbers',$new_primary)) ? TRUE : FALSE;
 		}else {
 			return FALSE;	
 		}

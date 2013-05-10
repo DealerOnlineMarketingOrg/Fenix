@@ -22,13 +22,8 @@
             <div class="widget">
             	<ul class="tabs">
             		<li class="activeTab"><a href="javascript:void(0);" rel="vendorInfo">Vendor Details</a></li>
-                    <?php if(isset($websites)) { ?>
-                    	<li><a href="javascript:void(0);" rel="websites">Websites</a></li>
-                    <?php } 
-					/*
-					if(isset($contacts)) { ?>
-            			<li><a href="javascript:void(0);" rel="contactInfo">Contacts</a></li>
-                    <?php } */?>
+                    <li><a href="javascript:void(0);" rel="websites">Websites</a></li>
+                    <li><a href="javascript:void(0);" rel="contacts">Contacts</a></li>
             	</ul>
             	<div class="tab_container">
             		<div id="vendorInfo" class="tab_content">
@@ -226,16 +221,12 @@
                             </fieldset>
                         <?= form_close(); ?>
                      </div>
-                     <?php if(isset($websites)) { ?>
                      <div id="websites" class="tab_content" style="display:none;">
                      	<?= WebsiteListingTable($vendor->ID,2,true); ?>
                      </div>
-                     <?php } ?>
-                     <?php /*
-                     <div id="contactInfo" class="tab_content" style="display:none;">
-                    	<?= $contactInfo; ?>
+                     <div id="contacts" class="tab_content" style="display:none;padding-bottom:10px;">
+                     	<?= ContactsMainTable(false,true,$vendor->ID,true); ?>
                      </div>
-					 */ ?>
                   </div>
                 <div class="fix"></div>			       
             </div> <? //end widget ?>

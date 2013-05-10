@@ -8,7 +8,7 @@
 				#addUser .chzn-container,textarea{margin-top:12px;}
 			</style>
             <div class="widget">
-            	<?= form_open('/admin/users/submit_add_user',array('name'=>'addUserForm','id'=>'addUserForm','class'=>'valid','style'=>'text-align:left')); ?>
+            	<?= form_open('/admin/users/submit_add_user',array('name'=>'addUserForm','id'=>'addUserForm','class'=>'valid mainForm','style'=>'text-align:left')); ?>
                 	<fieldset>
                     	<div class="rowElem noborder">
                         	<label><span class="req">*</span> Username</label>

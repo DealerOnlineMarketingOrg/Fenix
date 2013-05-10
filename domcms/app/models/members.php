@@ -577,8 +577,14 @@ class Members extends CI_Model {
 	}
 	
 	public function getDefaultModules($sid) {
-		$query = $this->db->select('ACCESS_Perm as Modules')->get_where('xSystemAccess',array('ACCESS_ID'=>$sid));
-		return ($query) ? $query->row()->Modules : FALSE;
+		$query = $this->db->select('ACCESS_Perm as Modules')->from('xSystemAccess')->where('ACCESS_ID',$sid)->get();
+		if($query) {
+			$mods = $query->row();
+			$modules = $mods->Modules;
+			return $modules;	
+		}else {
+			return FALSE;	
+		}
 	}
     
 }
