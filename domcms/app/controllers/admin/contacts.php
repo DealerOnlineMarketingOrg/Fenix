@@ -147,7 +147,7 @@ class Contacts extends DOM_Controller {
 		);
 		$update_address = $this->domcontacts->updatePrimaryAddress($address_id,$address);
 		$updateInfo = $this->domcontacts->updateDirectoryInformation($directory_id,$directory_info);
-		if($update) {
+		if($update_address AND $updateInfo) {
 			echo '1';	
 		}else {
 			echo '0';	
