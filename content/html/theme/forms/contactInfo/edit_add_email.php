@@ -13,7 +13,7 @@
                         ?>
                             <fieldset>
                                 <div class="rowElem noborder">
-                                    <label><span class="req">*</span> Type</label>
+                                    <label><span class="req">*</span>Type</label>
                                     <div class="formRight searchDrop">
                                         <select id="contactEmailType" class="chzn-select validate[required]" style="width:350px" name="type">
                                             <option value="home" <?= ($contact) ? (($type == 'home') ? 'selected="selected"' : '') : ''; ?>>Home</option>
@@ -24,7 +24,7 @@
                                 </div>
                                 <div class="fix"></div>
                                 <div class="rowElem noborder">
-                                    <label><span class="req">*</span> Email</label>
+                                    <label><span class="req">*</span>Email</label>
                                     <div class="formRight">
                                         <?= form_input(array('class'=>'validate[required]','name'=>'email','id'=>'email','value'=>($type) ? $value : '')); ?>
 										<span class="formNote">example@example.com</span>

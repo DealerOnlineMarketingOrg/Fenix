@@ -29,7 +29,7 @@
         				<!-- Input text fields -->
         				<fieldset>
                         	<div class="rowElem noborder tags">
-                            	<label><span class="req">*</span> Tag</label>
+                            	<label><span class="req">*</span>Tag</label>
                                 <div class="formRight noSearch">
                                 	<div style="width:25px;border:1px solid #d5d5d5;margin-right:5px;float:left;margin-top:12px;">
                                 		<div id="tagThumb" class="<?= ((isset($client->Status)) ? $client->ClassName : 'black_team'); ?>" style="float:left;">&nbsp;</div>
@@ -52,7 +52,7 @@
                                 </div>
                             </div>
 			                <div class="rowElem noborder">
-			                    <label><span class="req">*</span> Client Code</label>
+			                    <label><span class="req">*</span>Client Code</label>
 			                    <div class="formRight">
                                 	<?php if(isset($view)) { ?>
 			                        <?= form_input(array('disabled'=>'disabled','maxlength'=>'4','class'=>'required validate[required]','name'=>'ClientCode','id'=>'code','value'=>($client) ? $client->Code : '')); ?>
@@ -63,7 +63,7 @@
 			                    <div class="fix"></div>
 			                </div>
 			                <div class="rowElem noborder">
-			                    <label><span class="req">*</span> Client Name</label>
+			                    <label><span class="req">*</span>Client Name</label>
 			                    <div class="formRight">
                                 	<?php if(isset($view)) { 
 										echo form_input(array('disabled'=>'disabled','class'=>'required validate[required]','name'=>'ClientName','id'=>'name','value'=>($client) ? $client->Name : ''));
@@ -119,7 +119,7 @@
 			
 			                </div>
 			                <div class="rowElem noborder">
-			                    <label><span class="req">*</span> Phone Number</label>
+			                    <label><span class="req">*</span>Phone Number</label>
 			                    <div class="formRight">
                                 	<?php if ($client->Phone) {
 										// Locate primary.

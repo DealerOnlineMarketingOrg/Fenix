@@ -13,7 +13,7 @@
                         ?>
                             <fieldset>
                                 <div class="rowElem noborder">
-                                    <label><span class="req">*</span> Type</label>
+                                    <label><span class="req">*</span>Type</label>
                                     <div class="formRight searchDrop">
                                         <select id="contactPhoneType" class="chzn-select validate[required]" style="width:350px" name="type">
                                             <option value="cell" <?= ($contact) ? (($type == 'cell') ? 'selected="selected"' : '') : ''; ?>>Cell</option>
@@ -25,7 +25,7 @@
                                 </div>
                                 <div class="fix"></div>
                                 <div class="rowElem noborder">
-                                    <label><span class="req">*</span> Phone</label>
+                                    <label><span class="req">*</span>Phone</label>
                                     <div class="formRight">
                                         <div style="position:relative;float:left"><?= form_input(array('class'=>'maskPhoneExt validate[required]','name'=>'phone','id'=>'phone','value'=>($type) ? $value : '','style'=>'width:25em !important','placeholder'=>'Enter Phone Number')); ?>
                                         <span class="formNote">(999) 999-9999 x99999</span></div>

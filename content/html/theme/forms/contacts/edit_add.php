@@ -15,7 +15,7 @@
 						<?= form_open('/admin/contacts/add_details',array('id'=>'addContactDetails','class'=>'validate mainForm formPop','style'=>'text-align:left')); ?>
                             <fieldset>
 								<div class="rowElem noborder">
-                                    <label><span class="req">*</span> Name</label>
+                                    <label><span class="req">*</span>Name</label>
                                     <div class="formRight">
 										<div style="position:relative;float:left;width:48%;">
 											<?= form_input(array('class'=>'required validate[required,custom[onlyLetterSp]]','name'=>'firstname','id'=>'firstname','value'=> '')); ?>
@@ -29,7 +29,7 @@
                                 	<div class="fix"></div>
                                 </div>
                                 <div class="rowElem noborder noSearch">
-                                    <label style="padding-top:5px !important;"><span class="req">*</span> Type</label>
+                                    <label style="padding-top:5px !important;"><span class="req">*</span>Type</label>
                                     <div class="formRight searchDrop">
                                         <select id="contactType" class="chzn-select validate[required]" style="width:26%;" name="owner_type">
                                         	<option value=""></option>
@@ -41,7 +41,7 @@
                                     <div class="fix"></div>
                                 </div>
                                 <div class="rowElem noborder" id="client_dropdown" style="display:none;">
-                                    <label style="padding-top:5px !important;"><span class="req">*</span> Client</label>
+                                    <label style="padding-top:5px !important;"><span class="req">*</span>Client</label>
                                     <div class="formRight noSearch">
                                         <select class="chzn-select" name="client_id" style="width:175px !important" id="ClientID">
                                             <option value="">Choose a Client</option>
@@ -53,7 +53,7 @@
                                 	<div class="fix"></div>
                                 </div>
                                 <div class="rowElem noborder" id="vendor_dropdown" style="display:none;">
-                                	<label style="padding-top:5px !important;"><span class="req">*</span> Vendor</label>
+                                	<label style="padding-top:5px !important;"><span class="req">*</span>Vendor</label>
                                     <div class="formRight noSearch">
                                     	<select class="chzn-select" style="width:175px !important" name="vendor_id" id="VendorID">
                                         	<option value="">Choose a Vendor</option>

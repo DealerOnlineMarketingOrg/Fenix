@@ -17,7 +17,7 @@
 						<?= form_open('/admin/contacts/edit_details?did=' . $contact->ContactID,array('id'=>'editContactDetails','class'=>'validate mainForm formPop','style'=>'text-align:left')); ?>
                             <fieldset>
 								<div class="rowElem noborder">
-                                    <label><span class="req">*</span> Name</label>
+                                    <label><span class="req">*</span>Name</label>
                                     <div class="formRight">
 										<div style="position:relative;float:left;width:48%;">
 											<?= form_input(array('class'=>'required validate[required,custom[onlyLetterSp]]','name'=>'firstname','id'=>'firstname','value'=> $contact->FirstName,'style'=>'margin:0','style'=>'width:22em !important')); ?>
@@ -31,7 +31,7 @@
                                 	<div class="fix"></div>
                                 </div>
                                 <div class="rowElem noborder noSearch">
-                                    <label><span class="req">*</span> Type</label>
+                                    <label><span class="req">*</span>Type</label>
                                     <div class="formRight searchDrop">
                                         <select id="contactType" class="chzn-select validate[required]" style="width:auto" name="owner_type" disabled>
                                             <option <?= (($contact->OwnerType == 1) ? 'selected="selected"' : ''); ?> value="1">Client</option>
@@ -46,7 +46,7 @@
                                  <div class="rowElem noborder noSearch">
                                     <?php if($contact->OwnerType == 1) { ?>
                                         <div id="contactParentClient">
-                                            <label><span class="req">*</span> Client</label>
+                                            <label><span class="req">*</span>Client</label>
                                             <div class="formRight searchDrop noSearch">
                                                 <select class="chzn-select validate[required]" style="width:auto" name="owner_id" id="ClientID">
                                                     <option value=""></option>
@@ -59,7 +59,7 @@
                                         </div>
                                     <?php }elseif($contact->OwnerType == 2) { ?>
                                         <div id="contactParentVendor">
-                                            <label><span class="req">*</span> Vendor</label>
+                                            <label><span class="req">*</span>Vendor</label>
                                             <div class="formRight searchDrop">
                                                 <select class="chzn-select validate[required]" style="width:auto" name="owner_id" id="VendorID">
                                                     <option value=""></option>
@@ -169,7 +169,7 @@
                     </div>
                     <div id="websites" class="tab_content" style="display:none;">
                     	<?php if($contact->OwnerType != 3) { ?>
-                    		<?= WebsiteListingTable($contact->OwnerID,$contact->ContactType,true); ?>
+                    		<?= WebsiteListingTable($contact->OwnerID,$contact->OwnerType,true); ?>
                         <?php }else { ?>
                     		<?= WebsiteListingTable($contact->OwnerID,3,true); ?>
                         <?php } ?>

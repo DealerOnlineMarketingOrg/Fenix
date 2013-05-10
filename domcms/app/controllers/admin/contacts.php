@@ -136,17 +136,6 @@ class Contacts extends DOM_Controller {
 			'ADDRESS_State'=>$this->input->post('state'),
 			'ADDRESS_Zip'=>$this->input->post('zip')
 		);
-		/*
-	$select = 'd.DIRECTORY_ID as ContactID,
-				   d.OWNER_ID as OwnerID,
-				   d.TITLE_ID as TitleID,
-				   ti.TITLE_Name as TitleName,
-				   d.JobTitle as JobTitle,
-				   d.DIRECTORY_Type as OwnerType,
-				   d.DIRECTORY_FirstName as FirstName,
-				   d.DIRECTORY_LastName as LastName,
-				   d.DIRECTORY_Notes as Notes,
-				   t.TAG_ClassName as ClassName';		*/
 		$directory_info = array(
 			'DIRECTORY_FirstName'=>$this->input->post('firstname'),
 			'DIRECTORY_LastName'=>$this->input->post('lastname'),
@@ -156,22 +145,13 @@ class Contacts extends DOM_Controller {
 			'JobTitle'=>$this->domcontacts->getJobTitleText($this->input->post('job_title')),
 			'DIRECTORY_Notes'=>$this->input->post('notes')
 		);
-		
-		print_object($directory_info);
-		print_object($directory_id);
-		
 		$update_address = $this->domcontacts->updatePrimaryAddress($address_id,$address);
 		$updateInfo = $this->domcontacts->updateDirectoryInformation($directory_id,$directory_info);
-
-		print_object($update_address);
-		print_object($updateInfo);
-		/*
 		if($update) {
 			echo '1';	
 		}else {
 			echo '0';	
 		}
-		*/
 	}
 	
 }
