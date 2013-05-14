@@ -6,7 +6,7 @@
     <?php notifyError(); ?>
     <?php include FCPATH . 'html/global/breadcrumb.php'; ?>
     <div class="table" style="margin-top:5px;">
-        <div class="head"><h5 class="iView">View All Groups</h5></div>
+        <div class="head"><h5 class="iView">Groups</h5></div>
         	<div id="groupTable"><?= GroupsListingTable(); ?></div>
         </div>
     </div>

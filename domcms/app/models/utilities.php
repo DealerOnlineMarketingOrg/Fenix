@@ -41,11 +41,19 @@
 			}
 			
 			//Grab all agencies,groups and clients and return them to an array
-			$a_sql = 'SELECT AGENCY_ID as AID, AGENCY_Name as AName, AGENCY_Active as AStatus, AGENCY_Tags as ATags from Agencies WHERE AGENCY_Active = 1 ORDER BY AGENCY_Name ASC';
-			$agents = $this->db->query($a_sql)->result();
-			$g_sql = 'SELECT AGENCY_ID as AID, GROUP_Name as GName, GROUP_ID as GID, GROUP_Active as GStatus, GROUP_Tags as GTags FROM Groups WHERE GROUP_Active = 1 ORDER BY GROUP_Name ASC';
-			$groups = $this->db->query($g_sql)->result();
-			$c_sql = 'SELECT CLIENT_ID as CID, GROUP_ID as GID, CLIENT_Name as CName, CLIENT_Code as Code, CLIENT_Tag as CTag, CLIENT_Active as CStatus FROM Clients WHERE CLIENT_Active = 1 ORDER BY CLIENT_Name ASC';
+			if($this->user['AccessLevel'] >= 600000) {
+				$a_sql = 'SELECT AGENCY_ID as AID, AGENCY_Name as AName, AGENCY_Active as AStatus, AGENCY_Tags as ATags from Agencies ORDER BY AGENCY_Name ASC';
+				$agents = $this->db->query($a_sql)->result();
+				$g_sql = 'SELECT AGENCY_ID as AID, GROUP_Name as GName, GROUP_ID as GID, GROUP_Active as GStatus, GROUP_Tags as GTags FROM Groups ORDER BY GROUP_Name ASC';
+				$groups = $this->db->query($g_sql)->result();
+				$c_sql = 'SELECT CLIENT_ID as CID, GROUP_ID as GID, CLIENT_Name as CName, CLIENT_Code as Code, CLIENT_Tag as CTag, CLIENT_Active as CStatus FROM Clients ORDER BY CLIENT_Name ASC';
+			}else {
+				$a_sql = 'SELECT AGENCY_ID as AID, AGENCY_Name as AName, AGENCY_Active as AStatus, AGENCY_Tags as ATags from Agencies WHERE AGENCY_Active = 1 ORDER BY AGENCY_Name ASC';
+				$agents = $this->db->query($a_sql)->result();
+				$g_sql = 'SELECT AGENCY_ID as AID, GROUP_Name as GName, GROUP_ID as GID, GROUP_Active as GStatus, GROUP_Tags as GTags FROM Groups WHERE GROUP_Active = 1 ORDER BY GROUP_Name ASC';
+				$groups = $this->db->query($g_sql)->result();
+				$c_sql = 'SELECT CLIENT_ID as CID, GROUP_ID as GID, CLIENT_Name as CName, CLIENT_Code as Code, CLIENT_Tag as CTag, CLIENT_Active as CStatus FROM Clients WHERE CLIENT_Active = 1 ORDER BY CLIENT_Name ASC';
+			}
 			
 			$clients = $this->db->query($c_sql)->result();
 			foreach($agents as $agent) {
@@ -99,7 +107,7 @@
 			$select .= '<option value=""></option>';
 			foreach($clientList as $org) {
 				foreach($org as $list) {
-					if(count($list->Groups) > 0) { 
+					if(count($list->Groups) >= 0) { 
 						$select .= "\t" . '<option ' . 
 									(($list->isSelected) ? 'selected="selected"' : '') . 
 									'id="' . $list->Class . '" 
@@ -118,7 +126,7 @@
 											$listGroup->Label . 
 										'</option>' . "\n";	
 										
-							if(isset($listGroup->Clients) AND (count($listGroup->Clients) > 1)) {
+							if(isset($listGroup->Clients) AND (count($listGroup->Clients) >= 1)) {
 								$i = 0;
 								foreach($listGroup->Clients as $listClients) {
 									$i++;

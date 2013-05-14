@@ -697,12 +697,28 @@ class Administration extends CI_Model {
 	}
 	
 	public function addClient($data) {
-		return ($this->db->insert('Clients',$data)) ? TRUE : FALSE;
-		/*if($this->db->insert('Clients',$data)) {
-			return $this->db->insert_id();
+		
+		$addClient = ($this->db->insert('Clients',$data['Clients'])) ? TRUE : FALSE;
+		if($addClient) {
+			$client_id = $this->db->insert_id();
+			$data['DirectoryAddresses']['OWNER_ID'] = $client_id;
+			$data['DirectoryAddresses']['DIRECTORY_ID'] = 0;
+			$data['DirectoryAddresses']['OWNER_Type'] = 1;
+			$data['PhoneNumbers']['DIRECTORY_ID'] = 0;
+			$data['PhoneNumbers']['OWNER_ID'] = $client_id;
+			$data['PhoneNumbers']['OWNER_Type'] = 1;
+			
+			$phone = $this->db->insert('PhoneNumbers',$data['PhoneNumbers']);	
+			$address = $this->db->insert('DirectoryAddresses',$data['DirectoryAddresses']);
+			
+			if($phone AND $address) {
+				return TRUE;	
+			}else {
+				return FALSE;	
+			}
 		}else {
-			return FALSE;
-		}*/
+			return FALSE;	
+		}
 	}
 	
 	public function addReputation($group) {
@@ -779,9 +795,6 @@ class Administration extends CI_Model {
     public function getSelectedClient($id) {
 		$this->db->select('c.CLIENT_ID as ClientID,
 						   c.CLIENT_Name as Name,
-						   c.CLIENT_Address as Address,
-						   c.CLIENT_Phone as Phone,
-						   c.CLIENT_Primary_Phone as PrimaryPhone,
 						   c.CLIENT_Notes as Description,
 						   c.CLIENT_Code as Code,
 						   c.CLIENT_Tag as Tag,
@@ -795,6 +808,18 @@ class Administration extends CI_Model {
 		$query = $this->db->get();
 		return ($query) ? $query->row() : FALSE;
     }
+	
+	public function getSelectedClientPhones($cid) {
+		$sql = 'SELECT * FROM PhoneNumbers WHERE OWNER_ID = "' . $cid . '" AND OWNER_TYPE = 1 AND DIRECTORY_ID = 0';
+		$clients = $this->db->query($sql);
+		return ($clients) ? $clients->result() : FALSE;
+	}
+	
+	public function getSelectedClientAddress($cid) {
+		$sql = 'SELECT * FROM DirectoryAddresses WHERE OWNER_ID = "' . $cid . '" AND OWNER_TYPE = 1 AND DIRECTORY_ID = 0';
+		$clients = $this->db->query($sql);
+		return ($clients) ? $clients->result() : FALSE;
+	}
 	
 	public function getSelectedClientsReviews($client_id,$service_id) {
 		//Using active record to select content from database
@@ -827,8 +852,27 @@ class Administration extends CI_Model {
 	}
 	
 	public function updateClient($cid,$data) {
+		
+		$address = $data['DirectoryAddresses'];
+		$client = $data['Clients'];
+		$phone = $data['PhoneNumbers'];
+		
 		$this->db->where('CLIENT_ID',$cid);
-		return ($this->db->update('Clients',$data)) ? TRUE : FALSE;
+		$client_update = ($this->db->update('Clients',$client)) ? TRUE : FALSE;
+		if($client_update) {
+			$this->db->where('ADDRESS_ID',$address['ADDRESS_ID']);
+			$address_update = $this->db->update('DirectoryAddresses',$address);
+			$this->db->where('PHONE_ID',$phone['PHONE_ID']);
+			$phone_update = $this->db->update('PhoneNumbers',$phone);	
+			
+			if($phone_update AND $address_update) {
+				return TRUE;	
+			}else {
+				return FALSE;	
+			}
+		}else {
+			return FALSE;	
+		}
 	}
 	
 	public function updateSingleReputation($rep) {
@@ -1225,6 +1269,7 @@ class Administration extends CI_Model {
 	public function addNewVendor($data) {
 		$insert = $this->db->insert('Vendors',$data['Vendors']);
 		if($insert) {
+			$data['PhoneNumbers']['DIRECTORY_ID'] = 0;
 			$vid = $this->db->insert_id();
 			$addPhone = (isset($data['PhoneNumbers'])) ? $this->addNewVendorPhoneNumber($data['PhoneNumbers'],$vid) : FALSE;
 			$addAddress = (isset($data['DirectoryAddresses'])) ? $this->addNewVendorAddress($data['DirectoryAddresses'],$vid) : FALSE;
@@ -1240,11 +1285,13 @@ class Administration extends CI_Model {
 	
 	public function addNewVendorPhoneNumber($data,$id) {
 		$data['OWNER_ID'] = $id;
+		$data['DIRECTORY_ID'] = 0;
 		return ($this->db->insert('PhoneNumbers',$data)) ? TRUE : FALSE;
 	}
 	
 	public function addNewVendorAddress($data,$id) {
 		$data['OWNER_ID'] = $id;
+		$data['DIRECTORY_ID'] = 0;
 		return ($this->db->insert('DirectoryAddresses',$data)) ? TRUE : FALSE;
 	}
 
@@ -1280,6 +1327,7 @@ class Administration extends CI_Model {
 					array_push($array_return,2);	
 				}
 			}else {
+				$phones['DIRECTORY_ID'] = 0;
 				if($this->db->insert('PhoneNumbers',$phones)) {
 					array_push($array_return,1);	
 				}else {
@@ -1309,6 +1357,7 @@ class Administration extends CI_Model {
 					array_push($array_return,2);	
 				}
 			}else {
+				$add['DIRECTORY_ID'] = 0;
 				if($this->db->insert('DirectoryAddresses',$add)) {
 					array_push($array_return,1);	
 				}else {

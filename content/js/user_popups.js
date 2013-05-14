@@ -21,12 +21,12 @@ function addUser() {
 	});
 }
 
-function editUser(uid,mods) {
+function editUser(uid,mods,page) {
 	$('#editUser').remove();
 	$('#loader_block').slideDown('fast',function() {
 		$.ajax({
 			type:"GET",
-			url:'/admin/users/edit?uid='+uid+'&modules='+mods,
+			url:'/admin/users/edit?uid='+uid+'&modules='+mods+'&page='+page,
 			success:function(data) {
 				if(data) {
 					$('#loader_block').slideUp('fast',function() {
@@ -42,11 +42,11 @@ function editUser(uid,mods) {
 	});
 }
 
-function editUserInfo(id) {
+function editUserInfo(id,page) {
 	$('#editUserInfo').remove();
 	$.ajax({
 		type:'GET',
-		url:'/admin/users/edit_details_form?uid='+id,
+		url:'/admin/users/edit_details_form?uid='+id+'&page='+page,
 		success:function(data) {
 			if(data) {
 				$('#editUserDetailsForm').html(data);	

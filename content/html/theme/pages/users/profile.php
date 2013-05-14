@@ -12,12 +12,12 @@
     ul.modulesTable li span.check{float:left;margin-right:5px;}
     ul.modulesTable li:last-child{border-right:none;}
     ul.modulesTable.first{border-top:1px solid #d5d5d5 !important;margin-top:0 !important;}
-    ul.odd{background-color:#E2E4FF;}
+    ul.odd{background-color:#f5f5f5;}
 	div#loader_block{position:fixed;width:100%;height:100%;top:0;left:0;background:#fff;opacity:0.8;z-index:2000;display:none;}
     div#client_loader{position:absolute;width:16px;height:16px;top:50%;margin-top:-8px;left:50%;margin-left:-8px;}
 
 </style>
-<div class="content">
+<div class="content hideTagFilter">
     <div class="title"><h5>User Preferences</h5></div>
     <? notifyError(); ?>
     <?php include FCPATH . 'html/global/breadcrumb.php'; ?>
@@ -26,7 +26,7 @@
             <div class="head info">
                 <h5 class="iUser"><?= $user->LastName . ', ' . $user->FirstName; ?></h5>
                 <?php if($edit) { ?>
-                    <div class="editButton bar"><a href="javascript:editUser('<?= $user->ID; ?>',0);"><span>Edit</span></a></div>
+                    <div class="editButton bar"><a href="javascript:editUser('<?= $user->ID; ?>',0,'profile');"><span>Edit</span></a></div>
                 <?php } ?>
             </div>
             <div class="body alignleft">
@@ -34,6 +34,9 @@
                     <img src="<?= $avatar; ?>" alt="<?= $user->FirstName . ' ' . $user->LastName; ?>" />
                     <?php if($edit) { ?>
                         <div class="editButton inAvatar"><a href="javascript:editAvatar('<?= $user->ID; ?>');"><span>Edit</span></a></div>
+                    <?php } ?>
+					<?php if(isset($_SESSION['token']) AND ($user->ID == $this->user['UserID'])) { ?>
+                        <a title="Import Google Avatar" id="importGoogleAvatar" rel="<?= $user->ID; ?>" href="javascript:void(0);"><span>Import Google Avatar</span></a>
                     <?php } ?>
                 </div>
                 <div class="profileInfo alignleft">

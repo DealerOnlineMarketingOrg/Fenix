@@ -50,7 +50,7 @@ class Groups extends DOM_Controller {
 			}
 			//prepare the update
 			$edit_data = array(
-				'AGENCY_ID'=>$group_data['agency_id'],
+				'AGENCY_ID'=>$group_data['agency'],
 				'GROUP_Name'=>$group_data['name'],
 				'GROUP_Notes'=>$group_data['notes'],
 				'GROUP_Active'=>$group_data['status'],

@@ -6,20 +6,21 @@
 	#addGroup .mainForm textarea, 
 	#addGroup .mainForm input[type="password"] {margin:0;}
 </style>
+
 <div class="uDialog" style="text-align:left;">
     <div class="dialog-message popper" id="<?= ((isset($group)) ? 'editGroup' : 'addGroup'); ?>" title="<?= ((isset($group)) ? 'Edit Groups Details' : 'Add New Group'); ?>">
         <div class="uiForm">
             <div class="widget" style="margin-top:-10px;padding-top:0;margin-bottom:10px;">
             	<?php
 					if(isset($group)) :
-						echo form_open('/admin/groups/edit',array('id'=>'editGroupForm','class' => 'validate mainForm formPop','style'=>'text-align:left'));
+						echo form_open('/admin/groups/edit',array('id'=>'groupForm','class' => 'validate mainForm formPop','style'=>'text-align:left'));
 					else :
-						echo form_open('/admin/groups/add',array('id'=>'addGroupForm','class'=>'validate mainForm formPop','style'=>'text-align:left'));				
+						echo form_open('/admin/groups/add',array('id'=>'groupForm','class'=>'validate mainForm formPop','style'=>'text-align:left'));				
 					endif;
 				?>
                     <fieldset>
                         <div class="rowElem noborder">
-                            <label><span class="req">*</span> Group Name</label>
+                            <label><span class="req">*</span>Group Name</label>
                             <div class="formRight">
 								<?php
 									if(isset($group->Name)) {
@@ -32,9 +33,9 @@
                             <div class="fix"></div>
                         </div>
                         <div class="rowElem noborder noSearch">
-                            <label style="padding-top:10px;">Member Of</label>
+                            <label style="padding-top:10px;"><span class="req">*</span>Member Of</label>
                             <div class="formRight" style="text-align:left;padding-top:10px;margin-left:60px;float:left;width:auto;">
-                            	<select class="chzn-select" name="agency" style="width:200px;">
+                            	<select class="chzn-select" name="agency" style="width:200px;" id="MemberOfDrop">
                                 	<option value="">Select a Agency</option>
                                     <?php foreach($agencies as $agency) { ?>
                                     	<?php if($agency->ID == $group->AgencyId) { ?>
@@ -91,19 +92,20 @@
 <script type="text/javascript">
 	//re initialize jQuery
 	var $ = jQuery.noConflict();
+	//$("#groupForm").validationEngine({promptPosition : "right", scroll: true});
 	
-	$('.formPop').submit(function(e) {
+	$('#groupForm').submit(function(e) {
 		e.preventDefault();
 		var formData = $(this).serialize();
 		
 		$.ajax({
 			type:'POST',
 			data:formData,
-			url:'/admin/groups/form<?= ((isset($group)) ? '?gid=' . $group->GroupId : ''); ?>',
+			url:'/admin/groups/form<?= ((isset($group->GroupId)) ? '?gid=' . $group->GroupId : ''); ?>',
 			success:function(code) {
 				var msg;
 				if(code == '1') {
-					msg = '<?= (isset($group)) ? 'Your edit was made successfully.' : 'Your group was created successfully.'; ?>';
+					msg = '<?= (isset($group->GroupId)) ? 'Your edit was made successfully.' : 'Your Group was created successfully.'; ?>';
 					jAlert(msg,'Success',function() {
 						groupListTable();
 					}); 
@@ -136,7 +138,7 @@
 			{
 				class:'redBtn',
 				text:'Save',
-				click:function() {$('.formPop').submit();}
+				click:function() {$('#groupForm').submit();}
 			},
 		] 
 	});
@@ -150,7 +152,7 @@
 			{
 				class:'greenBtn',
 				text:'Add',
-				click:function() {$('.formPop').submit();}
+				click:function() {$('#groupForm').submit();}
 			},
 		] 
 	});

@@ -366,7 +366,7 @@ function AgencyListingTable() {
                         <tr>
                             <td class="alignTextLeft" style="text-align:left;"><?= $agency->Name; ?></td>
                             <td><?= $agency->Description; ?></td>
-                            <td style="width:30px;"><?= (($agency->Status) ? 'Active' : 'Disable'); ?></td>
+                            <td style="width:30px;"><?= (($agency->Status) ? 'Active' : 'Disabled'); ?></td>
                             <?php if($editPriv) { ?>
                                 <td class="actionsCol">
                                     <a title="Edit Agency" href="javascript:editAgency('<?= $agency->ID; ?>');" class="actions_link">
@@ -578,9 +578,8 @@ function GroupsClientTable($group_id) {
 function ClientsListingTable() { 
 	$ci =& get_instance();
 	$ci->load->model('administration');
-	$clients = $ci->administration->getClientsByDDLevel();
+	$clients = $ci->administration->getClientsByDDLevel(); 
 ?>
-	<?php if($clients) : ?>
     <script type="text/javascript" src="<?= base_url(); ?>js/client_popups.js"></script>
     <script type="text/javascript" src="<?= base_url(); ?>js/websites_popups.js"></script>
     <?php 
@@ -590,8 +589,10 @@ function ClientsListingTable() {
         $disablePriv 		 = GateKeeper('Client_Disable_Enable',$userPermissionLevel);
         $listingPriv 		 = GateKeeper('Client_List',$userPermissionLevel);
     ?>
+
     <?php if($addPriv) { ?><a href="javascript:addClient();" class="greenBtn floatRight button addButtonTop">Add New Client</a><?php } ?>
-    <?php if($listingPriv) { ?>
+    
+    <?php if($listingPriv AND $clients) : ?>
         <table cellpadding="0" cellspacing="0" border="0" class="display" id="example" width="100%;">
             <thead>
                 <tr>
@@ -600,9 +601,7 @@ function ClientsListingTable() {
                     <th style="width:30%;">Dealership Name</th>
                     <th>Group</th>
                     <th>Status</th>
-                    <?php if($editPriv) { ?>
                     <th class="noSort">Actions</th>
-                    <?php } ?>
                 </tr>
             </thead>
             <tbody>
@@ -613,22 +612,21 @@ function ClientsListingTable() {
                         <td class="alignTextLeft"><a href="javascript:viewClient('<?= $client->ClientID; ?>');"><?= $client->Name; ?></a></td>
                         <td><?= $client->GroupName; ?></td>
                         <td class="alignTextLeft" style="width:30px;"><?= (($client->Status) ? 'Active' : 'Disable'); ?></td>
-                        <?php if($editPriv) { ?>
                         <td class="actionsCol noSort" style="width:60px;text-align:center;">
-                            <a title="Edit Client" href="javascript:editClient('<?= $client->ClientID; ?>');" class="actions_link"><img src="<?= base_url() . THEMEIMGS; ?>icons/color/pencil.png" alt="" /></a>
+                            <?php if($editPriv) { ?><a title="Edit Client" href="javascript:editClient('<?= $client->ClientID; ?>');" class="actions_link"><img src="<?= base_url() . THEMEIMGS; ?>icons/color/pencil.png" alt="" /></a> <?php } ?>
                             <a title="View Client" href="javascript:viewClient('<?= $client->ClientID; ?>');" class="actions_link"><img src="<?= base_url() . THEMEIMGS; ?>icons/color/cards-address.png" alt="" /></a>
                         </td>
-                        <?php } ?>
                     </tr>
                 <?php } ?>
             </tbody>
         </table>
-    <?php } ?>
-    <?php if($addPriv) { ?><a href="javascript:addClient();" class="greenBtn floatRight button addButtonBottom">Add New Client</a><?php } ?>
     <?php else : ?>
-    <p class="noData">No clients found.</p>
-    <?php endif; ?>
-<?php }
+    	<p class="noData">No clients found.</p>
+    <?php endif; 
+    
+    if($addPriv) { ?><a href="javascript:addClient();" class="greenBtn floatRight button addButtonBottom">Add New Client</a><?php }
+
+}
 
 function UserListingTable($client_id = false,$hide_actions = false) { ?>
     <script type="text/javascript" src="<?= base_url(); ?>js/user_popups.js"></script>
@@ -728,7 +726,7 @@ function UserListingTable($client_id = false,$hide_actions = false) { ?>
                         <td style="width:30px;text-align:center;vertical-align: middle;"><?= (($user->Status) ? 'Active' : 'Disable'); ?></td>
                         <td class="actionsCol noSort" style="width:60px;text-align:center;vertical-align: middle;">
                         <?php if($editPriv) { ?>
-                                <a title="Edit User" href="javascript:editUser('<?= $user->ID; ?>',1);" class="actions_link"><img src="<?= base_url() . THEMEIMGS; ?>icons/color/pencil.png" alt="" /></a>
+                                <a title="Edit User" href="javascript:editUser('<?= $user->ID; ?>',1,'users');" class="actions_link"><img src="<?= base_url() . THEMEIMGS; ?>icons/color/pencil.png" alt="" /></a>
                             <? } ?>
                         <a title="View User" href="javascript:viewUser('<?= $user->ID; ?>');" class="actions_link"><img src="<?= base_url() . THEMEIMGS; ?>icons/color/cards-address.png" alt="" /></a>
                         </td>

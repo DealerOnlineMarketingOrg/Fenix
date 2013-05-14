@@ -75,6 +75,15 @@ class Users extends DOM_Controller {
 		}
 	}
 	
+	public function get_current_url() {
+		$url = $this->uri->uri_string();
+		$uri = explode('/', $url);
+		
+		print_object($_SERVER['REQUEST_URI']);
+		
+		print_object($uri[0]);
+	}
+	
 	public function Import_google_avatar() {
 		$import = $this->members->activateGoogleAvatar($this->user_id);
 		if($import) {
@@ -161,10 +170,12 @@ class Users extends DOM_Controller {
 		$user = $this->administration->getMyUser($this->user_id);
 		$user->Modules = ParseModulesInReadableArray($user->Modules);
 		$avatar = $this->members->get_user_avatar($user->ID);
+		$page = $_GET['page'];
 		$data = array(
 			'user'=>$user,
 			'avatar'=>$avatar,
 			'allMods'=>$this->administration->getAllModules(),
+			'page'=>$page,
 			'websites'=>true,
 			'show_mods'=>((isset($_GET['modules'])) ? $_GET['modules'] : FALSE)
 		);
@@ -196,9 +207,13 @@ class Users extends DOM_Controller {
 		$user->CompanyAddress = mod_parser($user->CompanyAddress);
 		$user->Email = mod_parser($user->Emails,false,true);
 		$user->Phone = mod_parser($user->Phones,false,true);
+		
+		$page = $_GET['page'];
+		
 		$data = array(
 			'user'=>$user,
-			'dealerships'=>$dealerships
+			'dealerships'=>$dealerships,
+			'page'=>$page
 		);	
 		$this->load->dom_view('forms/users/edit_details', $this->theme_settings['ThemeViews'], $data);
 	}

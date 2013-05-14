@@ -532,9 +532,9 @@ div.actionsBar a {color:#fff;}
 div.editButton{float:right;width:14px;position:relative;z-index:100;height:14px;display:block;border:none;background:transparent;margin:12px 11px 11px;}
 div.editButton a,div.avatar div.editBar a {display:block;background:url(../imgs/icons/dark/pencil.png) no-repeat top left;height:14px;width:14px;}
 div.editButton a span {display:none;}
-div.avatar {width:100px;padding:2px;border:1px solid #d5d5d5;float:left;position:relative;}
+div.avatar {width:100px;max-height:100px !important;padding:2px;border:1px solid #d5d5d5;float:left;position:relative;}
 div.avatar img {width:100px;}
-div.avatar div.editButton {margin:0;background:#eee;opacity:0.8;position:absolute;bottom:0;left:0;width:100%;height:18px;border-top:1px solid #d5d5d5;display:none;}
+div.avatar div.editButton {padding-bottom:5px;margin:0;background:#eee;opacity:0.8;position:absolute;bottom:0;left:0;width:100%;border-top:1px solid #d5d5d5;display:none;}
 div.avatar div.editButton a {float:right;margin-right:5px;margin-top:2px;}
 div.profileInfo{margin-left:120px;margin-top:-2px;}
 div.profileInfo ul li {font-weight:550;color:#333;}

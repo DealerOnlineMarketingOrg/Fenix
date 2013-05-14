@@ -148,7 +148,7 @@
 				url:'/admin/websites/edit?web_id=<?=$web_id;?>',
 				success:function(data) {
 					if(data) {
-						jAlert('The Website was added successfully.','Success!',function() {
+						jAlert('The Website was edited successfully.','Success!',function() {
 							websiteListTable('<?=$owner_type;?>','<?=$owner_id;?>');
 						});
 					}else {

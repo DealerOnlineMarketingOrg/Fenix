@@ -46,9 +46,9 @@
             	<div class="tab_container">
             		<div id="userInfo" class="tab_content">
                     	<div class="title">
-                        	<h5 class="iUsers2" style="min-height:20px;"><?= $user->FirstName . ' ' . $user->LastName; ?></h5>
+                        	<h5 class="iUser" style="min-height:20px;"><?= $user->LastName . ', ' . $user->FirstName; ?></h5>
                             <?php if(($this->user['AccessLevel'] >= 600000 || $this->user['UserID'] == $user->ID) AND !isset($view)) { ?>
-                            	<a title="Edit Contact" href="javascript:editUserInfo('<?= $user->ID; ?>');" class="actions_link"><img src="<?= base_url() . THEMEIMGS; ?>icons/color/pencil.png" alt="" /></a>
+                            	<a title="Edit Contact" href="javascript:editUserInfo('<?= $user->ID; ?>','<?=$page;?>');" class="actions_link"><img src="<?= base_url() . THEMEIMGS; ?>icons/color/pencil.png" alt="" /></a>
                                 
                             <?php } ?>
                         </div>
@@ -57,7 +57,7 @@
                             <?php if($this->user['UserID'] == $user->ID || $this->user['AccessLevel'] >= 600000) { ?>
                             	<div class="editButton inAvatar">
                                 	<a title="Upload Custom Avatar" id="editUsersAvatar" rel="<?= $user->ID; ?>" href="javascript:void(0);"><span>Edit</span></a>
-                                    <?php if(isset($_SESSION['token'])) { ?>
+                                    <?php if(isset($_SESSION['token']) AND $this->user['UserID'] == $user->ID) { ?>
                                     	<a title="Import Google Avatar" id="importGoogleAvatar" rel="<?= $user->ID; ?>" href="javascript:void(0);"><span>Import Google Avatar</span></a>
                                     <?php } ?>
                                 </div>
@@ -107,7 +107,7 @@
                                         <td class="info">
                                             <?php foreach($user->Emails as $email) { ?>
                                                 <?php if($email->EMAIL_Primary == 1 ) { ?>
-                                            <span>Primary Email:</span><span id="priEmail"><a href="mailto:'<?= $email->EMAIL_Address; ?>"><?= $email->EMAIL_Address; ?></a></span>
+                                            <span>Primary Email:</span><span id="priEmail"><a href="mailto:<?= $email->EMAIL_Address; ?>"><?= $email->EMAIL_Address; ?></a></span>
                                                 <?php } ?>
                                             <?php } ?>
                                          </td>
@@ -185,7 +185,7 @@
                                     data:formData,
                                     success:function(data) {
                                         if(data == '1') {
-                                            jAlert('Module edits made successfully.','Success');
+                                            jAlert('Module edit made successfully.','Success');
                                         }else {
                                             jAlert('Something went wrong!. Try Again.','Error');	
                                         }
@@ -239,7 +239,7 @@
 	
 	$('#importGoogleAvatar').click(function() {
 		var uid = $(this).attr('rel');
-		jConfirm('Are you sure you want to import your google avatar into the system? This will overwrite any existing avatars you have set.','Import Google Avatar',function(r) {
+		jConfirm('Are you sure you want to import your Google avatar into the system? This will overwrite any existing avatars you have set.','Import Google Avatar',function(r) {
 			if(r) {
 				$.ajax({
 					type:'GET',

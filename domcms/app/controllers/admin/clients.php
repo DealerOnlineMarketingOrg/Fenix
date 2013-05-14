@@ -80,40 +80,55 @@ class Clients extends DOM_Controller {
     }
 	
 	public function form() {
-		//build the phone string
-		$primaryPhone =  $this->security->xss_clean($this->input->post('phone'));
-		$phone = 'work:' . $primaryPhone;
-		//build the address string
-		$address = 'street:' . $this->security->xss_clean($this->input->post('street')) . ',city:' . $this->security->xss_clean($this->input->post('city')) . ',state:' . $this->security->xss_clean($this->input->post('state')) . ',zipcode:' . $this->security->xss_clean($this->input->post('zip'));
+		$address_data = array(
+			'ADDRESS_Street'=>$this->security->xss_clean($this->input->post('street')),
+			'ADDRESS_State'=>$this->security->xss_clean($this->input->post('state')),
+			'ADDRESS_City'=>$this->security->xss_clean($this->input->post('city')),
+			'ADDRESS_Zip'=>$this->security->xss_clean($this->input->post('zip')),
+			'ADDRESS_Type'=>'work',
+			'ADDRESS_Primary'=>1
+		);
+		
+		$phone_data = array(
+			'PHONE_Number'=>$this->security->xss_clean($this->input->post('phone')),
+			'PHONE_Primary'=>1,
+			'PHONE_Type'=>'work'
+		);
 		
 		$client_data = array(
 			'CLIENT_Name'=>$this->security->xss_clean($this->input->post('ClientName')),
-			'CLIENT_Address'=>$address,
-			'CLIENT_Phone'=>$phone,
-			'CLIENT_Primary_Phone'=>$primaryPhone,
 			'CLIENT_Notes'=>$this->security->xss_clean($this->input->post('Notes')),
 			'CLIENT_Code'=>$this->security->xss_clean($this->input->post('ClientCode')),
 			'CLIENT_Tag'=>$this->security->xss_clean($this->input->post('tags')),
-			'CLIENT_ActiveTS'=>date(FULL_MILITARY_DATETIME),
 			'GROUP_ID'=>$this->security->xss_clean($this->input->post('Group')),
 			'CLIENT_Active'=>$this->security->xss_clean($this->input->post('status')),
 		);		
 		
 		if(isset($_POST['ClientID'])) {
 			$client_data['CLIENT_ID'] = $this->security->xss_clean($_POST['ClientID']);	
+			$phone_data['PHONE_ID'] = $this->security->xss_clean($this->input->post('phone_id'));
+			$address_data['ADDRESS_ID'] = $this->security->xss_clean($this->input->post('address_id'));
 		}else {
 			$client_data['CLIENT_Created'] = date(FULL_MILITARY_DATETIME);	
+			$address_data['ADDRESS_Created'] = date(FULL_MILITARY_DATETIME);
+			$phone_data['PHONE_Created'] = date(FULL_MILITARY_DATETIME);
 		}
 		
+		$data = array(
+			'DirectoryAddresses' => $address_data,
+			'PhoneNumbers'=>$phone_data,
+			'Clients'=>$client_data
+		);
+		
 		if(isset($_POST['ClientID'])) {
-			$update = $this->administration->updateClient($_POST['ClientID'],$client_data);
+			$update = $this->administration->updateClient($_POST['ClientID'],$data);
 			if($update) {
 				echo '1';	
 			}else {
 				echo '0';	
 			}
 		}else {
-			$add = $this->administration->addClient($client_data);
+			$add = $this->administration->addClient($data);
 			if($add) {
 				echo '1';	
 			}else {
@@ -167,6 +182,7 @@ class Clients extends DOM_Controller {
 		//$client_id = ($this->input->post('client_id'))?$this->input->post('client_id'):$this->user['DropdownDefault']->SelectedClient;
 		$this->load->model('administration');
 		$client = $this->administration->getSelectedClient($client_id);
+		$client->Addresses = 
 		$client->ContactID = $client_id;
 		$tags = $this->administration->getAllTags();    
 		$groups = $this->administration->getAllGroupsInAgency($this->user['DropdownDefault']->SelectedAgency);
@@ -174,8 +190,9 @@ class Clients extends DOM_Controller {
 		$client->TypeID = $client_id;
 		
 		if($client) {
-			$client->Address = (isset($client->Address)) ? mod_parser($client->Address) : false;
-			$client->Phone = (!empty($client->Phone)) ? mod_parser($client->Phone,false,true) : false;
+			$client->Addresses = $this->administration->getSelectedClientAddress($client_id);
+			$client->Phones = $this->administration->getSelectedClientPhones($client_id);
+			
 			$client->Reviews = array(
 				'Google'   => ($this->administration->getSelectedClientsReviews($client_id,1)) ? $this->administration->getSelectedClientsReviews($client_id,1)->URL : FALSE,
 				'GoogleID' => ($this->administration->getSelectedClientsReviews($client_id,1)) ? $this->administration->getSelectedClientsReviews($client_id,1)->ID  : FALSE,
@@ -184,6 +201,7 @@ class Clients extends DOM_Controller {
 				'Yahoo'    => ($this->administration->getSelectedClientsReviews($client_id,3)) ? $this->administration->getSelectedClientsReviews($client_id,3)->URL : FALSE,
 				'YahooID'  => ($this->administration->getSelectedClientsReviews($client_id,3)) ? $this->administration->getSelectedClientsReviews($client_id,3)->ID  : FALSE
 			);
+			
 			$data = array(
 				'groups' => $groups,
 				'client' => $client,

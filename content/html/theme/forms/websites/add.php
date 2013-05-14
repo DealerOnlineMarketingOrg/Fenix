@@ -45,6 +45,7 @@
 							<label>URL</label>
 							<div class="formRight">
 								<?= form_input(array('class'=>'validate[required,custom[url]]','name'=>'url','id'=>'url','value'=>'')); ?>
+                                <span class="formNote">http://www.example.com</span>
 							</div>
 							<div class="fix"></div>
 						</div>

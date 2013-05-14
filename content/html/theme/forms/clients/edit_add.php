@@ -11,11 +11,16 @@
             <div class="widget" style="margin-top:0;padding-top:0;margin-bottom:10px;">
             	<ul class="tabs">
             		<li class="activeTab"><a href="javascript:void(0);" rel="clientInfo">Client Details</a></li>
+                    <?php if(isset($client->ClientID)) { ?>
                     <li><a href="javascript:void(0);" rel="websites">Websites</a></li>
             		<li><a href="javascript:void(0);" rel="contacts">Contacts</a></li>
+                    <?php } ?>
             	</ul>
             	<div class="tab_container">
             		<div id="clientInfo" class="tab_content">
+                    	<?php if(isset($client)) { ?>
+                        	<?php //print_object($client); ?>
+                        <?php } ?>
 		            	<?php
 					        $form = array(
 					            'name' => (($client) ? 'editClient' : 'addClient'),
@@ -73,67 +78,101 @@
 			                    </div>
 			                    <div class="fix"></div>
 			                </div>
-			                <div class="rowElem noborder">
-			                    <label>Address</label>
-			                    <div class="formRight">
-                                	<?php if(isset($view)) { 
-										echo form_input(array('disabled'=>'disabled','name'=>'street','id'=>'address','value'=> ((isset($client->Address['street'])) ? $client->Address['street'] : '')));
-									}else {
-                                		echo form_input(array('name'=>'street','id'=>'address','value'=> ((isset($client->Address['street'])) ? $client->Address['street'] : '')));
-									} ?>
-			                    </div>
-			                    <div class="fix"></div>
-			                </div>
-			                <div class="rowElem noborder">
-			                    <label>City</label>
-			                    <div class="formRight">
-                                	<?php if(isset($view)) {
-										echo form_input(array('disabled'=>'disabled','name'=>'city','id'=>'city','value' => ((isset($client->Address['city'])) ? $client->Address['city'] : '')));
-									}else {
-                                		echo form_input(array('name'=>'city','id'=>'city','value' => ((isset($client->Address['city'])) ? $client->Address['city'] : ''))); 
-									}?>			
-			                    </div>
-			                    <div class="fix"></div>
-			                </div>
-			                <div class="rowElem noborder">
-			                    <label>State</label>
-			                    <div class="formRight searchDrop noSearch" style="text-align:left;">
-                                	<?php if(isset($view)) {
-										echo showStates(((isset($client->Address['state'])) ? $client->Address['state'] : false),true);
-									}else {
-                                		echo showStates(((isset($client->Address['state'])) ? $client->Address['state'] : false));
-									} ?>
-			                    </div>
-			                    <div class="fix"></div>
-			                </div>
-			                <div class="rowElem noborder">
-			                    <label>Zip Code</label>
-			                    <div class="formRight">
-                                	<?php if(isset($view)) {
-										echo form_input(array('disabled'=>'disabled','maxlength'=>'6','name'=>'zip','id'=>'zip','value'=>((isset($client->Address['zipcode'])) ? $client->Address['zipcode'] : '')));
-									}else {
-			                        	echo form_input(array('maxlength'=>'6','name'=>'zip','id'=>'zip','value'=>((isset($client->Address['zipcode'])) ? $client->Address['zipcode'] : '')));
-									}?>
-			                    </div>
-			                    <div class="fix"></div>
-			
-			                </div>
+                            <?php if(!empty($client->Addresses)) { ?>
+                            	<?php foreach($client->Addresses as $address) { ?>
+                                	<?php if($address->ADDRESS_Primary == 1) { ?>
+                                        <div class="rowElem noborder">
+                                            <label>Address</label>
+                                            <div class="formRight">
+                                            	<?php if(isset($view)) { ?>
+                                            		<?= form_input(array('disabled'=>'disabled','name'=>'street','id'=>'address','value'=> $address->ADDRESS_Street)); ?>
+                                                <?php }else { ?>
+                                            		<?= form_input(array('name'=>'street','id'=>'address','value'=> $address->ADDRESS_Street)); ?>
+                                                <?php } ?>
+                                            </div>
+                                            <div class="fix"></div>
+                                        </div>
+                                        <div class="rowElem noborder">
+                                            <label>City</label>
+                                            <div class="formRight">
+                                                <?php if(isset($view)) {
+                                                    echo form_input(array('disabled'=>'disabled','name'=>'city','id'=>'city','value' => $address->ADDRESS_City));
+                                                }else {
+                                                    echo form_input(array('name'=>'city','id'=>'city','value' => $address->ADDRESS_City)); 
+                                                }?>			
+                                            </div>
+                                            <div class="fix"></div>
+                                        </div>
+                                        <div class="rowElem noborder">
+                                            <label>State</label>
+                                            <div class="formRight searchDrop noSearch" style="text-align:left;">
+                                                <?php if(isset($view)) {
+                                                    echo showStates(((isset($address->ADDRESS_State)) ? $address->ADDRESS_State : false),true);
+                                                }else {
+                                                    echo showStates(((isset($address->ADDRESS_State)) ? $address->ADDRESS_State : false));
+                                                } ?>
+                                            </div>
+                                            <div class="fix"></div>
+                                        </div>
+                                        <div class="rowElem noborder">
+                                            <label>Zip Code</label>
+                                            <div class="formRight">
+                                                <?php if(isset($view)) {
+                                                    echo form_input(array('disabled'=>'disabled','maxlength'=>'6','name'=>'zip','id'=>'zip','value'=>$address->ADDRESS_Zip));
+                                                }else {
+                                                    echo form_input(array('maxlength'=>'6','name'=>'zip','id'=>'zip','value'=>$address->ADDRESS_Zip));
+                                                }?>
+                                            </div>
+                                            <div class="fix"></div>
+                        
+                                        </div>
+                                        <input type="hidden" name="address_id" value="<?= $address->ADDRESS_ID; ?>" />
+                                    <?php }
+									}
+							}else { ?>
+                                <div class="rowElem noborder">
+                                    <label>Address</label>
+                                    <div class="formRight">
+                                    	<?= form_input(array('disabled'=>'disabled','name'=>'street','id'=>'address','value'=> '')); ?>
+                                    </div>
+                                    <div class="fix"></div>
+                                </div>
+                                <div class="rowElem noborder">
+                                    <label>City</label>
+                                    <div class="formRight">
+                                    	<?= form_input(array('name'=>'city','id'=>'city','value' => '')); ?>
+                                    </div>
+                                    <div class="fix"></div>
+                                </div>
+                                <div class="rowElem noborder">
+                                    <label>State</label>
+                                    <div class="formRight searchDrop noSearch" style="text-align:left;">
+                                    	<?= showStates(); ?>
+                                    </div>
+                                    <div class="fix"></div>
+                                </div>
+                                <div class="rowElem noborder">
+                                    <label>Zip Code</label>
+                                    <div class="formRight">
+                                    <?= form_input(array('maxlength'=>'6','name'=>'zip','id'=>'zip','value'=>'')); ?>
+                                    </div>
+                                    <div class="fix"></div>
+                                </div>
+                            <?php } ?>
 			                <div class="rowElem noborder">
 			                    <label><span class="req">*</span>Phone Number</label>
 			                    <div class="formRight">
-                                	<?php if ($client->Phone) {
+                                	<?php if(!empty($client->Phones)) {
 										// Locate primary.
-										foreach ($client->Phone as $clientPhone) :
-										 foreach ($clientPhone as $type => $phone) {
-											if ($phone == $client->PrimaryPhone) {
-												if(isset($view)) { 
-													echo form_input(array('disabled'=>'disabled','class'=>'maskPhone required validate[required,custom[phone]]','name'=>'phone','id'=>'phone','value'=>$phone));
-												}else {
-													echo form_input(array('class'=>'maskPhone required validate[required,custom[phone]]','name'=>'phone','id'=>'phone','value'=>$phone)); 
-												}
-												break;
-											}
-										} endforeach;
+										foreach ($client->Phones as $clientPhone) :
+											if($clientPhone->PHONE_Primary == 1) { ?>
+												<?= form_input(array('class'=>'maskPhone required validate[required,custom[phone]]','name'=>'phone','id'=>'phone','value'=>$clientPhone->PHONE_Number)); ?>
+											<?php }else { ?>
+												<?= form_input(array('class'=>'maskPhone required validate[required,custom[phone]]','name'=>'phone','id'=>'phone','value'=>'')); ?>
+											<?php } ?>
+                                            <input type="hidden" value="<?= $clientPhone->PHONE_ID; ?>" name="phone_id" />
+                                            
+										<?php endforeach;
 									} else {
 										echo form_input(array('class'=>'maskPhone required validate[required,custom[phone]]','name'=>'phone','id'=>'phone','value'=>''));
 									}?>
@@ -269,7 +308,7 @@
                             
                             <?php }else { ?>
 			                <div class="submitForm">
-                            	<?php if($client) { ?>
+                            	<?php if(isset($client->ClientID)) { ?>
 			               			<input type="hidden" name="ClientID" value="<?= $client->ClientID; ?>" />
                                 <?php } ?>
 			                    <!-- <input type="submit" value="<?= ((isset($client->Status)) ? 'Save' : 'Add'); ?>" class="<?= ((isset($client->Status)) ? 'redBtn' : 'greenBtn'); ?>" />-->
@@ -279,14 +318,18 @@
 			           </fieldset>
     				<?= form_close(); ?>
     				</div>
+                    <?php if(isset($client->ClientID)) { ?>
                      <div id="websites" class="tab_content" style="display:none;">
                      	<?= WebsiteListingTable($client->ClientID,1,((isset($view)) ? false : true)); ?>
                         <div class="fix"></div>
                      </div>
+                     <?php } ?>
+                     <?php if(isset($client->ClientID)) { ?>
                      <div id="contacts" class="tab_content" style="display:none;padding-bottom:10px;">
                      	<?= ContactsMainTable(((isset($view)) ? true : false),true,$client->ClientID); ?>
                         <div class="fix"></div>
                      </div>
+                     <?php } ?>
                     <div id="loader" style="display:none;"><img src="<?= base_url() . THEMEIMGS; ?>loaders/loader2.gif" /></div>
     				<div class="fix"></div>
     			</div>	
@@ -338,11 +381,11 @@
 		<?php if(isset($view)) { ?>
 		<?php }else { ?>
 			var formData = $(this).serialize();
-			var formType = '<?= ($client) ? 'edit' : 'add'; ?>';
+			var formType = '<?= (isset($client->ClientID)) ? 'edit' : 'add'; ?>';
 			$.ajax({
 				type:'POST',
 				data:formData,
-				url:'<?= ((isset($client)) ? '/admin/clients/form?cid=' . $client->ClientID : '/admin/clients/form?gid=' . $this->user['DropdownDefault']->SelectedGroup); ?>',
+				url:'<?= ((isset($client->ClientID)) ? '/admin/clients/form?cid=' . $client->ClientID : '/admin/clients/form?gid=' . $this->user['DropdownDefault']->SelectedGroup); ?>',
 				success:function(resp) {
 					if(resp == '1') {
 						if(formType == 'edit') {
