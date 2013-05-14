@@ -10,14 +10,14 @@
 			</style>
             <div class="widget" style="margin-top:0;padding-top:0;margin-bottom:10px;">
             	<ul class="tabs">
-            		<li class="activeTab"><a href="javascript:void(0);" rel="clientInfo">Client Details</a></li>
+            		<li class="activeTab"><a href="javascript:void(0);" rel="clients_clientInfo">Client Details</a></li>
                     <?php if(isset($client->ClientID)) { ?>
-                    <li><a href="javascript:void(0);" rel="websites">Websites</a></li>
-            		<li><a href="javascript:void(0);" rel="contacts">Contacts</a></li>
+                    <li><a href="javascript:void(0);" rel="clients_websites">Websites</a></li>
+            		<li><a href="javascript:void(0);" rel="clients_contacts">Contacts</a></li>
                     <?php } ?>
             	</ul>
             	<div class="tab_container">
-            		<div id="clientInfo" class="tab_content">
+            		<div id="clients_clientInfo" class="tab_content">
                     	<?php if(isset($client)) { ?>
                         	<?php //print_object($client); ?>
                         <?php } ?>
@@ -319,13 +319,13 @@
     				<?= form_close(); ?>
     				</div>
                     <?php if(isset($client->ClientID)) { ?>
-                     <div id="websites" class="tab_content" style="display:none;">
+                     <div id="clients_websites" class="tab_content" style="display:none;">
                      	<?= WebsiteListingTable($client->ClientID,1,((isset($view)) ? false : true)); ?>
                         <div class="fix"></div>
                      </div>
                      <?php } ?>
                      <?php if(isset($client->ClientID)) { ?>
-                     <div id="contacts" class="tab_content" style="display:none;padding-bottom:10px;">
+                     <div id="clients_contacts" class="tab_content" style="display:none;padding-bottom:10px;">
                      	<?= ContactsMainTable(((isset($view)) ? true : false),true,$client->ClientID); ?>
                         <div class="fix"></div>
                      </div>
@@ -411,9 +411,9 @@
 		<?php } ?>
 	});
 
-	$('ul.tabs li a').live('click',function() {
+	$('#editClient ul.tabs li a').live('click',function() {
 		//remove all activetabs
-		$('ul.tabs').find('li.activeTab').removeClass('activeTab');
+		$('#editClient ul.tabs').find('li.activeTab').removeClass('activeTab');
 		
 		$(this).parent().addClass('activeTab');
 		var content = 'div#' + $(this).attr('rel');
@@ -427,7 +427,7 @@
 		
 		<?php }else { ?>
 		
-		if(activeContent == 'contactInfo') {
+		if(activeContent == 'clients_contacts') {
 			if($('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addContactBtn').hasClass('hidden')) {
 				$('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addContactBtn').removeClass('hidden');
 			}
@@ -442,7 +442,7 @@
 			}
 		}
 		
-		if(activeContent == 'websites') {
+		if(activeContent == 'clients_websites') {
 			if($('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addContactBtn').is(':visible')) {
 				$('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addContactBtn').addClass('hidden');
 			}
@@ -457,7 +457,7 @@
 			}
 		}
 		
-		if(activeContent == 'clientInfo') {
+		if(activeContent == 'clients_clientInfo') {
 			if($('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.saveClientBtn').hasClass('hidden')) {
 				$('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.saveClientBtn').removeClass('hidden');
 			}

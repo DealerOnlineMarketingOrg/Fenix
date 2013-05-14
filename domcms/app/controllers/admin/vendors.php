@@ -25,7 +25,10 @@ class Vendors extends DOM_Controller {
 	
 	public function add() {
 		//were loading this page on a popup
-		$this->load->dom_view('forms/vendors/add', $this->theme_settings['ThemeViews']);
+		$data = array(
+			'owner_type'=>2
+		);
+		$this->load->dom_view('forms/vendors/add', $this->theme_settings['ThemeViews'],$data);
 	}
 	
 	public function add_new_vendor() {

@@ -356,13 +356,15 @@ class System_contacts extends DOM_Model {
 		//query using the active record codeigniter method
 		$this->db->select('*')->from('PhoneNumbers');
 		
-		if(!$did) {
 			$this->db->where('OWNER_ID',$oid);
 			$this->db->where('OWNER_Type',$otype);
 			$this->db->where('PHONE_Active',1);
-		}else {
-			$this->db->where('DIRECTORY_ID',$did);	
-		}
+			
+			if($otype > 2) {
+				$this->db->where('DIRECTORY_ID',$did);	
+			}else {
+				$this->db->where('DIRECTORY_ID',0);	
+			}
 		
 		$query = $this->db->get();
 		

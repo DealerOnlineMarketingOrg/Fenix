@@ -125,7 +125,13 @@
 				data:formData,
 				url:'/admin/users/submit_add_user',
 				success:function(resp) {
-					load_users_table();
+					if(resp == 1) { 
+						load_users_table();
+					}else if(resp == 2) {
+						jAlert('Username already exists, please choose another and try again','Error');	
+					}else if(resp == 0) {
+						jAlert('There was a problem adding the new User to the system. Please try again','Error');	
+					}
 				}
 			});
 	});

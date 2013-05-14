@@ -96,7 +96,7 @@
 			url:'/admin/users/submit_user_details_form?uid=<?= $user->ID; ?>',
 			success:function(resp) {
 				if(resp == '1') {
-					jAlert('The users info has been updated.','Success',function() {
+					jAlert("The User's information has been updated.",'Success',function() {
 						$('#editUserInfo').dialog('close');	
 						//load_user_table();
 							<?php if($page == 'users') { ?>
@@ -106,7 +106,7 @@
 							<?php } ?>
 					});
 				}else if(resp == '2') {
-					jAlert('The users info was updated, however, the username was not! Please check to see if you have the correct permissions to change usernames.','Success Error',function() {
+					jAlert("The User's information has been updated, however, the username was not! Please check to see if you have the correct permissions to change usernames.",'Success Error',function() {
 						$('#editUserInfo').dialog('close');
 						//load_user_table();
 						<?php if($page == 'users') { ?>
@@ -116,7 +116,7 @@
 						<?php } ?>
 					});
 				}else if(resp == '3') {
-					jAlert('The username was updated however, the users details did not update correctly. Please try again!.','Success Error',function() {
+					jAlert("The User's username was updated however, the User's information did not update correctly. Please try again!.",'Success Error',function() {
 						$('#editUserInfo').dialog('close');
 						//load_user_table();
 						<?php if($page == 'users') { ?>
@@ -126,7 +126,7 @@
 						<?php } ?>
 					});
 				}else{
-					jAlert('There was a problem updating the users information. Please try again.','Error',function() {
+					jAlert("There was a problem updating the User's information. Please try again.",'Error',function() {
 						$('#editUserInfo').dialog('close');
 						//load_user_table();
 						<?php if($page == 'users') { ?>

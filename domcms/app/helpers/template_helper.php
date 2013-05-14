@@ -512,7 +512,9 @@ function VendorListingTable($hide_actions=false,$hide_add=false) { ?>
                         <td class="noWrap">
                         	<?php if(!empty($vendor->Phones)) : 
 									foreach($vendor->Phones as $phone) { 
-										echo (($phone->PHONE_Primary == '1') ? $phone->PHONE_Number : '...');
+										if($phone->PHONE_Primary == 1) { 
+											echo $phone->PHONE_Number;
+										}
 									}
 								  else:
 								  	echo '<span>...</span>'; 

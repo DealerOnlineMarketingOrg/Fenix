@@ -43,13 +43,13 @@
 			</style>
             <div class="widget" style="margin-top:0;padding-top:0;margin-bottom:10px;">
             	<ul class="tabs">
-            		<li class="activeTab"><a href="javascript:void(0);" rel="userInfo">User Details</a></li>
-                    <li><a href="javascript:void(0);" rel="websites">Websites</a></li>
-                     <li><a href="javascript:void(0);" rel="contactInfo">Contact Info</a></li>
-                    <li><a href="javascript:void(0);" rel="modules">Modules</a></li>
+            		<li class="activeTab"><a href="javascript:void(0);" rel="users_userInfo">User Details</a></li>
+                    <li><a href="javascript:void(0);" rel="users_websites">Websites</a></li>
+                     <li><a href="javascript:void(0);" rel="users_contactInfo">Contact Info</a></li>
+                    <li><a href="javascript:void(0);" rel="users_modules">Modules</a></li>
             	</ul>
             	<div class="tab_container">
-            		<div id="userInfo" class="tab_content">
+            		<div id="users_userInfo" class="tab_content">
                     	<div class="title">
                         	<h5 class="iUsers2" style="min-height:20px;"><?= $user->FirstName . ' ' . $user->LastName; ?></h5>
                         </div>
@@ -124,10 +124,10 @@
                             <div class="fix"></div>
                         </div>
     				</div>
-    				<div id="websites" class="tab_content" style="display:none;">
+    				<div id="users_websites" class="tab_content" style="display:none;">
                     	<?= WebsiteListingTable($user->ID,3,false); ?>
     				</div>
-                    <div id="contactInfo" class="tab_content" style="display:none;">
+                    <div id="users_contactInfo" class="tab_content" style="display:none;">
 						<style type="text/css">
                             #contactInfo div.head {background:none;border:none;width:100%;margin:0 auto;}
                             #contactInfo div.head h5 {width:115px;margin:0 auto;display:block;float:none;}
@@ -188,7 +188,7 @@
                             <?php } ?>
                     <div class="fix"></div>
                     </div>
-                    <div id="modules" class="tab_content" style="display:none;">
+                    <div id="users_modules" class="tab_content" style="display:none;">
 						<?= ModulesToEvenlyDesignedTable($user->Modules); ?>
                         <script type="text/javascript">
                             jQuery('ul.modulesTable:even').addClass('even');
@@ -224,7 +224,7 @@
 	$(".maskPhoneExt").mask("(999) 999-9999? x99999");
 	
 	
-	$('ul.tabs li a').live('click',function() {
+	$('#editUser ul.tabs li a').live('click',function() {
 		//remove all activetabs
 		$('ul.tabs').find('li.activeTab').removeClass('activeTab');
 		

@@ -9,7 +9,7 @@
 				#websites .chzn-container{margin-top:12px;}
 				div.tab_content div.title {border:1px solid #d5d5d5;padding:5px;margin-bottom:5px;background:url('<?= base_url(); ?>imgs/leftNavBg.png') repeat-x scroll 0 0 transparent;}
 				div.tab_content div.title h5{padding-left:30px;margin-top:3px;}
-				div.tab_content div.profileRight{margin-left:130px;}
+				div.tab_content div.profileRight{margin-left:110px;}
 				div.tab_content img.profileAvatar{float:left;border:1px solid #d5d5d5;}
 				div.tab_content table.profile{margin-right:10px;border:1px solid #d5d5d5;margin-bottom:5px;}
 				div.tab_content table.profile td.icon{text-align:center;width:20px;vertical-align:middle;border-right:none;float:none !important;}
@@ -18,7 +18,7 @@
 				div.tab_content table.profile td.info span {margin-right:5px;font-weight:bold;}
 				div.tab_content table.profile td a {color:#2B6893;}
 				div.tab_content table.profile td a:hover{color:#666;}
-				div#userInfo a.actions_link{float:right;margin-top:-19px;margin-right:3px;}
+				div#users_userInfo a.actions_link{float:right;margin-top:-19px;margin-right:3px;}
 				div.password_buttons{text-align:right;margin-top:10px;}
 				div.password_buttons a {color:#fff;}
 				div.tab_content table.mods {}
@@ -38,13 +38,13 @@
 				</style>
             <div class="widget" style="margin-top:0;padding-top:0;margin-bottom:10px;">
             	<ul class="tabs">
-            		<li class="activeTab"><a href="javascript:void(0);" rel="userInfo">User Details</a></li>
-                    <li><a href="javascript:void(0);" rel="websites">Websites</a></li>
-                     <li><a href="javascript:void(0);" rel="contactInfo">Contact Info</a></li>
-                    <?php if(isset($show_mods) AND $show_mods) { ?><li><a href="javascript:void(0);" rel="modules">Modules</a></li><?php } ?>
+            		<li class="activeTab"><a href="javascript:void(0);" rel="users_userInfo">User Details</a></li>
+                    <li><a href="javascript:void(0);" rel="users_websites">Websites</a></li>
+                     <li><a href="javascript:void(0);" rel="users_contactInfo">Contact Info</a></li>
+                    <?php if(isset($show_mods) AND $show_mods) { ?><li><a href="javascript:void(0);" rel="users_modules">Modules</a></li><?php } ?>
             	</ul>
             	<div class="tab_container">
-            		<div id="userInfo" class="tab_content">
+            		<div id="users_userInfo" class="tab_content">
                     	<div class="title">
                         	<h5 class="iUser" style="min-height:20px;"><?= $user->LastName . ', ' . $user->FirstName; ?></h5>
                             <?php if(($this->user['AccessLevel'] >= 600000 || $this->user['UserID'] == $user->ID) AND !isset($view)) { ?>
@@ -52,8 +52,8 @@
                                 
                             <?php } ?>
                         </div>
-                        <div class="avatar" style="width:122px;margin-right:2px;">
-                        	<img class="profileAvatar" src="<?= $avatar; ?>" alt="<?= $user->FirstName . ' ' . $user->LastName; ?>" style="width:120px;" />
+                        <div class="avatar" style="width:102px;margin-right:2px;">
+                        	<img class="profileAvatar" src="<?= $avatar; ?>" alt="<?= $user->FirstName . ' ' . $user->LastName; ?>" style="width:100px;" />
                             <?php if($this->user['UserID'] == $user->ID || $this->user['AccessLevel'] >= 600000) { ?>
                             	<div class="editButton inAvatar">
                                 	<a title="Upload Custom Avatar" id="editUsersAvatar" rel="<?= $user->ID; ?>" href="javascript:void(0);"><span>Edit</span></a>
@@ -139,10 +139,10 @@
                             </div>
                         <?php } ?>
     				</div>
-    				<div id="websites" class="tab_content" style="display:none;">
+    				<div id="users_websites" class="tab_content" style="display:none;">
                     	<?= WebsiteListingTable($user->ID,3,true); ?>
     				</div>
-                    <div id="contactInfo" class="tab_content" style="display:none;">
+                    <div id="users_contactInfo" class="tab_content" style="display:none;">
 						<style type="text/css">
                             #contactInfo div.head {background:none;border:none;width:100%;margin:0 auto;}
                             #contactInfo div.head h5 {width:115px;margin:0 auto;display:block;float:none;}
@@ -155,7 +155,7 @@
                         </div>
                     <div class="fix"></div>
                     </div>
-                    <div id="modules" class="tab_content" style="display:none;">
+                    <div id="users_modules" class="tab_content" style="display:none;">
 						<?= form_open('/admin/users/edit_user_modules?uid=' . $user->ID,array('name'=>'userMods','id'=>'userMods','style'=>'text-align:left;')); ?>
                             <?= ModulesToEvenlyDesignedTableWithForm($user->Modules,$user->ID,$allMods); ?>
                             <div class="fix"></div>
@@ -406,9 +406,9 @@
 	//reinitialize the validation plugin
 	$("#valid,.valid").validationEngine({promptPosition : "right", scroll: true});
 	
-	$('ul.tabs li a').live('click',function() {
+	$('#editUser ul.tabs li a').live('click',function() {
 		//remove all activetabs
-		$('ul.tabs').find('li.activeTab').removeClass('activeTab');
+		$('#editUser ul.tabs').find('li.activeTab').removeClass('activeTab');
 		
 		$(this).parent().addClass('activeTab');
 		var content = 'div#' + $(this).attr('rel');
@@ -418,7 +418,7 @@
 		
 		var activeContent = $(this).attr('rel');
 		
-		if(activeContent == 'userInfo') {
+		if(activeContent == 'users_userInfo') {
 			if($('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addWebsiteBtn').is(':visible')) {
 				$('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addWebsiteBtn').addClass('hidden');
 			}
@@ -427,7 +427,7 @@
 			}
 		}
 		
-		if(activeContent == 'websites') {
+		if(activeContent == 'users_websites') {
 			if($('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addWebsiteBtn').hasClass('hidden')) {
 				$('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addWebsiteBtn').removeClass('hidden');
 			}
@@ -436,7 +436,7 @@
 			}
 		}
 		
-		if(activeContent == 'contactInfo') {
+		if(activeContent == 'users_contactInfo') {
 			if($('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addWebsiteBtn').is(':visible')) {
 				$('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addWebsiteBtn').addClass('hidden');
 			}
@@ -445,7 +445,7 @@
 			}
 		}
 		
-		if(activeContent == 'modules') {
+		if(activeContent == 'users_modules') {
 			if($('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addWebsiteBtn').is(':visible')) {
 				$('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addWebsiteBtn').addClass('hidden');
 			}

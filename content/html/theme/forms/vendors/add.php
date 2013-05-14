@@ -174,7 +174,7 @@
 			success:function(code) {
 				var msg;
 				if(code == '1') {
-					msg = 'Your add was made successfully';
+					msg = 'The Vendor was added successfully.';
 					jAlert(msg,'Success',function() {
 						vendorTable();
 					}); 

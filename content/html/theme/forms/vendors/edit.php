@@ -21,12 +21,12 @@
 			</style>
             <div class="widget">
             	<ul class="tabs">
-            		<li class="activeTab"><a href="javascript:void(0);" rel="vendorInfo">Vendor Details</a></li>
-                    <li><a href="javascript:void(0);" rel="websites">Websites</a></li>
-                    <li><a href="javascript:void(0);" rel="contacts">Contacts</a></li>
+            		<li class="activeTab"><a href="javascript:void(0);" rel="vendors_vendorInfo">Vendor Details</a></li>
+                    <li><a href="javascript:void(0);" rel="vendors_websites">Websites</a></li>
+                    <li><a href="javascript:void(0);" rel="vendors_contacts">Contacts</a></li>
             	</ul>
             	<div class="tab_container">
-            		<div id="vendorInfo" class="tab_content">
+            		<div id="vendors_vendorInfo" class="tab_content">
 						<?php
                              echo form_open('/admin/vendor/process',array('id'=>'VendorForm','class' => 'validate mainForm formPop','style'=>'text-align:left;'));
                         ?>
@@ -221,10 +221,10 @@
                             </fieldset>
                         <?= form_close(); ?>
                      </div>
-                     <div id="websites" class="tab_content" style="display:none;">
+                     <div id="vendors_websites" class="tab_content" style="display:none;">
                      	<?= WebsiteListingTable($vendor->ID,2,true); ?>
                      </div>
-                     <div id="contacts" class="tab_content" style="display:none;padding-bottom:10px;">
+                     <div id="vendors_contacts" class="tab_content" style="display:none;padding-bottom:10px;">
                      	<?= ContactsMainTable(false,true,$vendor->ID,true); ?>
                      </div>
                   </div>
@@ -306,9 +306,9 @@
 	
 	$(".chzn-select").chosen();
 	
-	$('ul.tabs li a').live('click',function() {
+	$('#editVendor ul.tabs li a').live('click',function() {
 		//remove all activetabs
-		$('ul.tabs').find('li.activeTab').removeClass('activeTab');
+		$('#editVendor ul.tabs').find('li.activeTab').removeClass('activeTab');
 		$(this).parent().addClass('activeTab');
 		var content = 'div#' + $(this).attr('rel');
 		
@@ -321,7 +321,7 @@
 		
 		<?php if(!isset($view)) { ?>
 				
-		if(activeContent == 'contacts') {
+		if(activeContent == 'vendors_contacts') {
 			if($('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addContactBtn').hasClass('hidden')) {
 				$('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addContactBtn').removeClass('hidden');
 			}
@@ -336,7 +336,7 @@
 			}
 		}
 		
-		if(activeContent == 'websites') {
+		if(activeContent == 'vendors_websites') {
 			if($('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addContactBtn').is(':visible')) {
 				$('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addContactBtn').addClass('hidden');
 			}
@@ -351,7 +351,7 @@
 			}
 		}
 		
-		if(activeContent == 'vendorInfo') {
+		if(activeContent == 'vendors_vendorInfo') {
 			if($('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addContactBtn').is(':visible')) {
 				$('.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.addContactBtn').addClass('hidden');
 			}

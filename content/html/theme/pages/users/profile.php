@@ -59,11 +59,13 @@
                 <h5 class="iPhone">Contact Information</h5>
             </div>
             <div class="body alignleft contactInfo">
+            	<?php //print_object($user); ?>
                 <ul>
+                	<?php if(!empty($user->Emails)) { ?>
                     <li class="parentLabel" style="width:125px !important;"><span>Email:</span></li>
                     <li class="userContent" style="margin-left:126px !important;">
                     	<div style="overflow:auto;">
-                            <table cellpadding="0" cellspacing="0" class="tableStatic" style="width:100%;">
+                            <table cellpadding="0" cellspacing="0" class="tableStatic" width="100%">
                                 <thead>
                                     <tr>
                                         <?php foreach($user->Emails as $email) { ?>
@@ -81,46 +83,51 @@
                             </table>
                         </div>
                     </li>
-                    <li class="parentLabel" style="width:125px !important;"><span>Phone:</span></li>
-                    <li class="userContent" style="margin-left:126px !important;">
-                    	<div style="overflow:auto;">
-                            <table cellpadding="0" cellspacing="0" class="tableStatic" style="width:100%;">
-                                <thead>
-                                    <tr>
-                                        <?php foreach($user->Phones as $phone) { ?>
-                                            <td class="profileAssets"><?= $phone->PHONE_Type; ?></td>
-                                        <?php } ?>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <?php foreach($user->Phones as $phone) { ?>
-                                            <td class="profileAssets"><?= $phone->PHONE_Number; ?></td>
-                                        <?php } ?>
-                                    </tr>
-                                </tbody>
-                            </table>
-                       </div>
-                   </li>
+                    <?php } ?>
+                    <?php if(!empty($user->Phones)) { ?>
+                        <li class="parentLabel" style="width:125px !important;"><span>Phone:</span></li>
+                        <li class="userContent" style="margin-left:126px !important;">
+                            <div style="overflow:auto;">
+                                <table cellpadding="0" cellspacing="0" class="tableStatic" width="100%">
+                                    <thead>
+                                        <tr>
+                                            <?php foreach($user->Phones as $phone) { ?>
+                                                <td class="profileAssets"><?= $phone->PHONE_Type; ?></td>
+                                            <?php } ?>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <?php foreach($user->Phones as $phone) { ?>
+                                                <td class="profileAssets"><?= $phone->PHONE_Number; ?></td>
+                                            <?php } ?>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                           </div>
+                       </li>
+                   <?php } ?>
+                   <?php if(!empty($websites)) { ?>
                     <li class="parentLabel" style="width:125px !important;"><span>Websites:</span></li>
                     <li class="userContent" style="margin-left:126px !important;">
                     	<div style="overflow:auto;">
-                            <table cellpadding="0" cellspacing="0" class="tableStatic" style="width:100%;">
-                                <thead>
-                                    <tr>
-                                        <?php foreach($websites as $web) { ?>
-                                            <td class="profileAssets">Website URL</td>
-                                        <?php } ?>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <?php foreach($websites as $website) { ?>
-                                            <td class="profileAssets"><a href="<?= $website->URL; ?>" target="_blank"><?= $website->URL; ?></a></td>
-                                        <?php } ?>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                <table cellpadding="0" cellspacing="0" class="tableStatic" width="100%">
+                                    <thead>
+                                        <tr>
+                        					<?php foreach($websites as $web){ ?>
+                                            	<td class="profileAssets">Website URL</td>
+                                            <?php } ?>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                        	<?php foreach($websites as $web) { ?>
+                                            	<td class="profileAssets"><a href="<?= $web->URL; ?>" target="_blank"><?= $web->URL; ?></a></td>
+                                            <?php } ?>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            <?php } ?>
                        </div>
                    </li>
                 </ul>

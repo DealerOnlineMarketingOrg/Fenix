@@ -108,60 +108,66 @@ class Users extends DOM_Controller {
 		$form = $this->input->post();
 		$modules = $this->members->getDefaultModules($form['security_level']);
 		
-		$user_update = array(
-			'USER_Name'=>$form['username'],
-			'Team'=>$form['team']
-		);
+		$existingUser = $this->members->checkExistingUsername($form['username']);
 		
-		$directory_update = array(
-			'DIRECTORY_Type'=>3,
-			'DIRECTORY_FirstName'=>$form['first_name'],
-			'DIRECTORY_LastName'=>$form['last_name']
-		);
-		
-		$address_update = array(
-			'OWNER_Type' => 3,
-			'ADDRESS_Street' => $form['street'],
-			'ADDRESS_City'=>$form['city'],
-			'ADDRESS_State'=>$form['state'],
-			'ADDRESS_Zip'=>$form['zipcode'],
-			'ADDRESS_Type'=>'Home',
-			'ADDRESS_Active'=>1,
-			'ADDRESS_Primary'=>1,
-			'ADDRESS_Created'=>date('Y-m-d H:i:s')
-		);
-		
-		$email_update = array(
-			'OWNER_Type'=>3,
-			'EMAIL_Address' => $form['username'],
-			'EMAIL_Primary' => 1,
-			'EMAIL_Type' => 'Work',
-			'EMAIL_Active' => 1,
-			'EMAIL_Created' => date('Y-m-d H:i:s')
-		);
-		
-		$user_info_update = array(
-			'ACCESS_ID' => $form['security_level'],
-			'USER_Modules'=>$modules,
-			'CLIENT_ID'=>$form['dealership'],
-			'USER_Active'=>1,
-			'USER_Generated'=>1,
-		);
-		
-		$data = array(
-			'Users'=>$user_update,
-			'Directories'=>$directory_update,
-			'DirectoryAddresses'=>$address_update,
-			'EmailAddresses'=>$email_update,
-			'Users_Info'=>$user_info_update
-		);
-		
-		$add_user = $this->administration->addNewUser($data);
-		
-		if($add_user) {
-			echo '1';	
+		if(!$existingUser) {
+			$user_update = array(
+				'USER_Name'=>$form['username'],
+				'Team'=>$form['team']
+			);
+			
+			$directory_update = array(
+				'DIRECTORY_Type'=>3,
+				'DIRECTORY_FirstName'=>$form['first_name'],
+				'DIRECTORY_LastName'=>$form['last_name']
+			);
+			
+			$address_update = array(
+				'OWNER_Type' => 3,
+				'ADDRESS_Street' => $form['street'],
+				'ADDRESS_City'=>$form['city'],
+				'ADDRESS_State'=>$form['state'],
+				'ADDRESS_Zip'=>$form['zipcode'],
+				'ADDRESS_Type'=>'Home',
+				'ADDRESS_Active'=>1,
+				'ADDRESS_Primary'=>1,
+				'ADDRESS_Created'=>date('Y-m-d H:i:s')
+			);
+			
+			$email_update = array(
+				'OWNER_Type'=>3,
+				'EMAIL_Address' => $form['username'],
+				'EMAIL_Primary' => 1,
+				'EMAIL_Type' => 'Work',
+				'EMAIL_Active' => 1,
+				'EMAIL_Created' => date('Y-m-d H:i:s')
+			);
+			
+			$user_info_update = array(
+				'ACCESS_ID' => $form['security_level'],
+				'USER_Modules'=>$modules,
+				'CLIENT_ID'=>$form['dealership'],
+				'USER_Active'=>1,
+				'USER_Generated'=>1,
+			);
+			
+			$data = array(
+				'Users'=>$user_update,
+				'Directories'=>$directory_update,
+				'DirectoryAddresses'=>$address_update,
+				'EmailAddresses'=>$email_update,
+				'Users_Info'=>$user_info_update
+			);
+			
+			$add_user = $this->administration->addNewUser($data);
+			
+			if($add_user) {
+				echo '1';	
+			}else {
+				echo '0';
+			}
 		}else {
-			echo '0';
+			echo '2';	
 		}
 	}
 	

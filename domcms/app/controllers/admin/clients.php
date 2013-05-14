@@ -205,6 +205,7 @@ class Clients extends DOM_Controller {
 			$data = array(
 				'groups' => $groups,
 				'client' => $client,
+				'client_id'=>$client->ClientID,
 				'html' => $html,
 				'tags'=>$tags,
 				'websites'=>true,
