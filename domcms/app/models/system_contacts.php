@@ -75,6 +75,16 @@ class System_contacts extends DOM_Model {
 		return ($query) ? TRUE : FALSE;	
 	}
 	
+	public function getOwnerIDByDID($did) {
+		$query = $this->db->select('OWNER_ID as OID')->from('Directories')->where('DIRECTORY_ID',$did)->get();
+		return ($query) ? $query->row()->OID : FALSE;	
+	}
+	
+	public function getOwnerTypeBYDID($did) {
+		$query = $this->db->select('DIRECTORY_Type as Type')->from('Directories')->where('DIRECTORY_ID',$did)->get();
+		return ($query) ? $query->row()->Type : FALSE;	
+	}
+	
 	public function getDirectoryInformation($type = false,$id = false,$did = false) {
 		$select = 'd.DIRECTORY_ID as ContactID,
 				   d.OWNER_ID as OwnerID,
@@ -107,6 +117,7 @@ class System_contacts extends DOM_Model {
 	}
 	
 	public function preparePopupInfo($did) {
+		
 		$directory = $this->getDirectoryInformation(false,false,$did);
 		
 		//were only expecting one, but it returns as an array so we need to push the one to the contact array.
@@ -123,7 +134,11 @@ class System_contacts extends DOM_Model {
 		endforeach;
 		
 		//were only expecting one result, but it returns as an array, so just return the first index. which is always 0
-		return $directory[0];
+		if(count($directory) > 0) {
+			return $directory[0];
+		}else {
+			return $directory;	
+		}
 	}
 	
 	function getContactsForTable($owner_type = false,$owner_id = false) {

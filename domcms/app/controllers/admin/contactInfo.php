@@ -65,6 +65,7 @@ class ContactInfo extends DOM_Controller {
 	}
 	
 	public function Add_phone_form() {
+		
 		$data = array(
 			'did'=>$this->directory_id,
 			'type'=>((isset($_GET['type'])) ? $_GET['type'] : $this->domcontacts->getContactType($this->directory_id))
@@ -134,17 +135,19 @@ class ContactInfo extends DOM_Controller {
 	}
 	
 	public function Add_phone_number() {
+		$owner_id = $this->syscontacts->getOwnerIDByDID($this->directory_id);
+		$owner_type = $this->syscontacts->getOwnerTypeBYDID($this->directory_id);
 		$number = $this->input->post('number');
 		$type = $this->input->post('type');	
 		
 		$data = array(
-			'OWNER_Type'=>$this->type,
-			'OWNER_ID'=>$this->owner,
+			'OWNER_Type'=>$owner_type,
+			'OWNER_ID'=>$owner_id,
 			'DIRECTORY_ID'=>$this->directory_id,
 			'PHONE_Number'=>$number,
 			'PHONE_Type'=>$type,
 			'PHONE_Created'=>date('Y-m-d H:i:s'),
-			'PHONE_Primary'=>(($this->syscontacts->checkIfContactPhoneExists($this->directory_id,$this->owner,$this->type)) ? 0 : 1),
+			'PHONE_Primary'=>(($this->syscontacts->checkIfContactPhoneExists($this->directory_id,$owner_id,$owner_type)) ? 0 : 1),
 		);
 		
 		

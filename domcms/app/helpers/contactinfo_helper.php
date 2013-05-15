@@ -57,7 +57,6 @@
         <?php } ?>
         <?php if(!$view) {?>
             <a href="javascript:addPhone('<?= $user->DirectoryID; ?>','<?= $type; ?>');" class="greenBtn floatRight button" style="margin-top:-20px;">Add New Phone Number</a>
-            <div id="UserPhonePop"></div>
         <? } ?>
         
 	<? }
@@ -114,7 +113,6 @@
         <?php } ?>
         <?php if(!$view) { ?>
             <a href="javascript:addEmail('<?=$uid;?>','<?= $type; ?>');" class="greenBtn floatRight button" style="margin-top:10px;">Add New Email</a>
-			<div id="UserEmailPop"></div>
         <?php } ?>
 	<?php }
 ?>

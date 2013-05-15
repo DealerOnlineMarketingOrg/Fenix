@@ -196,6 +196,9 @@
 <div id="addContactInfoEmailPop"></div>
 <div id="editContactInfoEmailPop"></div>
 
+<div id="UserPhonePop"></div>
+<div id="UserEmailPop"></div>
+
 <script type="text/javascript">
 	function resetPassword(email) {
 		jConfirm('Are you sure you want to reset this users password?', 'Confirmation Password Reset', function(r) {
