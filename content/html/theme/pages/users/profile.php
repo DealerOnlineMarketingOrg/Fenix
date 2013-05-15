@@ -42,9 +42,11 @@
                         <li><span>Name:</span> <?= $user->FirstName . ' ' . $user->LastName; ?></li>
                         <li><span>Username:</span> <a href="mailto:<?= $user->Username; ?>"><?= $user->Username; ?></a></li>
                         <li><span>Company:</span> <?= $user->Dealership; ?></li>
-                        <?php foreach($user->Addresses as $address) { ?>
-                        	<?php if($address->ADDRESS_Primary == 1) { ?>
-                        		<li><span>Address:</span> <?= $address->ADDRESS_Street . ' ' . $address->ADDRESS_City . ', ' . $address->ADDRESS_State . ' ' . $address->ADDRESS_Zip; ?></li>
+                        <?php if(!empty($user->Addresses)) { ?>
+							<?php foreach($user->Addresses as $address) { ?>
+                                <?php if($address->ADDRESS_Primary == 1) { ?>
+                                    <li><span>Address:</span> <?= $address->ADDRESS_Street . ' ' . $address->ADDRESS_City . ', ' . $address->ADDRESS_State . ' ' . $address->ADDRESS_Zip; ?></li>
+                                <?php } ?>
                             <?php } ?>
                         <?php } ?>
                         <li><span>Security:</span> <?= $user->AccessName; ?></li>
