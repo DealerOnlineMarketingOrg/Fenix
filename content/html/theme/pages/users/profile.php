@@ -1,8 +1,6 @@
 
-<script type="text/javascript" src="<?= base_url(); ?>js/userProfile_popups.js"></script>
 <script type="text/javascript" src="<?= base_url(); ?>js/user_popups.js"></script>
 <script type="text/javascript" src="<?= base_url(); ?>js/websites_popups.js"></script>
-<script type="text/javascript" src="<?= base_url(); ?>js/contactInfo_popups.js"></script>
 <div id="loader_block">
     <div id="client_loader"><img src="<?= base_url() . THEMEIMGS; ?>loaders/loader2.gif" /></div>
 </div>

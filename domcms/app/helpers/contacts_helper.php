@@ -1,6 +1,6 @@
 <?php
 
-function ContactsMainTable($actions_off = false,$tab = false, $id = false) {
+function ContactsMainTable($actions_off = false,$tab = false, $id = false,$isVendor = false) {
 	?><script type="text/javascript" src="<?= base_url(); ?>js/contact_popups.js"></script><?php
 	$ci =& get_instance();
 	$ci->load->model('system_contacts','domcontacts');
@@ -11,7 +11,11 @@ function ContactsMainTable($actions_off = false,$tab = false, $id = false) {
 	$disablePriv 		 = GateKeeper('Contact_Disable_Enable',$userPermissionLevel);
 	$listingPriv 		 = GateKeeper('Contact_List',$userPermissionLevel);
 	
-	$contacts = $ci->domcontacts->buildContactTable($id);
+	if(!$isVendor) {
+		$contacts = $ci->domcontacts->buildContactTable($id);
+	}else {
+		$contacts = $ci->domcontacts->buildContactTable($id,true);
+	}
 	//print_object($contacts);
 	if($addPriv AND !$tab) { ?>
 		<a href="javascript:addContact();" class="greenBtn floatRight button addButtonTop">Add New Contact</a>	

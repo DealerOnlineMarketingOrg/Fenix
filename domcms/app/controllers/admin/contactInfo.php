@@ -4,9 +4,16 @@ class ContactInfo extends DOM_Controller {
 	
 	public $user_id;
 	public $directory_id;
+	public $type;
 	public $phone_id;
 	public $email_id;
 	public $address_id;
+	
+	public $owner;
+	
+	//auto get the user if the uid is detected
+	public $user;
+	public $contact;
 
     public function __construct() {
         parent::__construct();
@@ -15,24 +22,39 @@ class ContactInfo extends DOM_Controller {
 		
 		$this->user_id = ((isset($_GET['uid'])) ? $_GET['uid'] : FALSE);
 		$this->directory_id = ((isset($_GET['did'])) ? $_GET['did'] : FALSE);
+		$this->type = ((isset($_GET['type'])) ? $_GET['type'] : FALSE);
 		$this->phone_id = ((isset($_GET['pid'])) ? $_GET['pid'] : FALSE);
 		$this->email_id = ((isset($_GET['eid'])) ? $_GET['eid'] : FALSE);
 		$this->address_id = ((isset($_GET['aid'])) ? $_GET['aid'] : FALSE);
+		
+		$this->user = ((isset($_GET['uid'])) ? $this->administration->getMyUser($this->user_id) : FALSE);
+		
+		if((isset($_GET['did']))) { 
+			$this->contact = $this->syscontacts->preparePopupInfo($this->directory_id);
+			if(!empty($this->contact)) {
+				$this->owner = $this->contact->OwnerID;	
+				$this->type = $this->contact->OwnerType;
+				$this->directory_id = $this->contact->ContactID;
+			}
+		}
     }
 	
 	public function load_phone_table() {
+		$this->load->helper('contactinfo');
 		$data = array(
-			'uid'=>$this->user_id
+			'contact' => (!empty($this->user)) ? $this->user : $this->contact,
 		);
 		$this->load->dom_view('pages/users/phone_listing',$this->theme_settings['ThemeViews'],$data);
 	}
 	
 	public function load_email_table() {
+		$this->load->helper('contactinfo');
 		$data = array(
 			'uid'=>$this->user_id
 		);
 		$this->load->dom_view('pages/users/email_listing',$this->theme_settings['ThemeViews'],$data);
 	}
+	
 	public function Edit_phone_form() {
 		$phone = $this->syscontacts->getSingleContactPhoneNumber($this->phone_id);
 		$data = array(
@@ -116,14 +138,16 @@ class ContactInfo extends DOM_Controller {
 		$type = $this->input->post('type');	
 		
 		$data = array(
-			'OWNER_Type'=>3,
-			'OWNER_ID'=>$this->directory_id,
+			'OWNER_Type'=>$this->type,
+			'OWNER_ID'=>$this->owner,
+			'DIRECTORY_ID'=>$this->directory_id,
 			'PHONE_Number'=>$number,
 			'PHONE_Type'=>$type,
 			'PHONE_Created'=>date('Y-m-d H:i:s'),
-			
+			'PHONE_Primary'=>(($this->syscontacts->checkIfContactPhoneExists($this->directory_id,$this->owner,$this->type)) ? 0 : 1),
 		);
-	
+		
+		
 		$add = $this->syscontacts->addSingleContactPhoneNumber($data);
 		if($add) {
 			echo '1';	

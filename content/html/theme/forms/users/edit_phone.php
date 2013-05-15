@@ -70,7 +70,8 @@
 			success:function(data) {
 				if(data == '1') {
 					jAlert('The phone number was updated successfully!',function() {
-						load_phone_table();
+						document.location.reload(true);
+						//reload_phone_table('<?= $phone->DIRECTORY_ID; ?>');
 					});
 				}else {
 					jAlert('The phone number failed to update. Please try again.');

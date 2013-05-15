@@ -148,10 +148,11 @@
                             #contactInfo div.head h5 {width:115px;margin:0 auto;display:block;float:none;}
                         </style>
                         <div id="phone_table">
-                            <?= LoadUserPhoneNumberTable(false,$user->ID); ?> 
+                        	<?php // print_object($user); ?>
+                            <?= LoadUserPhoneNumberTable(false,$user->ID,3,$user); ?> 
                         </div>
                         <div id="email_table">
-                            <?= LoadUserEmailAddresses(false,$user->ID); ?>
+                            <?= LoadUserEmailAddresses(false,$user->ID,3,$user); ?>
                         </div>
                     <div class="fix"></div>
                     </div>
@@ -211,8 +212,6 @@
 <div id="addContactInfoEmailPop"></div>
 <div id="editContactInfoEmailPop"></div>
 
-<div id="UserPhonePop"></div>
-<div id="UserEmailPop"></div>
 
 <script type="text/javascript">
 
@@ -359,7 +358,7 @@
 			$('#phone_table').html('');
 			$.ajax({
 				type:'GET',
-				url:'/admin/users/load_phone_table?uid=<?= $user->ID; ?>',
+				url:'/admin/users/load_phone_table?u id=<?= $user->ID; ?>',
 				success:function(data) {
 					if(data) {
 						$('#loader_block').slideUp('fast',function() {

@@ -1,13 +1,17 @@
 <?php
-	function LoadUserPhoneNumberTable($view = false,$uid,$type = 3) { ?>
+	function LoadUserPhoneNumberTable($view = false,$uid,$type = 3, $usr = false) { ?>
 		<script type="text/javascript" src="<?= base_url(); ?>js/contact_info_phone.js"></script>
 	<?php
 		$ci =& get_instance();
-		$ci->load->model('system_contacts','syscontacts');
-		if($type != 3) {
-			$user = $ci->administration->getMyUser($uid);
+		if(!$usr) {
+			$ci->load->model('system_contacts','syscontacts');
+			if($type != 3) {
+				$user = $ci->administration->getMyUser($uid);
+			}else {
+				$user = $ci->syscontacts->preparePopupInfo($uid);	
+			}
 		}else {
-			$user = $ci->syscontacts->preparePopupInfo($uid);	
+			$user = $usr;	
 		}
 		?>
 		<?php if(!empty($user->Phones)) { ?>
@@ -52,19 +56,25 @@
             </div>
         <?php } ?>
         <?php if(!$view) {?>
-            <a href="javascript:addPhone('<?= ((isset($user->ID)) ? $user->ID : $user->OwnerID); ?>','<?= $type; ?>');" class="greenBtn floatRight button" style="margin-top:-20px;">Add New Phone Number</a>
+            <a href="javascript:addPhone('<?= $user->DirectoryID; ?>','<?= $type; ?>');" class="greenBtn floatRight button" style="margin-top:-20px;">Add New Phone Number</a>
+            <div id="UserPhonePop"></div>
         <? } ?>
+        
 	<? }
 	
-	function LoadUserEmailAddresses($view = false,$uid,$type = 3) { ?>
+	function LoadUserEmailAddresses($view = false,$uid,$type = 3,$usr = false) { ?>
 		<script type="text/javascript" src="<?= base_url(); ?>js/contact_info_email.js"></script>
     <?
 		$ci =& get_instance();
-		$ci->load->model('system_contacts','syscontacts');
-		if($type != 3) {
-			$user = $ci->syscontacts->preparePopupInfo($uid);	
-		}else { 
-			$user = $ci->administration->getMyUser($uid);
+		if(!$usr) { 
+			$ci->load->model('system_contacts','syscontacts');
+			if($type != 3) {
+				$user = $ci->syscontacts->preparePopupInfo($uid);	
+			}else { 
+				$user = $ci->administration->getMyUser($uid);
+			}
+		}else {
+			$user = $usr;	
 		}
 		?>
 		<?php if(!empty($user->Emails)) { ?>
@@ -104,6 +114,7 @@
         <?php } ?>
         <?php if(!$view) { ?>
             <a href="javascript:addEmail('<?=$uid;?>','<?= $type; ?>');" class="greenBtn floatRight button" style="margin-top:10px;">Add New Email</a>
+			<div id="UserEmailPop"></div>
         <?php } ?>
 	<?php }
 ?>

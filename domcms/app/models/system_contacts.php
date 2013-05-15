@@ -70,6 +70,11 @@ class System_contacts extends DOM_Model {
 		return ($query) ? TRUE : FALSE;	
 	}
 	
+	public function checkIfContactPhoneExists($did,$oid,$type) {
+		$query = $this->db->select('*')->from('PhoneNumbers')->where('DIRECTORY_ID',$did)->where('OWNER_ID',$oid)->where('OWNER_Type',$type)->get();
+		return ($query) ? TRUE : FALSE;	
+	}
+	
 	public function getDirectoryInformation($type = false,$id = false,$did = false) {
 		$select = 'd.DIRECTORY_ID as ContactID,
 				   d.OWNER_ID as OwnerID,
@@ -85,14 +90,16 @@ class System_contacts extends DOM_Model {
 		$this->db->select($select)->from('Directories d')->join('xTitles ti','d.TITLE_ID = ti.TITLE_ID')->join('xTags t','d.DIRECTORY_Tag = t.TAG_ID');
 		
 		
-		if($type and !$id) {
-			$this->db->where('d.DIRECTORY_Type',$type);	
-		}elseif(!$type and $id) {
-			$this->db->where('d.OWNER_ID',$id);	
-		}elseif(!$type and !$id and $did) {
-			$this->db->where('d.DIRECTORY_ID',$did);	
+		if($type == 2) { 
+			$this->db->where('d.DIRECTORY_Type',2)->where('d.OWNER_ID',$id);
+		}elseif($type == 1) {
+			$this->db->where('d.DIRECTORY_Type',1)->where('d.OWNER_ID',$id);
 		}else {
-			$this->db->where('d.OWNER_ID',$id)->where('d.DIRECTORY_Type',$type);	
+			if($type == 3) {
+				$this->db->where('d.DIRECTORY_Type',3)->where('d.OWNER_ID',$id);
+			}else {
+				$this->db->where('d.DIRECTORY_Type',4)->where('d.OWNER_ID',$id);	
+			}
 		}
 		
 		$query = $this->db->get();
@@ -251,7 +258,6 @@ class System_contacts extends DOM_Model {
 							$vContact = $this->getSystemContacts(2,$vendor->ID);	
 							if($vContact) {
 								foreach($vContact as $vendorContact) {
-									$vContact->Owner = $this->getVendorName($vendor->ID)->Vendor;
 									array_push($contacts,$vendorContact);	
 								}
 							}
@@ -272,7 +278,7 @@ class System_contacts extends DOM_Model {
 					$vContact = $this->getSystemContacts(2,$vendor->ID);
 					if($vContact) {
 						foreach($vContact as $vendorContact) {
-							$vContact->Owner = $vendor->VendorName;
+							$vendorContact->Owner = $vendor->VendorName;
 							array_push($contacts,$vendorContact);	
 						}
 					}
