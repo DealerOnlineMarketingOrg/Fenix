@@ -638,5 +638,28 @@ class System_contacts extends DOM_Model {
 			return FALSE;	
 		}
 	}
+	
+	//used only for users
+	function managePrimaryPhysicalAddress($did,$owner_id,$type,$data) {
+		$checkIfExists = $this->db->select('ADDRESS_ID')->from('DirectoryAddresses')->where('DIRECTORY_ID',$did)->where('ADDRESS_Primary',1)->get();
+		if($checkIfExists) {
+			//gonna remove the primary
+			$new_data = array(
+				'ADDRESS_Primary' => 0
+			);	
+			$this->db->where('ADDRESS_ID',$did);
+			$this->db->update('DirectoryAddresses',$new_data);
+		}
+		if($checkIfExists) {
+			$this->db->where('DIRECTORY_ID',$did)->where('OWNER_ID',$owner_id)->where('OWNER_Type',$type);
+			return ($this->db->update('DirectoryAddresses',$data)) ? TRUE : FALSE;	
+		}else {
+			$data['OWNER_ID'] = $owner_id;
+			$data['DIRECTORY_ID'] = $did;
+			$data['OWNER_Type'] = $type;
+			$data['ADDRESS_Primary'] = 1;
+			return ($this->db->insert('DirectoryAddresses',$data)) ? TRUE : FALSE;
+		}
+	}
 }
 	

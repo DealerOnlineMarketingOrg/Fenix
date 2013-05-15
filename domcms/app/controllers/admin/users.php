@@ -209,10 +209,6 @@ class Users extends DOM_Controller {
 		$this->load->model('mlist');
 		$dealerships = $this->mlist->getClients();
 		$user = $this->administration->getMyUser($this->user_id);
-		$user->Address = mod_parser($user->Address);
-		$user->CompanyAddress = mod_parser($user->CompanyAddress);
-		$user->Email = mod_parser($user->Emails,false,true);
-		$user->Phone = mod_parser($user->Phones,false,true);
 		
 		$page = $_GET['page'];
 		
@@ -225,6 +221,7 @@ class Users extends DOM_Controller {
 	}
 	
 	public function Submit_user_details_form() {
+		$this->load->model('system_contacts','domcontacts');
 		$form = $this->input->post();
 		
 		$did = $this->administration->getDirectoryID($this->user_id);
@@ -233,8 +230,19 @@ class Users extends DOM_Controller {
 			$directory_data = array(
 				'DIRECTORY_FirstName' => $form['first_name'],
 				'DIRECTORY_LastName'=>$form['last_name'],
-				'DIRECTORY_Address'=>'street:' . $form['street'] . ',city:' . $form['city'] . ',state:' . $form['state'] . ',zipcode:' . $form['zipcode']
 			);	
+			
+			$address_update = array(
+				'DIRECTORY_ID'=>$did,
+				'OWNER_ID'=>$this->user_id,
+				'OWNER_Type'=>3,
+				'ADDRESS_Street'=>$form['street'],
+				'ADDRESS_City'=>$form['city'],
+				'ADDRESS_State'=>$form['state'],
+				'ADDRESS_Zip'=>$form['zip'],
+				'ADDRESS_Primary'=>1,
+				'ADDRESS_Active'=>1
+			);
 			
 			$user_data = array(
 				'USER_Name'=>$form['username']
@@ -242,13 +250,10 @@ class Users extends DOM_Controller {
 			
 			$update_directory = $this->administration->updateDirectory($did,$directory_data);
 			$update_users = $this->administration->udpateUserName($this->user_id,$user_data);
+			$update_address = $this->domcontacts->managePrimaryPhysicalAddress($did,$this->user_id,3,$address_update);
 			
-			if($update_directory AND $update_users) {
+			if($update_directory AND $update_users AND $update_address) {
 				echo '1';	
-			}elseif($update_directory AND !$update_users) {
-				echo '2';	
-			}elseif(!$update_directory AND $update_users) {
-				echo '3';	
 			}else {
 				echo '0';	
 			}

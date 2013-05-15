@@ -45,34 +45,70 @@
                             </div> 
                             <div class="fix"></div>
                         </div>
-                        <div class="rowElem noborder">
-                        	<label>Address</label>
-                            <div class="formRight">
-                            	<?= form_input(array('name'=>'street','id'=>'street','class'=>'','value'=>$user->Address['street'])); ?>
+                        <?php if(!empty($user->Addresses)) { ?>
+                        	<?php foreach($user->Addresses as $address) { ?>
+                            	<?php if($address->ADDRESS_Primary == 1) { ?>
+                                    <div class="rowElem noborder">
+                                        <label>Address</label>
+                                        <div class="formRight">
+                                            <?= form_input(array('name'=>'street','id'=>'street','class'=>'','value'=>$address->ADDRESS_Street)); ?>
+                                        </div>
+                                        <div class="fix"></div>
+                                    </div>
+                                    <div class="rowElem noborder">
+                                        <label>City</label>
+                                        <div class="formRight">
+                                            <?= form_input(array('name'=>'city','id'=>'city','class'=>'','value'=>$address->ADDRESS_City)); ?>
+                                        </div>
+                                        <div class="fix"></div>
+                                    </div>
+                                    <div class="rowElem noborder noSearch">
+                                        <label>State</label>
+                                        <div class="formRight">
+                                            <?= showStates($address->ADDRESS_State); ?>
+                                        </div>
+                                        <div class="fix"></div>
+                                    </div>
+                                    <div class="rowElem noborder">
+                                        <label>Zip</label>
+                                        <div class="formRight">
+                                            <?= form_input(array('name'=>'zip','id'=>'zipcode','class'=>'','value'=>$address->ADDRESS_Zip)); ?>
+                                        </div>
+                                        <div class="fix"></div>
+                                    </div>
+                                 <?php } ?>
+                              <?php } ?>
+                        <?php }else { ?>
+                            <div class="rowElem noborder">
+                                <label>Address</label>
+                                <div class="formRight">
+                                    <?= form_input(array('name'=>'street','id'=>'street','class'=>'','value'=>'')); ?>
+                                </div>
+                                <div class="fix"></div>
                             </div>
-                            <div class="fix"></div>
-                        </div>
-                        <div class="rowElem noborder">
-                        	<label>City</label>
-                            <div class="formRight">
-                            	<?= form_input(array('name'=>'city','id'=>'city','class'=>'','value'=>$user->Address['city'])); ?>
+                            <div class="rowElem noborder">
+                                <label>City</label>
+                                <div class="formRight">
+                                    <?= form_input(array('name'=>'city','id'=>'city','class'=>'','value'=>'')); ?>
+                                </div>
+                                <div class="fix"></div>
                             </div>
-                            <div class="fix"></div>
-                        </div>
-                        <div class="rowElem noborder noSearch">
-                        	<label>State</label>
-                            <div class="formRight">
-                            	<?= showStates($user->Address['state']); ?>
+                            <div class="rowElem noborder noSearch">
+                                <label>State</label>
+                                <div class="formRight">
+                                    <?= showStates($address->ADDRESS_State); ?>
+                                </div>
+                                <div class="fix"></div>
                             </div>
-                            <div class="fix"></div>
-                        </div>
-                        <div class="rowElem noborder">
-                        	<label>Zip</label>
-                            <div class="formRight">
-                            	<?= form_input(array('name'=>'zipcode','id'=>'zipcode','class'=>'','value'=>$user->Address['zipcode'])); ?>
+                            <div class="rowElem noborder">
+                                <label>Zip</label>
+                                <div class="formRight">
+                                    <?= form_input(array('name'=>'zip','id'=>'zipcode','class'=>'','value'=>'')); ?>
+                                </div>
+                                <div class="fix"></div>
                             </div>
-                            <div class="fix"></div>
-                        </div>
+                       <?php } ?>
+                            
                     </fieldset>
                     <input type="hidden" name="DirectoryID" value="<?= $user->DirectoryID; ?>" />
                 <?= form_close(); ?>
