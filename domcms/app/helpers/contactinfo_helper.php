@@ -112,7 +112,7 @@
             </div>
         <?php } ?>
         <?php if(!$view) { ?>
-            <a href="javascript:addEmail('<?=$uid;?>','<?= $type; ?>');" class="greenBtn floatRight button" style="margin-top:10px;">Add New Email</a>
+            <a href="javascript:addEmail('<?= $user->ID; ?>','<?= $type; ?>','<?= ((isset($user->DirectoryID)) ? $user->DirectoryID : 0); ?>');" class="greenBtn floatRight button" style="margin-top:10px;">Add New Email</a>
         <?php } ?>
 	<?php }
 ?>

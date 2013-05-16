@@ -117,9 +117,7 @@
                                         <?php } ?>
                                 	</td>
                                 </tr>
-                                <?php }else {
-									echo '<span>...</span>';	
-								}?>
+                                <?php }?>
                             </table>
                             <div class="fix"></div>
                         </div>

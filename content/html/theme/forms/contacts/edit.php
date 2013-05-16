@@ -85,66 +85,70 @@
                                     </div>
                                     <div class="fix"></div>
                                 </div>
-                                <div class="rowElem noborder">
-                                    <label>Address</label>
-                                    <div class="formRight">
-                                    	<?php if(!empty($contact->Addresses)) { ?>
-											<?php foreach($contact->Addresses as $address) { ?>
-                                                <?php if($address->ADDRESS_Primary == 1) { ?>
-                                                	<input type="hidden" name="address_id" id="address_id" value="<?= $address->ADDRESS_ID; ?>" />
+                                <?php if(!empty($contact->Addresses)) { ?>
+                                	<?php foreach($contact->Addresses as $address) { ?>
+                                    	<?php if($address->ADDRESS_Primary == 1) { ?>
+                                            <div class="rowElem noborder">
+                                                <label>Address</label>
+                                                <div class="formRight">
+                                                    <input type="hidden" name="address_id" id="address_id" value="<?= $address->ADDRESS_ID; ?>" />
                                                     <?= form_input(array('class'=>'validate[custom[onlyLetterNumberSp]]','name'=>'street','id'=>'address','value' => $address->ADDRESS_Street,'style'=>'margin:0','placeholder'=>'Enter Street')); ?>
-                                                <?php } ?>
-                                            <?php } ?>
-                                        <?php }else { ?>
-                                        	<input type="hidden" name="address_id" value="-1" />
-											<?= form_input(array('class'=>'validate[custom[onlyLetterNumberSp]]','name'=>'street','id'=>'address','value'=>'')); ?>               		<?php } ?>
-                                    </div>
-                                    <div class="fix"></div>
-                                 </div>
-                                 <div class="rowElem noborder">
-                                    <label>City</label>
-                                    <div class="formRight">
-                                    	<?php if(!empty($contact->Addresses)) { ?>
-											<?php foreach($contact->Addresses as $address) { ?>
-                                                <?php if($address->ADDRESS_Primary == 1) { ?>
-                                                    <?= form_input(array('class'=>'validate[custom[onlyLetterNumberSp]]','name'=>'city','id'=>'city','value' => $address->ADDRESS_City,'style'=>'margin:0')); ?>
-                                                <?php } ?>
-                                            <?php } ?>
-                                        <?php }else { ?>
-											<?= form_input(array('class'=>'validate[custom[onlyLetterNumberSp]]','name'=>'city','id'=>'city','value'=>'','style'=>'margin:0')); ?>                       
-										<?php } ?>
-                                    </div>
-                                    <div class="fix"></div>
-                                 </div>
-                                 <div class="rowElem noborder">
-                                    <label>State</label>
-                                    <div class="formRight searchDrop noSearch" style="margin-top:15px;margin-bottom:10px">
-                                    	<?php if(!empty($contact->Addresses)) { ?>
-											<?php foreach($contact->Addresses as $address) { ?>
-                                                <?php if($address->ADDRESS_Primary == 1) { ?>
-                                                	<?= showStates($address->ADDRESS_State); ?>
-                                                <?php } ?>
-                                            <?php } ?>
-                                        <?php }else { ?>
-											<?= showStates(); ?>
+                                                </div>
+                                                <div class="fix"></div>
+                                             </div>
+                                             <div class="rowElem noborder">
+                                                <label>City</label>
+                                                <div class="formRight">
+													<?= form_input(array('class'=>'validate[custom[onlyLetterNumberSp]]','name'=>'city','id'=>'city','value' => $address->ADDRESS_City,'style'=>'margin:0')); ?>
+                                                </div>
+                                                <div class="fix"></div>
+                                             </div>
+                                             <div class="rowElem noborder">
+                                                <label>State</label>
+                                                <div class="formRight searchDrop noSearch" style="margin-top:15px;margin-bottom:10px">
+													<?= showStates($address->ADDRESS_State); ?>
+                                                </div>
+                                                <div class="fix"></div>
+                                             </div>
+                                             <div class="rowElem noborder">
+                                                <label>Zip</label>
+                                                <div class="formRight">
+													<?= form_input(array('class'=>'validate[custom[onlyLetterNumberSp]]','name'=>'zip','id'=>'zip','value' => $address->ADDRESS_Zip,'style'=>'margin:0')); ?>
+                                                </div>
+                                                <div class="fix"></div>
+                                            </div>
                                         <?php } ?>
+                                    <?php } ?>
+                                <?php }else { ?>
+                                    <div class="rowElem noborder">
+                                        <label>Address</label>
+                                        <div class="formRight">
+                                            <?= form_input(array('class'=>'validate[custom[onlyLetterNumberSp]]','name'=>'street','id'=>'address','value' => '','style'=>'margin:0','placeholder'=>'Enter Street')); ?>
+                                        </div>
+                                        <div class="fix"></div>
+                                     </div>
+                                     <div class="rowElem noborder">
+                                        <label>City</label>
+                                        <div class="formRight">
+                                            <?= form_input(array('class'=>'validate[custom[onlyLetterNumberSp]]','name'=>'city','id'=>'city','value' => '','style'=>'margin:0')); ?>
+                                        </div>
+                                        <div class="fix"></div>
+                                     </div>
+                                     <div class="rowElem noborder">
+                                        <label>State</label>
+                                        <div class="formRight searchDrop noSearch" style="margin-top:15px;margin-bottom:10px">
+                                            <?= showStates(''); ?>
+                                        </div>
+                                        <div class="fix"></div>
+                                     </div>
+                                     <div class="rowElem noborder">
+                                        <label>Zip</label>
+                                        <div class="formRight">
+                                            <?= form_input(array('class'=>'validate[custom[onlyLetterNumberSp]]','name'=>'zip','id'=>'zip','value' => '','style'=>'margin:0')); ?>
+                                        </div>
+                                        <div class="fix"></div>
                                     </div>
-                                    <div class="fix"></div>
-                                 </div>
-                                 <div class="rowElem noborder">
-                                    <label>Zip</label>
-                                    <div class="formRight">
-                                    	<?php if(!empty($contact->Addresses)) { ?>
-											<?php foreach($contact->Addresses as $address) { ?>
-                                                <?php if($address->ADDRESS_Primary == 1) { ?>
-                                                    <?= form_input(array('class'=>'validate[custom[onlyLetterNumberSp]]','name'=>'zip','id'=>'zip','value' => $address->ADDRESS_Zip,'style'=>'margin:0')); ?>
-                                                <?php } ?>
-                                            <?php } ?>
-                                        <?php }else { ?>
-											<?= form_input(array('class'=>'validate[custom[onlyLetterNumberSp]]','name'=>'zip','id'=>'zip','value'=>'','style'=>'margin:0')); ?>                        <?php } ?>
-                                    </div>
-                                    <div class="fix"></div>
-                                </div>
+                                <?php } ?>
                                 <div class="rowElem noborder">
                                 	<label>Notes</label>
                                     <div class="formRight">
@@ -262,7 +266,6 @@
 	$('#editContactDetails').submit(function(e) {
 		e.preventDefault();
 		var formData = $(this).serialize();
-		
 		$.ajax({
 			type:'POST',
 			data:formData,

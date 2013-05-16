@@ -68,6 +68,8 @@
 			url:'/admin/contactInfo/add_phone_number?did=<?=$did; ?>',
 			data:formData,
 			success:function(data) {
+				alert(data);
+				/*
 				if(data == '1') {
 					jAlert('The phone number was added successfully!',function() {
 						document.location.reload(true);
@@ -76,6 +78,7 @@
 				}else {
 					jAlert('The phone number failed to add. Please try again.');
 				}
+				*/
 			}
 		});
 	});

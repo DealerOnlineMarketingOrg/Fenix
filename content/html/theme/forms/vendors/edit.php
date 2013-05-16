@@ -225,7 +225,7 @@
                      	<?= WebsiteListingTable($vendor->ID,2,true); ?>
                      </div>
                      <div id="vendors_contacts" class="tab_content" style="display:none;padding-bottom:10px;">
-                     	<?= ContactsMainTable(false,true,$vendor->ID,true); ?>
+                     	<?= ContactsMainTable(false,true,$vendor->ID,true,2); ?>
                      </div>
                   </div>
                 <div class="fix"></div>			       

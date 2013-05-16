@@ -532,6 +532,11 @@ class Administration extends CI_Model {
 		}
 	}
 	
+	public function updateAccessLevel($data,$uid) {
+		$this->db->where('USER_ID',$uid);
+		return ($this->db->update('Users_Info',$data)) ? TRUE : FALSE;	
+	}
+	
 	public function addContact($data) {
         return $this->db->insert('Directories', $data); 
     }

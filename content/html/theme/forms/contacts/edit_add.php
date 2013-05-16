@@ -160,7 +160,7 @@
 </style>
 <script type="text/javascript">
 	//re initialize jQuery
-	var $ = jQuery.noConflict();
+	var $ = jQuery;
 	$('#client_dropdown,#vendor_dropdown').find('div.chzn-container').css({'width':'200px'});
 	$('#contactType').change(function() {
 		if($(this).val() == '1') {
@@ -197,10 +197,11 @@
 			success:function(code) {
 				var msg;
 				if(code == '1') {
-					msg = 'Your edit was made succesfully';
+					msg = 'The Contact was added successfully.';
 					jAlert(msg,'Success',function() {
 						$("#addContactInfo").dialog('close');
-						contactListTable();
+						document.location.reload(true);
+						//contactListTable();
 					}); 
 				}else {
 					msg = 'There was a problem with editing the contact requested. Please try again.';

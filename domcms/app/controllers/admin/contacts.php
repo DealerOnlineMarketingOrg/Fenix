@@ -4,6 +4,7 @@ class Contacts extends DOM_Controller {
 
 	public $agency_id;
 	public $contact_id;
+	public $directory_id;
 
     public function __construct() {
         parent::__construct();
@@ -18,6 +19,7 @@ class Contacts extends DOM_Controller {
 		$this->activeNav = 'admin';
 		
 		$this->contact_id = ((isset($_GET['did'])) ? $_GET['did'] : FALSE);
+		$this->directory_id = ((isset($_GET['did'])) ? $_GET['did'] : FALSE);
     }
 	
     public function index() {
@@ -59,11 +61,13 @@ class Contacts extends DOM_Controller {
 	
 	public function Edit() {
 		$this->load->model('system_contacts','domcontacts');
+		$contact = $this->domcontacts->getDirectoryInfoForEmail($this->directory_id);
+		$this->load->model('system_contacts','domcontacts');
 		$this->load->helper('contactinfo');
 		$data = array(
 			'clients'=>$this->administration->getAllClientsInAgency($this->user['DropdownDefault']->SelectedAgency),
 			'vendors'=>$this->administration->getVendors(),
-			'contact'=>$this->domcontacts->preparePopupInfo($this->contact_id),
+			'contact'=>$this->domcontacts->preparePopupInfo($contact->DIRECTORY_ID,$contact->DIRECTORY_Type,$contact->OWNER_ID),
 			'jobtitles'=>$this->domcontacts->getJobTitles()
 		);
 		$this->load->dom_view('forms/contacts/edit',$this->theme_settings['ThemeViews'],$data);
@@ -74,6 +78,7 @@ class Contacts extends DOM_Controller {
 		//the post of the form vars
 		$form = $this->input->post();
 		
+		
 		//prepare the directories table
 		$directory_add = array(
 			'TITLE_ID' 				=> $form['job_title'],
@@ -83,7 +88,7 @@ class Contacts extends DOM_Controller {
 			'DIRECTORY_FirstName' 	=> $form['firstname'],
 			'DIRECTORY_LastName' 	=> $form['lastname'],
 			'DIRECTORY_Notes' 		=> $form['notes'],
-		    'DIRECTORY_Created' 	=> date('Y-m-d H:i:s')
+		    'DIRECTORY_Created' 	=> date('Y-m-d H:i:s'),
 		);
 		
 		//prepare the phone table
@@ -123,6 +128,7 @@ class Contacts extends DOM_Controller {
 		}else {
 			echo '0';
 		}
+		
 	}
 	
 	public function Process_edit() {

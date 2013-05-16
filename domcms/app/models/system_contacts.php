@@ -47,10 +47,8 @@ class System_contacts extends DOM_Model {
 		$add_directory_entry_id = (($this->db->insert('Directories',$directory)) ? $this->db->insert_id() : FALSE);
 		
 		if($add_directory_entry_id) {
-			if($directory['OWNER_Type'] > 2) {
-				$add_phone['DIRECTORY_ID'] = $add_directory_entry_id;
-				$add_address = $add_directory_entry_id;	
-			}
+			$add_phone['DIRECTORY_ID'] = $add_directory_entry_id;
+			$add_address['DIRECTORY_ID'] = $add_directory_entry_id;	
 			
 			return (($this->db->insert('PhoneNumbers',$add_phone) AND $this->db->insert('DirectoryAddresses',$add_address)) ? TRUE : FALSE);
 		}else {
@@ -116,9 +114,14 @@ class System_contacts extends DOM_Model {
 		return ($query) ? $query->result() : FALSE;
 	}
 	
-	public function preparePopupInfo($did) {
+	public function getDirectoryInfoForEmail($did) {
+		$query = $this->db->select('*')->from('Directories')->where('DIRECTORY_ID',$did)->get();
+		return ($query) ? $query->row() : FALSE;
+	}
+	
+	public function preparePopupInfo($did,$type = false,$owner = false) {
 		
-		$directory = $this->getDirectoryInformation(false,false,$did);
+		$directory = $this->getDirectoryInformation((($type) ? $type : false),(($owner) ? $owner : false),$did);
 		
 		//were only expecting one, but it returns as an array so we need to push the one to the contact array.
 		foreach($directory as $myContact) :

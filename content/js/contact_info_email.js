@@ -28,14 +28,13 @@
 		});
 	}
 	
-	function addEmail(did,type) {
-		$('#addEmail').remove();
+	function addEmail(did,uid,type) {
+		$('#addContactEmail').remove();
 		$.ajax({
 			type:'GET',
 			url:'/admin/contactInfo/add_email_form?did='+did+'&type='+type,
 			success:function(data) {
 				if(data) {
-					//alert(data);
 					$('#UserEmailPop').html(data);
 				}
 			}

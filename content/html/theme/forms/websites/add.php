@@ -49,7 +49,7 @@
 							</div>
 							<div class="fix"></div>
 						</div>
-                        <?php if ($owner_type != 2 || $owner_type != 3 || $owner_type != 4) { ?>
+                        <?php if ($owner_type == 1) { ?>
                             <div class="rowElem noborder">
                                 <label>UA Code</label>
                                 <div class="formRight">

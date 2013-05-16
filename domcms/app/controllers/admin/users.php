@@ -119,7 +119,8 @@ class Users extends DOM_Controller {
 			$directory_update = array(
 				'DIRECTORY_Type'=>3,
 				'DIRECTORY_FirstName'=>$form['first_name'],
-				'DIRECTORY_LastName'=>$form['last_name']
+				'DIRECTORY_LastName'=>$form['last_name'],
+				'DIRECTORY_Created'=>date('Y-m-d H:i:s')
 			);
 			
 			$address_update = array(
@@ -173,6 +174,7 @@ class Users extends DOM_Controller {
 	
 	public function Edit() {
 		$this->load->model('system_contacts','syscontacts');
+		$this->load->model('members');
 		$user = $this->administration->getMyUser($this->user_id);
 		$user->Modules = ParseModulesInReadableArray($user->Modules);
 		$avatar = $this->members->get_user_avatar($user->ID);
@@ -181,6 +183,7 @@ class Users extends DOM_Controller {
 			'user'=>$user,
 			'avatar'=>$avatar,
 			'allMods'=>$this->administration->getAllModules(),
+			'SecurityLevels'=>$this->members->getSecurityLevels(),
 			'page'=>$page,
 			'websites'=>true,
 			'show_mods'=>((isset($_GET['modules'])) ? $_GET['modules'] : FALSE)
@@ -215,7 +218,8 @@ class Users extends DOM_Controller {
 		$data = array(
 			'user'=>$user,
 			'dealerships'=>$dealerships,
-			'page'=>$page
+			'page'=>$page,
+			'SecurityLevels'=>$this->members->getSecurityLevels(),
 		);	
 		$this->load->dom_view('forms/users/edit_details', $this->theme_settings['ThemeViews'], $data);
 	}
@@ -231,6 +235,10 @@ class Users extends DOM_Controller {
 				'DIRECTORY_FirstName' => $form['first_name'],
 				'DIRECTORY_LastName'=>$form['last_name'],
 			);	
+			
+			$users_info = array(
+				'ACCESS_ID'=>$form['security_level']
+			);
 			
 			$address_update = array(
 				'DIRECTORY_ID'=>$did,
@@ -251,8 +259,8 @@ class Users extends DOM_Controller {
 			$update_directory = $this->administration->updateDirectory($did,$directory_data);
 			$update_users = $this->administration->udpateUserName($this->user_id,$user_data);
 			$update_address = $this->domcontacts->managePrimaryPhysicalAddress($did,$this->user_id,3,$address_update);
-			
-			if($update_directory AND $update_users AND $update_address) {
+			$update_access_level = $this->administration->updateAccessLevel($users_info,$this->user_id);
+			if($update_directory AND $update_users AND $update_address AND $update_access_level) {
 				echo '1';	
 			}else {
 				echo '0';	

@@ -6,7 +6,7 @@
     <?php notifyError(); ?>
     <?php include FCPATH . 'html/global/breadcrumb.php'; ?>
     <div class="table" id="dataClient">
-        <div class="head" style="margin-top:5px;"><h5 class="iView">View All Clients</h5></div>
+        <div class="head" style="margin-top:5px;"><h5 class="iView">Clients</h5></div>
         <div id="clientTableHolder">
 			<?= ClientsListingTable(); ?>
         </div>

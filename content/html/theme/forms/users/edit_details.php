@@ -45,6 +45,18 @@
                             </div> 
                             <div class="fix"></div>
                         </div>
+                    	<div class="rowElem noborder noSearch">
+                        	<label><span class="req">*</span> Security Level</label>
+                            <div class="formRight">
+                            	<select name="security_level" class="chzn-select validate[required]" id="security_level" style="min-width:200px;">
+                                	<option value=""></option>
+                                    <?php foreach($SecurityLevels as $levels) { ?>
+                                    	<option <?= (($user->AccessID == $levels->ID) ? 'selected="selected"' : ''); ?> value="<?= $levels->ID; ?>"><?= $levels->Name; ?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                            <div class="fix"></div>
+                        </div>
                         <?php if(!empty($user->Addresses)) { ?>
                         	<?php foreach($user->Addresses as $address) { ?>
                             	<?php if($address->ADDRESS_Primary == 1) { ?>
@@ -180,7 +192,7 @@
 	
 	$("#editUserInfo").dialog({
 		minWidth:300,
-		width:650,
+		width:750,
 		height:465,
 		autoOpen: true,
 		modal: true,

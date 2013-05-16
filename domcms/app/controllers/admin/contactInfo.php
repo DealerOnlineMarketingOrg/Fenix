@@ -77,9 +77,9 @@ class ContactInfo extends DOM_Controller {
 	public function Add_email_form() {
 		$data = array(
 			'did'=>$this->directory_id,
-			'type'=>((isset($_GET['type'])) ? $_GET['type'] : $this->domcontacts->getContactType($this->directory_id))
+			'type'=>$this->syscontacts->getContactType($this->directory_id)
 		);
-		//print_object($phones);
+		
 		$this->load->dom_view('forms/contactInfo/add_email', $this->theme_settings['ThemeViews'], $data);	
 	}
 	
@@ -160,25 +160,32 @@ class ContactInfo extends DOM_Controller {
 	}
 	
 	public function Add_user_email() {
+		
 		$email = $this->input->post('email');
 		$type = $this->input->post('type');	
+		$otype = $this->input->post('owner_type');
+		$oid = $this->syscontacts->getOwnerIDByDID($this->input->post('directory_id'));
+		
 		
 		$data = array(
 			'DIRECTORY_ID'=>$this->directory_id,
-			'OWNER_Type'=>3,
-			'OWNER_ID'=>$this->directory_id,
+			'OWNER_Type'=>$otype,
+			'OWNER_ID'=>$oid,
 			'EMAIL_Address'=>$email,
 			'EMAIL_Type'=>$type,
 			'EMAIL_Created'=>date('Y-m-d H:i:s'),
 			
 		);
 	
+		print_object($data);
+	/*
 		$add = $this->syscontacts->addSingleEmailAddress($data);
 		if($add) {
 			echo '1';	
 		}else {
 			echo '0';
 		}
+		*/
 	}
 
 	

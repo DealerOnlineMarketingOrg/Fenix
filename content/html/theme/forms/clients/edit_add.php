@@ -326,7 +326,7 @@
                      <?php } ?>
                      <?php if(isset($client->ClientID)) { ?>
                      <div id="clients_contacts" class="tab_content" style="display:none;padding-bottom:10px;">
-                     	<?= ContactsMainTable(((isset($view)) ? true : false),true,$client->ClientID); ?>
+                     	<?= ContactsMainTable(((isset($view)) ? true : false),true,$client->ClientID,false,1); ?>
                         <div class="fix"></div>
                      </div>
                      <?php } ?>

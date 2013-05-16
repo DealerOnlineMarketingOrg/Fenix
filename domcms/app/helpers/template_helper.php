@@ -68,7 +68,6 @@ function PasswordlistTable() { ?>
         	<table cellpadding="0" cellspacing="0" border="0" class="display passwordsListTable" id="example" width="100%">
             	<thead>
                 	<tr>
-                    	<th>Team</th>
                         <th>Type</th>
                         <th>Vendor</th>
                         <th>Login Address</th>
@@ -84,22 +83,19 @@ function PasswordlistTable() { ?>
                 	<?php foreach($passwords as $password) : ?>
                     	<?php $clipData = 'Login Address,' . $password->LoginAddress . ',User Name,' . $password->Username . ',Password,' . $password->Password; ?>
                 		<tr class="tagElement <?= $password->Tag; ?>">
-                        	<td class="tags"><div class="<?= $password->Tag; ?>">&nbsp;<span style="display:none;"><?= $password->Tag;?></span></div></td>
                             <td class="align-cell-left"><?= $password->Type; ?></td>
                             <td class="align-cell-left"><?= $password->Vendor; ?></td>
                             <td><a target="_blank" href="<?= $password->LoginAddress; ?>"><?= $password->LoginAddress; ?></a></td>
                             <td class="no-text-wrap">
-                            	<span class="boldTheText">
                                 	<div id="username<?=$counter;?>" class="clipBoard clipData" clipBoardData="<?=$clipData; ?>"></div>
                                     <a href="mailto:<?=$password->Username;?>"><?=$password->Username;?>
-                                </span>
                             </td>
                             <td class="no-text-wrap">
                             	<div id="password<?=$counter;?>" class="clipBoard clipData" clipBoardData="<?=$clipData;?>"></div>
                                 <?=$password->Password;?>
                             </td>
                             <td class="notesCol">
-                            	<?php if($password->Notes) { ?>
+                            	<?php if($password->Notes != '') { ?>
                             	<div class="passwordNotes">
 									<?=$password->Notes;?>
                                 </div>
@@ -512,9 +508,8 @@ function VendorListingTable($hide_actions=false,$hide_add=false) { ?>
                         <td class="noWrap">
                         	<?php if(!empty($vendor->Phones)) : 
 									foreach($vendor->Phones as $phone) { 
-										if($phone->PHONE_Primary == 1) { 
-											echo $phone->PHONE_Number;
-										}
+										echo '<strong>' . $phone->PHONE_Type . '</strong><br />';
+										echo $phone->PHONE_Number . '<br />';
 									}
 								  else:
 								  	echo '<span>...</span>'; 

@@ -62,7 +62,7 @@
 			url:'/admin/users/change_user_password?uid=<?= $user->ID; ?>',
 			success:function(resp) {
 				if(resp == '1') {
-					jAlert('The password was successfully changed!','Change password confirmation',function() {
+					jAlert('The Password was successfully changed!','Change Password confirmation',function() {
 						$('#changePassword').dialog('close');
 					});
 				}else if(resp == '9') {
