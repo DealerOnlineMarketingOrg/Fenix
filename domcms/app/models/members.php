@@ -337,8 +337,9 @@ class Members extends CI_Model {
    }
    
    public function checkExistingUsername($username) {
-		$query = $this->db->select('USER_Name as Username')->from('Users')->where('USER_Name',$username)->get();
-		return ($query) ? TRUE : FALSE;   
+	   $sql = 'SELECT * FROM Users WHERE USER_Name = "' . $username . '"';
+	   $query = $this->db->query($sql);
+		return ($query) ? $query->row() : FALSE;   
    }
    
    public function UserModules($mods) {

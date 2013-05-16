@@ -2,9 +2,8 @@
     <div class="dialog-message" id="editAvatar" title="Edit Avatar">
         <div class="uiForm">
             <p style="margin-left:15px !important;">Upload a custom Avatar to our system.</p>
-            <?= form_open_multipart('/admin/users/upload_avatar?uid=' . $user_id, array('id' => 'uploadAvatar','class'=>'valid')); ?>
+            <?= form_open_multipart(base_url().'profile/avatar/upload?uid=' . $uid, array('id' => 'uploadAvatar','class'=>'valid')); ?>
             	<input name="avatar" placeholder="Custom Avatar" id="fileInput" class="fileInput" type="file" size="24" style="opacity:0;" />
-                <input type="hidden" name="user_id" value="<?= $user_id; ?>" />
             <?= form_close(); ?>
         </div>
     </div>
