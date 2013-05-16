@@ -30,12 +30,6 @@
             <div class="body alignleft">
                 <div class="avatar" style="border:2px solid <?= $user->Color; ?>;">
                     <img src="<?= $avatar; ?>" alt="<?= $user->FirstName . ' ' . $user->LastName; ?>" />
-                    <?php if($edit) { ?>
-                        <div class="editButton inAvatar"><a href="javascript:editAvatar('<?= $user->ID; ?>');"><span>Edit</span></a></div>
-                    <?php } ?>
-					<?php if(isset($_SESSION['token']) AND ($user->ID == $this->user['UserID'])) { ?>
-                        <a title="Import Google Avatar" id="importGoogleAvatar" rel="<?= $user->ID; ?>" href="javascript:void(0);"><span>Import Google Avatar</span></a>
-                    <?php } ?>
                 </div>
                 <div class="profileInfo alignleft">
                     <ul>
@@ -222,17 +216,6 @@
 		});
 	}
 
-	function editAvatar(id) {
-		jQuery("#editAvatar").dialog({
-			autoOpen: true,
-			modal: true,
-			buttons: {
-				Upload: function() {
-					jQuery('#uploadAvatar').submit();
-        		}
-			}
-		});
-	}
 	
 	function editInfo(uid) {
 		$('#editUser').remove();

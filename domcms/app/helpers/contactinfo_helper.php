@@ -52,7 +52,7 @@
         <?php }else { ?>
             <div style="margin-top:10px;margin-bottom:0px;">
                 <div class="head"><h5 class="iPhone">Phone Numbers</h5></div>
-                <p class="noData" style="text-align:center;">No phone numbers found for this user.</p>
+                <p class="noData" style="text-align:center;"><?= (($type == 3) ? 'No phone numbers found for this user.' : 'No phone numbers found for this contact.'); ?></p>
             </div>
         <?php } ?>
         <?php if(!$view) {?>
@@ -108,7 +108,7 @@
         <?php }else { ?>
             <div style="margin-top:10px;margin-bottom:60px;">
                 <div class="head"><h5 class="iPhone">Email Addressess</h5></div>
-                <p class="noData" style="text-align:center">No email addresses found for this user.</p>
+                <p class="noData" style="text-align:center"><?= (($type == 3) ? 'No email addresses found for this user.' : 'No email addresses found for this contact.'); ?></p>
             </div>
         <?php } ?>
         <?php if(!$view) { ?>

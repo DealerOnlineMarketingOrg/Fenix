@@ -34,11 +34,13 @@ class Contacts extends DOM_Controller {
 	
 	public function View() {
 		$this->load->model('system_contacts','domcontacts');
+		$contact = $this->domcontacts->getDirectoryInfoForEmail($this->directory_id);
+		$this->load->model('system_contacts','domcontacts');
 		$this->load->helper('contactinfo');
 		$data = array(
 			'clients'=>$this->administration->getAllClientsInAgency($this->user['DropdownDefault']->SelectedAgency),
 			'vendors'=>$this->administration->getVendors(),
-			'contact'=>$this->domcontacts->preparePopupInfo($this->contact_id),
+			'contact'=>$this->domcontacts->preparePopupInfo($contact->DIRECTORY_ID,$contact->DIRECTORY_Type,$contact->OWNER_ID),
 			'jobtitles'=>$this->domcontacts->getJobTitles()
 		);
 		$this->load->dom_view('forms/contacts/view',$this->theme_settings['ThemeViews'],$data);

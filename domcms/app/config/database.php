@@ -49,8 +49,11 @@ switch(ENVIRONMENT) {
 	case 'production' :
 		$active_group = 'prod';
 	break;
-	default:
+	case 'testing' :
 		$active_group = 'test';
+	break;
+	default:
+		$active_group = 'dev';
 	break;
 }
 
@@ -75,10 +78,28 @@ $db['prod'] = array(
 );
 
 $db['test'] = array(
-	'hostname' => ((ENVIRONMENT != 'testing' AND ENVIRONMENT != 'production') ? '198.101.136.226' : 'mysql51-017.wc1.ord1.stabletransit.com'),
+	'hostname' => 'mysql51-017.wc1.ord1.stabletransit.com',
 	'username' => '718973_testbeta',
 	'password' => 'Q?noodle*09',
 	'database' => '718973_DOM_CMS',
+	'dbdriver' => 'mysqli',
+	'dbprefix' => '',
+	'pconnect' => TRUE,
+	'db_debug' => FALSE,
+	'cache_on' => FALSE,
+	'cachedir' => '',
+	'char_set' => 'utf8',
+	'dbcollat' => 'utf8_general_ci',
+	'swap_pre' => '',
+	'autoinit' => TRUE,
+	'stricton' => FALSE
+);
+
+$db['dev'] = array(
+	'hostname' => 'localhost',
+	'username' => 'lbs9000_echo',
+	'password' => 'Q?noodle*09',
+	'database' => 'lbs9000_domcms',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => TRUE,
