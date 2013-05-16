@@ -56,7 +56,7 @@
                         	<img class="profileAvatar" src="<?= $avatar; ?>" alt="<?= $user->FirstName . ' ' . $user->LastName; ?>" style="width:100px;" />
                             <?php if($this->user['UserID'] == $user->ID || $this->user['AccessLevel'] >= 600000) { ?>
                             	<div class="editButton inAvatar">
-                                	<a title="Upload Custom Avatar" id="editUsersAvatar" rel="<?= $user->ID; ?>" href="javascript:void(0);"><span>Edit</span></a>
+                        				<a href="javascript:editAvatar('<?= $user->ID; ?>');"><span>Edit</span></a>
                                     <?php if(isset($_SESSION['token']) AND $this->user['UserID'] == $user->ID) { ?>
                                     	<a title="Import Google Avatar" id="importGoogleAvatar" rel="<?= $user->ID; ?>" href="javascript:void(0);"><span>Import Google Avatar</span></a>
                                     <?php } ?>
@@ -209,6 +209,16 @@
 <div id="editContactInfoPhonePop"></div>
 <div id="addContactInfoEmailPop"></div>
 <div id="editContactInfoEmailPop"></div>
+<div class="uDialog">
+    <div class="dialog-message" id="editAvatar" title="Edit Avatar">
+        <div class="uiForm">
+            <p style="margin-left:15px !important;">Upload a custom Avatar to our system.</p>
+            <?= form_open_multipart(base_url().'profile/avatar/upload', array('id' => 'uploadAvatar','class'=>'valid')); ?>
+            	<input name="avatar" placeholder="Custom Avatar" id="fileInput" class="fileInput" type="file" size="24" style="opacity:0;" />
+            <?= form_close(); ?>
+        </div>
+    </div>
+</div>
 
 
 <script type="text/javascript">
@@ -222,17 +232,17 @@
 		});
 
 
-	$('#editUsersAvatar').click(function() {
-		var uid = $(this).attr('rel');
-		$.ajax({
-			type:'GET',
-			url:'/admin/users/edit_avatar_form?uid='+uid,
-			success:function(data) {
-				$('#editAvatarPop').html(data);	
+	function editAvatar(id) {
+		jQuery("#editAvatar").dialog({
+			autoOpen: true,
+			modal: true,
+			buttons: {
+				Upload: function() {
+					jQuery('#uploadAvatar').submit();
+        		}
 			}
 		});
-
-	});
+	}
 	
 	$('#importGoogleAvatar').click(function() {
 		var uid = $(this).attr('rel');

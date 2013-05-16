@@ -264,7 +264,6 @@ class Clients extends DOM_Controller {
 				'tags'=>$tags,
 				'websites'=>true,
 				'contacts'=>true,
-				'contactInfo'=>ContactInfoListingTable($client, 'CID'),
 			);
 			//
       		$this->load->dom_view('forms/clients/edit_add', $this->theme_settings['ThemeViews'], $data);
