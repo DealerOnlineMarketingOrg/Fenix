@@ -109,7 +109,6 @@ class Users extends DOM_Controller {
 		$modules = $this->members->getDefaultModules($form['security_level']);
 		
 		$existingUser = $this->members->checkExistingUsername($form['username']);
-		
 		if(!$existingUser) {
 			$user_update = array(
 				'USER_Name'=>$form['username'],

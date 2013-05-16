@@ -106,7 +106,7 @@
                                              <div class="rowElem noborder">
                                                 <label>State</label>
                                                 <div class="formRight searchDrop noSearch" style="margin-top:15px;margin-bottom:10px">
-													<?= showStates($address->ADDRESS_State); ?>
+													<?= showStates($address->ADDRESS_State,true); ?>
                                                 </div>
                                                 <div class="fix"></div>
                                              </div>
@@ -119,35 +119,6 @@
                                             </div>
                                         <?php } ?>
                                     <?php } ?>
-                                <?php }else { ?>
-                                    <div class="rowElem noborder">
-                                        <label>Address</label>
-                                        <div class="formRight">
-                                            <?= form_input(array('class'=>'validate[custom[onlyLetterNumberSp]]','name'=>'street','id'=>'address','value' => '','style'=>'margin:0','placeholder'=>'Enter Street')); ?>
-                                        </div>
-                                        <div class="fix"></div>
-                                     </div>
-                                     <div class="rowElem noborder">
-                                        <label>City</label>
-                                        <div class="formRight">
-                                            <?= form_input(array('class'=>'validate[custom[onlyLetterNumberSp]]','name'=>'city','id'=>'city','value' => '','style'=>'margin:0')); ?>
-                                        </div>
-                                        <div class="fix"></div>
-                                     </div>
-                                     <div class="rowElem noborder">
-                                        <label>State</label>
-                                        <div class="formRight searchDrop noSearch" style="margin-top:15px;margin-bottom:10px">
-                                            <?= showStates(''); ?>
-                                        </div>
-                                        <div class="fix"></div>
-                                     </div>
-                                     <div class="rowElem noborder">
-                                        <label>Zip</label>
-                                        <div class="formRight">
-                                            <?= form_input(array('class'=>'validate[custom[onlyLetterNumberSp]]','name'=>'zip','id'=>'zip','value' => '','style'=>'margin:0')); ?>
-                                        </div>
-                                        <div class="fix"></div>
-                                    </div>
                                 <?php } ?>
                                 <div class="rowElem noborder">
                                 	<label>Notes</label>
