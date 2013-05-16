@@ -92,7 +92,7 @@ class DOM_Controller extends CI_Controller {
 			//This checks the user validation
 			$this->validUser = ($this->session->userdata('valid_user')) ? TRUE : FALSE;
 			if (!$this->validUser) {
-				redirect('login');
+				redirect('login','refresh');
 			}
 			
 			$this->user['DropdownDefault']->SelectedAgency = (($this->user['DropdownDefault']->SelectedAgency) ? $this->user['DropdownDefault']->SelectedAgency : $this->user['AgencyID']);

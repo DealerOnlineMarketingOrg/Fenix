@@ -16,6 +16,7 @@
 	
 	function editPhone(pid) {
 		$('#editPhone').remove();
+		$('#UserPhonePop').empty();
 		$.ajax({
 			type:'GET',
 			url:'/admin/contactInfo/edit_phone_form?pid='+pid,
@@ -29,7 +30,8 @@
 	}
 	
 	function addPhone(did,type) {
-		$('#addPhone').remove();
+		$('#addContactInfoPhone').remove();
+		$('#UserPhonePop').empty();
 		$.ajax({
 			type:'GET',
 			url:'/admin/contactInfo/add_phone_form?did='+did+'&type='+type,

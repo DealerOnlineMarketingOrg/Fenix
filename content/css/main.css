@@ -544,9 +544,10 @@ div.headRightSide span {font-weight:700;color:#333;}
 ul.modList li {width:25%;float:left;}
 span.inline_title{text-transform:capitalize;font-weight:bold;color:#b55d5c;text-transform:capitalize;}
 div.contactInfo ul {}
-div.contactInfo ul li.parentLabel {float:left;width:175px;height:52px;text-align:center;padding:5px 0;color:#666;border-right:1px solid #d5d5d5;}
-div.contactInfo ul li.userContent {margin-left:176px;}
-div.contactInfo ul li.userContent table.tableStatic {border-top:1px solid #d5d5d5;width:99.95%;}
+div.contactInfo ul li.parentLabel {float:left;width:175px;height:52px;text-align:center;padding:5px 0;color:#666;border-right:1px solid #d5d5d5;clear:left;}
+div.contactInfo ul li.userContent {margin-left:176px;clear:right;}
+div.contactInfo ul li.userContent table.tableStatic {border-top:1px solid #d5d5d5;}
+div.contactInfo ul li.userContent table.tableStatic td {width:auto;}
 div.contactInfo ul li.userContent table .head{color:#b55f5c;}
 div.contactInfo ul li:nth-child(2) table.tableStatic {margin-top:-1px;}
 img.viewBtn{cursor:pointer}
@@ -1040,3 +1041,10 @@ table.websitesTable thead td {text-align:left;padding-left:10px;}
 table.websitesTable thead td.actionsCol{text-align:center;}
 table.websitesTable tbody td a{color:#06F;}
 table.tableStatic thead tr td.profileAssets{text-align:left !important;padding-left:10px;color:#b55D5C;font-weight:bold;}
+
+#importGoogleAvatar {
+    background: url("../imgs/icons/color/google_icon.png") no-repeat scroll left top / 12px 12px transparent;
+}
+#importGoogleAvatar span {display:none;}
+
+#users_usersInfo a.actions_link{float:right;margin-top:-15px;}

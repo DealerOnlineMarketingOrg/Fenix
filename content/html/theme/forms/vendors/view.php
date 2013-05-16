@@ -54,7 +54,6 @@
                                         <tbody>
                                         <?php if(!empty($vendor->Phones)) { ?>
 											<?php foreach($vendor->Phones as $phone) { ?>
-                                            
                                                 <tr>
                                                     <td class="primaryCell">
                                                         <?php if($phone->PHONE_Primary == 1) {
@@ -129,7 +128,7 @@
                                                         class="" 
                                                         value="<?= $address->ADDRESS_City; ?>" disabled/>
                                                         <span class="formNote">City</span>
-                                                    <?= showStatesArray($address->ADDRESS_State,false,$address->ADDRESS_ID); ?>
+                                                    <?= showStatesArray($address->ADDRESS_State,true,$address->ADDRESS_ID); ?>
                                                     <span class="formNote">State</span>
                                                     <input 
                                                         type="text" 

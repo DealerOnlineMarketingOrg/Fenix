@@ -1,97 +1,103 @@
-<div class="uDialog">
-    <div class="dialog-message popper" id="addContactInfoPhone" title="Add Phone">
-        <div class="uiForm">
+<div class="uDialog" style="text-align:left;">
+    <div class="dialog-message popper" id="addPhone" title="Add Phone Number">
+        <div class="uiForm" style="text-align:left;">
+			<style type="text/css">
+				#editPhone label, #editPhone label{margin-top:0px;float:left;padding-top:12px;}
+				div.formError{z-index:2000 !important;}
+				#editPhone textarea,#editPhone textarea {margin-top:12px;}
+			</style>
             <div class="widget" style="margin-top:-10px;padding-top:0;margin-bottom:10px;">
-                <div class="tab_container">
-            		<div id="contactPhone" class="tab_content">
-						<?= form_open('/admin/contactInfo/add_phone_number?',array('id'=>'addContactInfoPhoneForm','class'=>'validate mainForm formPop','style' => 'text-align:left'));	?>
-                            <fieldset>
-                                <div class="rowElem noborder">
-                                    <label><span class="req">*</span>Type</label>
-                                    <div class="formRight searchDrop">
-                                        <select id="contactPhoneType" class="chzn-select validate[required]" style="width:350px" name="type">
-                                        	<option value=""></option>
-                                            <option value="cell">Cell</option>
-                                            <option value="home">Home</option>
-                                            <option value="work">Work</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="fix"></div>
-                                <div class="rowElem noborder">
-                                    <label><span class="req">*</span>Phone</label>
-                                    <div class="formRight">
-                                        <?= form_input(array('class'=>'maskPhoneExt validate[required]','name'=>'phone','id'=>'phone','value'=>'','placeholder'=>'Enter Phone Number')); ?>
-                                        <span class="formNote">(999) 999-9999 x99999</span>
-                                    </div>
-                                </div>
-                                <div class="fix"></div>
-                                <div class="submitForm">
-                                    <input type="hidden" name="directory_id" value="<?= $did; ?>" />
-                                </div>
-                            </fieldset>
-                        <?= form_close(); ?>
+                <!-- Form begins -->
+                <?php
+					$form = array(
+						'name' => 'AddPhoneNumber',
+						'id' => 'AddPhoneNumberForm',
+						'class' => 'mainForm addphoneForm',
+						'style'=>'text-align:left;'
+					);
+					
+					echo form_open('admin/user/submit_add_user_phone', $form);
+				?>
+                    <!-- Input text fields -->
+                    <fieldset>
+                    	<div class="rowElem noborder">
+                        	<label style="padding-top:5px !important;">Type</label>
+                            <div class="formRight noSearch">
+                                <select name="type" class="chzn-select validate[required]" id="typeSelect" style="width:200px;">
+                                    <option value=""></option>
+                                    <option value="Work">Work</option>
+                                    <option value="Mobile">Mobile</option>
+                                    <option value="Home">Home</option>
+                                </select>
+                            </div>
+                            <div class="fix"></div>
+                        </div>
+                        <div class="rowElem noborder">
+                            <label>Phone Number</label>
+                            <div class="formRight">
+                                <input id="phoneNumber" name="number" type="text" class="validate[required,custom[phone]] maskPhoneExt" value="" />
+                                <span class="formNote">(888) 888-8888 x888</span>
+                            </div>
+                            <div class="fix"></div>
+                        </div>
+                        <div class="submitForm">
+                            <input type="hidden" id="directory_id" name="directory_id" value="<?= $did; ?>" />
+                        </div>
                         <div class="fix"></div>
-                    </div>
-				</div> 
-        	</div> <? //end widget ?>
-		</div>
+                    </fieldset>
+                <?= form_close(); ?>
+        	</div>
+   	 	</div>
 	</div>
 </div>
-<style type="text/css">
-.rowElem > label {padding-top:5px;}
-	.ui-datepicker-append{float:left;}
-</style>
 <script type="text/javascript">
-	//re initialize jQuery
+
 	var $ = jQuery;
+	$(".addphoneForm").validationEngine({promptPosition : "right", scroll: true});
+	$('.chzn-select').chosen();
 	
 	$.mask.definitions['~'] = "[+-]";
 	$(".maskPhoneExt").mask("(999) 999-9999? x99999");
-	
-	$('#addContactInfoPhoneForm').submit(function(e) {
+
+
+	$('#AddPhoneNumberForm').submit(function(e) {
 		e.preventDefault();
-		var formData = $(this).serialize();
-		
+		var formData = $('#AddPhoneNumberForm').serialize();
 		$.ajax({
 			type:'POST',
+			url:'/admin/contactInfo/add_phone_number?did=<?=$did; ?>',
 			data:formData,
-			url:'/admin/contactInfo/add_phone_number?did='<?=$did; ?>,
-			success:function($response) {
-				if($response == '1') {
-					jAlert('The phone number was added successfully.','Success!',function() {
-						reload_phone_table('<?=$did;?>');
+			success:function(data) {
+				alert(data);
+				/*
+				if(data == '1') {
+					jAlert('The phone number was added successfully!',function() {
+						document.location.reload(true);
+						//reload_phone_table('<?= $did; ?>');
 					});
 				}else {
-					
+					jAlert('The phone number failed to add. Please try again.');
 				}
+				*/
 			}
 		});
-		
-		savePhone('<?= $page; ?>','<?= $contact->TypeID; ?>','<?= $contact->TypeCode; ?>',formData);
 	});
 	
-	$(".chzn-select").chosen();
 	
-	
-	$("#editContactInfoPhonePop").dialog({
-		minWidth:600,
-		width:600,
-		minHeight:300,
-		height:300,
+	$("#addPhone").dialog({
+		minWidth:300,
+		width:500,
+		height:275,
 		autoOpen: true,
 		modal: true,
 		buttons: [
 			{
-				class:'greyBtn',
-				text:'Close',
-				click:function() {$(this).dialog('close');}
+				class:'greenBtn',
+				text:'Add',
+				click:function() {$('#AddPhoneNumberForm').submit();}
 			},
-				{
-					class:'greenBtn addPhoneBtn',
-					text:"Add",
-					click:function() { $("#editContactInfoPhoneForm").submit(); }
-				},
-		]
+		] 
+
 	});
+	
 </script>

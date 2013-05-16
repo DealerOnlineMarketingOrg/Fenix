@@ -1,8 +1,6 @@
 
-<script type="text/javascript" src="<?= base_url(); ?>js/userProfile_popups.js"></script>
 <script type="text/javascript" src="<?= base_url(); ?>js/user_popups.js"></script>
 <script type="text/javascript" src="<?= base_url(); ?>js/websites_popups.js"></script>
-<script type="text/javascript" src="<?= base_url(); ?>js/contactInfo_popups.js"></script>
 <div id="loader_block">
     <div id="client_loader"><img src="<?= base_url() . THEMEIMGS; ?>loaders/loader2.gif" /></div>
 </div>
@@ -44,9 +42,11 @@
                         <li><span>Name:</span> <?= $user->FirstName . ' ' . $user->LastName; ?></li>
                         <li><span>Username:</span> <a href="mailto:<?= $user->Username; ?>"><?= $user->Username; ?></a></li>
                         <li><span>Company:</span> <?= $user->Dealership; ?></li>
-                        <?php foreach($user->Addresses as $address) { ?>
-                        	<?php if($address->ADDRESS_Primary == 1) { ?>
-                        		<li><span>Address:</span> <?= $address->ADDRESS_Street . ' ' . $address->ADDRESS_City . ', ' . $address->ADDRESS_State . ' ' . $address->ADDRESS_Zip; ?></li>
+                        <?php if(!empty($user->Addresses)) { ?>
+							<?php foreach($user->Addresses as $address) { ?>
+                                <?php if($address->ADDRESS_Primary == 1) { ?>
+                                    <li><span>Address:</span> <?= $address->ADDRESS_Street . ' ' . $address->ADDRESS_City . ', ' . $address->ADDRESS_State . ' ' . $address->ADDRESS_Zip; ?></li>
+                                <?php } ?>
                             <?php } ?>
                         <?php } ?>
                         <li><span>Security:</span> <?= $user->AccessName; ?></li>
@@ -59,11 +59,13 @@
                 <h5 class="iPhone">Contact Information</h5>
             </div>
             <div class="body alignleft contactInfo">
+            	<?php //print_object($user); ?>
                 <ul>
+                	<?php if(!empty($user->Emails)) { ?>
                     <li class="parentLabel" style="width:125px !important;"><span>Email:</span></li>
                     <li class="userContent" style="margin-left:126px !important;">
                     	<div style="overflow:auto;">
-                            <table cellpadding="0" cellspacing="0" class="tableStatic" style="width:100%;">
+                            <table cellpadding="0" cellspacing="0" class="tableStatic" width="100%">
                                 <thead>
                                     <tr>
                                         <?php foreach($user->Emails as $email) { ?>
@@ -81,46 +83,51 @@
                             </table>
                         </div>
                     </li>
-                    <li class="parentLabel" style="width:125px !important;"><span>Phone:</span></li>
-                    <li class="userContent" style="margin-left:126px !important;">
-                    	<div style="overflow:auto;">
-                            <table cellpadding="0" cellspacing="0" class="tableStatic" style="width:100%;">
-                                <thead>
-                                    <tr>
-                                        <?php foreach($user->Phones as $phone) { ?>
-                                            <td class="profileAssets"><?= $phone->PHONE_Type; ?></td>
-                                        <?php } ?>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <?php foreach($user->Phones as $phone) { ?>
-                                            <td class="profileAssets"><?= $phone->PHONE_Number; ?></td>
-                                        <?php } ?>
-                                    </tr>
-                                </tbody>
-                            </table>
-                       </div>
-                   </li>
+                    <?php } ?>
+                    <?php if(!empty($user->Phones)) { ?>
+                        <li class="parentLabel" style="width:125px !important;"><span>Phone:</span></li>
+                        <li class="userContent" style="margin-left:126px !important;">
+                            <div style="overflow:auto;">
+                                <table cellpadding="0" cellspacing="0" class="tableStatic" width="100%">
+                                    <thead>
+                                        <tr>
+                                            <?php foreach($user->Phones as $phone) { ?>
+                                                <td class="profileAssets"><?= $phone->PHONE_Type; ?></td>
+                                            <?php } ?>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <?php foreach($user->Phones as $phone) { ?>
+                                                <td class="profileAssets"><?= $phone->PHONE_Number; ?></td>
+                                            <?php } ?>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                           </div>
+                       </li>
+                   <?php } ?>
+                   <?php if(!empty($websites)) { ?>
                     <li class="parentLabel" style="width:125px !important;"><span>Websites:</span></li>
                     <li class="userContent" style="margin-left:126px !important;">
                     	<div style="overflow:auto;">
-                            <table cellpadding="0" cellspacing="0" class="tableStatic" style="width:100%;">
-                                <thead>
-                                    <tr>
-                                        <?php foreach($websites as $web) { ?>
-                                            <td class="profileAssets">Website URL</td>
-                                        <?php } ?>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <?php foreach($websites as $website) { ?>
-                                            <td class="profileAssets"><a href="<?= $website->URL; ?>" target="_blank"><?= $website->URL; ?></a></td>
-                                        <?php } ?>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                <table cellpadding="0" cellspacing="0" class="tableStatic" width="100%">
+                                    <thead>
+                                        <tr>
+                        					<?php foreach($websites as $web){ ?>
+                                            	<td class="profileAssets">Website URL</td>
+                                            <?php } ?>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                        	<?php foreach($websites as $web) { ?>
+                                            	<td class="profileAssets"><a href="<?= $web->URL; ?>" target="_blank"><?= $web->URL; ?></a></td>
+                                            <?php } ?>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            <?php } ?>
                        </div>
                    </li>
                 </ul>
@@ -190,6 +197,9 @@
 <div id="editContactInfoPhonePop"></div>
 <div id="addContactInfoEmailPop"></div>
 <div id="editContactInfoEmailPop"></div>
+
+<div id="UserPhonePop"></div>
+<div id="UserEmailPop"></div>
 
 <script type="text/javascript">
 	function resetPassword(email) {

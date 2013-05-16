@@ -532,6 +532,11 @@ class Administration extends CI_Model {
 		}
 	}
 	
+	public function updateAccessLevel($data,$uid) {
+		$this->db->where('USER_ID',$uid);
+		return ($this->db->update('Users_Info',$data)) ? TRUE : FALSE;	
+	}
+	
 	public function addContact($data) {
         return $this->db->insert('Directories', $data); 
     }
@@ -551,9 +556,9 @@ class Administration extends CI_Model {
 			 ->where('u.USER_ID',$id)->get();
 		if($u) :
 			$u = $u->row();
-			$u->Phones = $this->contactinfo->getContactPhoneNumbers($u->ID,$u->UserType);
-			$u->Emails = $this->contactinfo->getContactEmailAddresses($u->ID,$u->UserType);
-			$u->Addresses = $this->contactinfo->getContactPhysicalAddresses($u->ID,$u->UserType);
+			$u->Phones = $this->contactinfo->getContactPhoneNumbers($u->ID,3,$u->DirectoryID);
+			$u->Emails = $this->contactinfo->getContactEmailAddresses($u->ID,3,$u->DirectoryID);
+			$u->Addresses = $this->contactinfo->getContactPhysicalAddresses($u->ID,3,$u->DirectoryID);
 		endif;
 			 
 		//GET email,phones and addresses
@@ -1233,7 +1238,7 @@ class Administration extends CI_Model {
 	}
 	
 	public function getVendorContactInfo($tableName, $vid) {
-		$query = $this->db->select('*')->from($tableName)->where('OWNER_Type',2)->where('OWNER_ID',$vid)->get();
+		$query = $this->db->select('*')->from($tableName)->where('OWNER_Type',2)->where('OWNER_ID',$vid)->where('DIRECTORY_ID',0)->get();
 		return ($query) ? $query->result() : FALSE;
 	}
 	

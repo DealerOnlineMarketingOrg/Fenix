@@ -45,34 +45,82 @@
                             </div> 
                             <div class="fix"></div>
                         </div>
-                        <div class="rowElem noborder">
-                        	<label>Address</label>
+                    	<div class="rowElem noborder noSearch">
+                        	<label><span class="req">*</span> Security Level</label>
                             <div class="formRight">
-                            	<?= form_input(array('name'=>'street','id'=>'street','class'=>'','value'=>$user->Address['street'])); ?>
+                            	<select name="security_level" class="chzn-select validate[required]" id="security_level" style="min-width:200px;">
+                                	<option value=""></option>
+                                    <?php foreach($SecurityLevels as $levels) { ?>
+                                    	<option <?= (($user->AccessID == $levels->ID) ? 'selected="selected"' : ''); ?> value="<?= $levels->ID; ?>"><?= $levels->Name; ?></option>
+                                    <?php } ?>
+                                </select>
                             </div>
                             <div class="fix"></div>
                         </div>
-                        <div class="rowElem noborder">
-                        	<label>City</label>
-                            <div class="formRight">
-                            	<?= form_input(array('name'=>'city','id'=>'city','class'=>'','value'=>$user->Address['city'])); ?>
+                        <?php if(!empty($user->Addresses)) { ?>
+                        	<?php foreach($user->Addresses as $address) { ?>
+                            	<?php if($address->ADDRESS_Primary == 1) { ?>
+                                    <div class="rowElem noborder">
+                                        <label>Address</label>
+                                        <div class="formRight">
+                                            <?= form_input(array('name'=>'street','id'=>'street','class'=>'','value'=>$address->ADDRESS_Street)); ?>
+                                        </div>
+                                        <div class="fix"></div>
+                                    </div>
+                                    <div class="rowElem noborder">
+                                        <label>City</label>
+                                        <div class="formRight">
+                                            <?= form_input(array('name'=>'city','id'=>'city','class'=>'','value'=>$address->ADDRESS_City)); ?>
+                                        </div>
+                                        <div class="fix"></div>
+                                    </div>
+                                    <div class="rowElem noborder noSearch">
+                                        <label>State</label>
+                                        <div class="formRight">
+                                            <?= showStates($address->ADDRESS_State); ?>
+                                        </div>
+                                        <div class="fix"></div>
+                                    </div>
+                                    <div class="rowElem noborder">
+                                        <label>Zip</label>
+                                        <div class="formRight">
+                                            <?= form_input(array('name'=>'zip','id'=>'zipcode','class'=>'','value'=>$address->ADDRESS_Zip)); ?>
+                                        </div>
+                                        <div class="fix"></div>
+                                    </div>
+                                 <?php } ?>
+                              <?php } ?>
+                        <?php }else { ?>
+                            <div class="rowElem noborder">
+                                <label>Address</label>
+                                <div class="formRight">
+                                    <?= form_input(array('name'=>'street','id'=>'street','class'=>'','value'=>'')); ?>
+                                </div>
+                                <div class="fix"></div>
                             </div>
-                            <div class="fix"></div>
-                        </div>
-                        <div class="rowElem noborder noSearch">
-                        	<label>State</label>
-                            <div class="formRight">
-                            	<?= showStates($user->Address['state']); ?>
+                            <div class="rowElem noborder">
+                                <label>City</label>
+                                <div class="formRight">
+                                    <?= form_input(array('name'=>'city','id'=>'city','class'=>'','value'=>'')); ?>
+                                </div>
+                                <div class="fix"></div>
                             </div>
-                            <div class="fix"></div>
-                        </div>
-                        <div class="rowElem noborder">
-                        	<label>Zip</label>
-                            <div class="formRight">
-                            	<?= form_input(array('name'=>'zipcode','id'=>'zipcode','class'=>'','value'=>$user->Address['zipcode'])); ?>
+                            <div class="rowElem noborder noSearch">
+                                <label>State</label>
+                                <div class="formRight">
+                                    <?= showStates($address->ADDRESS_State); ?>
+                                </div>
+                                <div class="fix"></div>
                             </div>
-                            <div class="fix"></div>
-                        </div>
+                            <div class="rowElem noborder">
+                                <label>Zip</label>
+                                <div class="formRight">
+                                    <?= form_input(array('name'=>'zip','id'=>'zipcode','class'=>'','value'=>'')); ?>
+                                </div>
+                                <div class="fix"></div>
+                            </div>
+                       <?php } ?>
+                            
                     </fieldset>
                     <input type="hidden" name="DirectoryID" value="<?= $user->DirectoryID; ?>" />
                 <?= form_close(); ?>
@@ -96,7 +144,7 @@
 			url:'/admin/users/submit_user_details_form?uid=<?= $user->ID; ?>',
 			success:function(resp) {
 				if(resp == '1') {
-					jAlert('The users info has been updated.','Success',function() {
+					jAlert("The User's information has been updated.",'Success',function() {
 						$('#editUserInfo').dialog('close');	
 						//load_user_table();
 							<?php if($page == 'users') { ?>
@@ -106,7 +154,7 @@
 							<?php } ?>
 					});
 				}else if(resp == '2') {
-					jAlert('The users info was updated, however, the username was not! Please check to see if you have the correct permissions to change usernames.','Success Error',function() {
+					jAlert("The User's information has been updated, however, the username was not! Please check to see if you have the correct permissions to change usernames.",'Success Error',function() {
 						$('#editUserInfo').dialog('close');
 						//load_user_table();
 						<?php if($page == 'users') { ?>
@@ -116,7 +164,7 @@
 						<?php } ?>
 					});
 				}else if(resp == '3') {
-					jAlert('The username was updated however, the users details did not update correctly. Please try again!.','Success Error',function() {
+					jAlert("The User's username was updated however, the User's information did not update correctly. Please try again!.",'Success Error',function() {
 						$('#editUserInfo').dialog('close');
 						//load_user_table();
 						<?php if($page == 'users') { ?>
@@ -126,7 +174,7 @@
 						<?php } ?>
 					});
 				}else{
-					jAlert('There was a problem updating the users information. Please try again.','Error',function() {
+					jAlert("There was a problem updating the User's information. Please try again.",'Error',function() {
 						$('#editUserInfo').dialog('close');
 						//load_user_table();
 						<?php if($page == 'users') { ?>
@@ -144,7 +192,7 @@
 	
 	$("#editUserInfo").dialog({
 		minWidth:300,
-		width:650,
+		width:750,
 		height:465,
 		autoOpen: true,
 		modal: true,

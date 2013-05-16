@@ -54,7 +54,6 @@ class Groups extends DOM_Controller {
 				'GROUP_Name'=>$group_data['name'],
 				'GROUP_Notes'=>$group_data['notes'],
 				'GROUP_Active'=>$group_data['status'],
-				'GROUP_ActiveTS'=>date(FULL_MILITARY_DATETIME)
 			);
 			
 			$update = $this->administration->updateGroup($group_id,$edit_data);
@@ -72,7 +71,7 @@ class Groups extends DOM_Controller {
 				'GROUP_Name'=>$group_data['name'],
 				'GROUP_Notes'=>$group_data['notes'],
 				'GROUP_Active'=>1,
-				'GROUP_ActiveTS'=>date(FULL_MILITARY_DATETIME)
+				'GROUP_Created'=>date(FULL_MILITARY_DATETIME),
 			);
 			
 			$add = $this->administration->addGroup($add_data);

@@ -47,10 +47,8 @@ class System_contacts extends DOM_Model {
 		$add_directory_entry_id = (($this->db->insert('Directories',$directory)) ? $this->db->insert_id() : FALSE);
 		
 		if($add_directory_entry_id) {
-			if($directory['OWNER_Type'] > 2) {
-				$add_phone['DIRECTORY_ID'] = $add_directory_entry_id;
-				$add_address = $add_directory_entry_id;	
-			}
+			$add_phone['DIRECTORY_ID'] = $add_directory_entry_id;
+			$add_address['DIRECTORY_ID'] = $add_directory_entry_id;	
 			
 			return (($this->db->insert('PhoneNumbers',$add_phone) AND $this->db->insert('DirectoryAddresses',$add_address)) ? TRUE : FALSE);
 		}else {
@@ -70,6 +68,21 @@ class System_contacts extends DOM_Model {
 		return ($query) ? TRUE : FALSE;	
 	}
 	
+	public function checkIfContactPhoneExists($did,$oid,$type) {
+		$query = $this->db->select('*')->from('PhoneNumbers')->where('DIRECTORY_ID',$did)->where('OWNER_ID',$oid)->where('OWNER_Type',$type)->get();
+		return ($query) ? TRUE : FALSE;	
+	}
+	
+	public function getOwnerIDByDID($did) {
+		$query = $this->db->select('OWNER_ID as OID')->from('Directories')->where('DIRECTORY_ID',$did)->get();
+		return ($query) ? $query->row()->OID : FALSE;	
+	}
+	
+	public function getOwnerTypeBYDID($did) {
+		$query = $this->db->select('DIRECTORY_Type as Type')->from('Directories')->where('DIRECTORY_ID',$did)->get();
+		return ($query) ? $query->row()->Type : FALSE;	
+	}
+	
 	public function getDirectoryInformation($type = false,$id = false,$did = false) {
 		$select = 'd.DIRECTORY_ID as ContactID,
 				   d.OWNER_ID as OwnerID,
@@ -85,22 +98,30 @@ class System_contacts extends DOM_Model {
 		$this->db->select($select)->from('Directories d')->join('xTitles ti','d.TITLE_ID = ti.TITLE_ID')->join('xTags t','d.DIRECTORY_Tag = t.TAG_ID');
 		
 		
-		if($type and !$id) {
-			$this->db->where('d.DIRECTORY_Type',$type);	
-		}elseif(!$type and $id) {
-			$this->db->where('d.OWNER_ID',$id);	
-		}elseif(!$type and !$id and $did) {
-			$this->db->where('d.DIRECTORY_ID',$did);	
+		if($type == 2) { 
+			$this->db->where('d.DIRECTORY_Type',2)->where('d.OWNER_ID',$id);
+		}elseif($type == 1) {
+			$this->db->where('d.DIRECTORY_Type',1)->where('d.OWNER_ID',$id);
 		}else {
-			$this->db->where('d.OWNER_ID',$id)->where('d.DIRECTORY_Type',$type);	
+			if($type == 3) {
+				$this->db->where('d.DIRECTORY_Type',3)->where('d.OWNER_ID',$id);
+			}else {
+				$this->db->where('d.DIRECTORY_Type',4)->where('d.OWNER_ID',$id);	
+			}
 		}
 		
 		$query = $this->db->get();
 		return ($query) ? $query->result() : FALSE;
 	}
 	
-	public function preparePopupInfo($did) {
-		$directory = $this->getDirectoryInformation(false,false,$did);
+	public function getDirectoryInfoForEmail($did) {
+		$query = $this->db->select('*')->from('Directories')->where('DIRECTORY_ID',$did)->get();
+		return ($query) ? $query->row() : FALSE;
+	}
+	
+	public function preparePopupInfo($did,$type = false,$owner = false) {
+		
+		$directory = $this->getDirectoryInformation((($type) ? $type : false),(($owner) ? $owner : false),$did);
 		
 		//were only expecting one, but it returns as an array so we need to push the one to the contact array.
 		foreach($directory as $myContact) :
@@ -116,7 +137,11 @@ class System_contacts extends DOM_Model {
 		endforeach;
 		
 		//were only expecting one result, but it returns as an array, so just return the first index. which is always 0
-		return $directory[0];
+		if(count($directory) > 0) {
+			return $directory[0];
+		}else {
+			return $directory;	
+		}
 	}
 	
 	function getContactsForTable($owner_type = false,$owner_id = false) {
@@ -251,7 +276,6 @@ class System_contacts extends DOM_Model {
 							$vContact = $this->getSystemContacts(2,$vendor->ID);	
 							if($vContact) {
 								foreach($vContact as $vendorContact) {
-									$vContact->Owner = $this->getVendorName($vendor->ID)->Vendor;
 									array_push($contacts,$vendorContact);	
 								}
 							}
@@ -272,7 +296,7 @@ class System_contacts extends DOM_Model {
 					$vContact = $this->getSystemContacts(2,$vendor->ID);
 					if($vContact) {
 						foreach($vContact as $vendorContact) {
-							$vContact->Owner = $vendor->VendorName;
+							$vendorContact->Owner = $vendor->VendorName;
 							array_push($contacts,$vendorContact);	
 						}
 					}
@@ -356,13 +380,15 @@ class System_contacts extends DOM_Model {
 		//query using the active record codeigniter method
 		$this->db->select('*')->from('PhoneNumbers');
 		
-		if(!$did) {
 			$this->db->where('OWNER_ID',$oid);
 			$this->db->where('OWNER_Type',$otype);
 			$this->db->where('PHONE_Active',1);
-		}else {
-			$this->db->where('DIRECTORY_ID',$did);	
-		}
+			
+			if($otype > 2) {
+				$this->db->where('DIRECTORY_ID',$did);	
+			}else {
+				$this->db->where('DIRECTORY_ID',0);	
+			}
 		
 		$query = $this->db->get();
 		
@@ -613,6 +639,29 @@ class System_contacts extends DOM_Model {
 			}
 		}else {
 			return FALSE;	
+		}
+	}
+	
+	//used only for users
+	function managePrimaryPhysicalAddress($did,$owner_id,$type,$data) {
+		$checkIfExists = $this->db->select('ADDRESS_ID')->from('DirectoryAddresses')->where('DIRECTORY_ID',$did)->where('ADDRESS_Primary',1)->get();
+		if($checkIfExists) {
+			//gonna remove the primary
+			$new_data = array(
+				'ADDRESS_Primary' => 0
+			);	
+			$this->db->where('ADDRESS_ID',$did);
+			$this->db->update('DirectoryAddresses',$new_data);
+		}
+		if($checkIfExists) {
+			$this->db->where('DIRECTORY_ID',$did)->where('OWNER_ID',$owner_id)->where('OWNER_Type',$type);
+			return ($this->db->update('DirectoryAddresses',$data)) ? TRUE : FALSE;	
+		}else {
+			$data['OWNER_ID'] = $owner_id;
+			$data['DIRECTORY_ID'] = $did;
+			$data['OWNER_Type'] = $type;
+			$data['ADDRESS_Primary'] = 1;
+			return ($this->db->insert('DirectoryAddresses',$data)) ? TRUE : FALSE;
 		}
 	}
 }

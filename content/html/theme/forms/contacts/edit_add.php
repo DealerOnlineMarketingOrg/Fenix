@@ -8,7 +8,7 @@
 			</style>
             <div class="widget" style="margin-top:0px;padding-top:0;margin-bottom:10px;">
                 <ul class="tabs">
-	                    <li class="activeTab"><a href="javascript:void(0);" rel="contactDetails">Contact Details</a></li>
+	               <li class="activeTab"><a href="javascript:void(0);" rel="contactDetails">Contact Details</a></li>
                 </ul>
                 <div class="tab_container">
             		<div id="contactDetails" class="tab_content">
@@ -28,30 +28,40 @@
                                 	</div>
                                 	<div class="fix"></div>
                                 </div>
-                                <div class="rowElem noborder noSearch">
-                                    <label style="padding-top:5px !important;"><span class="req">*</span>Type</label>
-                                    <div class="formRight searchDrop">
-                                        <select id="contactType" class="chzn-select validate[required]" style="width:26%;" name="owner_type">
-                                        	<option value=""></option>
-                                            <option value="1">Client Contact</option>
-                                            <option value="2">Vendor Contact</option>
-                                            <option value="4">General Contact</option>
-                                        </select>
+                                <?php if(!isset($owner_type)) { ?>
+                                    <div class="rowElem noborder noSearch">
+                                        <label style="padding-top:5px !important;"><span class="req">*</span>Type</label>
+                                        <div class="formRight searchDrop">
+                                            <select id="contactType" class="chzn-select validate[required]" style="width:26%;" name="owner_type">
+                                                <option value=""></option>
+                                                <option value="1">Client Contact</option>
+                                                <option value="2">Vendor Contact</option>
+                                                <option value="4">General Contact</option>
+                                            </select>
+                                            
+                                        </div>
+                                        <div class="fix"></div>
                                     </div>
-                                    <div class="fix"></div>
-                                </div>
-                                <div class="rowElem noborder" id="client_dropdown" style="display:none;">
-                                    <label style="padding-top:5px !important;"><span class="req">*</span>Client</label>
-                                    <div class="formRight noSearch">
-                                        <select class="chzn-select" name="client_id" style="width:175px !important" id="ClientID">
-                                            <option value="">Choose a Client</option>
-                                            <?php foreach($clients as $client) : ?>
-                                                <option value="<?= $client->ClientID; ?>"><?= $client->Name; ?></option>
-                                            <?php endforeach; ?>
-                                        </select>
+                                <?php }else { ?>
+                                	<input type="hidden" name="owner_type" value="<?= $owner_type; ?>" />
+                                <?php } ?>
+                                <?php if(!isset($client_id)) { ?>
+                                    <div class="rowElem noborder" id="client_dropdown" style="display:none;">
+                                        <label style="padding-top:5px !important;"><span class="req">*</span>Client</label>
+                                        <div class="formRight noSearch">
+                                            <select class="chzn-select" name="client_id" style="width:175px !important" id="ClientID">
+                                                <option value="">Choose a Client</option>
+                                                <?php foreach($clients as $client) : ?>
+                                                    <option value="<?= $client->ClientID; ?>"><?= $client->Name; ?></option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </div>
+                                        <div class="fix"></div>
                                     </div>
-                                	<div class="fix"></div>
-                                </div>
+                                <?php }else { ?>
+                                	<input type="hidden" name="client_id" value="<?= $client_id; ?>" />
+                                <?php } ?>
+                                <?php if(!isset($vendor_id)) { ?>
                                 <div class="rowElem noborder" id="vendor_dropdown" style="display:none;">
                                 	<label style="padding-top:5px !important;"><span class="req">*</span>Vendor</label>
                                     <div class="formRight noSearch">
@@ -63,6 +73,9 @@
                                         </select>
                                     </div>
                                 </div>
+                                <?php }else { ?>
+                                	<input type="hidden" value="<?= $vendor_id; ?>" name="vendor_id" />
+                                <?php } ?>
                                 <div class="rowElem noborder">
                                     <label style="padding-top:5px !important;">Title</label>
                                     <div class="formRight noSearch">
@@ -147,7 +160,7 @@
 </style>
 <script type="text/javascript">
 	//re initialize jQuery
-	var $ = jQuery.noConflict();
+	var $ = jQuery;
 	$('#client_dropdown,#vendor_dropdown').find('div.chzn-container').css({'width':'200px'});
 	$('#contactType').change(function() {
 		if($(this).val() == '1') {
@@ -184,10 +197,11 @@
 			success:function(code) {
 				var msg;
 				if(code == '1') {
-					msg = 'Your edit was made succesfully';
+					msg = 'The Contact was added successfully.';
 					jAlert(msg,'Success',function() {
 						$("#addContactInfo").dialog('close');
-						contactListTable();
+						document.location.reload(true);
+						//contactListTable();
 					}); 
 				}else {
 					msg = 'There was a problem with editing the contact requested. Please try again.';

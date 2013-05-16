@@ -1,7 +1,7 @@
 
 var $ = jQuery.noConflict();
 
-function addContact() {
+function addContact(otype) {
 	$('#addContactInfo').remove();
 	$('#editContactInfo').remove();
 	$('#viewContactInfo').remove();
@@ -9,7 +9,7 @@ function addContact() {
 	jQuery('#loader_block').slideDown('fast',function() {
 		$.ajax({
 			type:'GET',
-			url:'/admin/contacts/add',
+			url:'/admin/contacts/add?otype='+otype,
 			success:function(code) {
 				if(code == '0') {
 					jAlert('The Contact can not be found. Please try again','Error',function() {

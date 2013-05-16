@@ -15,7 +15,7 @@
     <?php } ?>
     <?php include FCPATH . 'html/global/breadcrumb.php'; ?>
     <div class="table" id="dataClient">
-        <div class="head" style="margin-top:5px;"><h5 class="iView">View All Users</h5></div>
+        <div class="head" style="margin-top:5px;"><h5 class="iView">Users</h5></div>
         <div id="usersTableHolder">
             <?= UserListingTable(false,false); ?>
         </div>

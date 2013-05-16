@@ -108,65 +108,73 @@ class Users extends DOM_Controller {
 		$form = $this->input->post();
 		$modules = $this->members->getDefaultModules($form['security_level']);
 		
-		$user_update = array(
-			'USER_Name'=>$form['username'],
-			'Team'=>$form['team']
-		);
+		$existingUser = $this->members->checkExistingUsername($form['username']);
 		
-		$directory_update = array(
-			'DIRECTORY_Type'=>3,
-			'DIRECTORY_FirstName'=>$form['first_name'],
-			'DIRECTORY_LastName'=>$form['last_name']
-		);
-		
-		$address_update = array(
-			'OWNER_Type' => 3,
-			'ADDRESS_Street' => $form['street'],
-			'ADDRESS_City'=>$form['city'],
-			'ADDRESS_State'=>$form['state'],
-			'ADDRESS_Zip'=>$form['zipcode'],
-			'ADDRESS_Type'=>'Home',
-			'ADDRESS_Active'=>1,
-			'ADDRESS_Primary'=>1,
-			'ADDRESS_Created'=>date('Y-m-d H:i:s')
-		);
-		
-		$email_update = array(
-			'OWNER_Type'=>3,
-			'EMAIL_Address' => $form['username'],
-			'EMAIL_Primary' => 1,
-			'EMAIL_Type' => 'Work',
-			'EMAIL_Active' => 1,
-			'EMAIL_Created' => date('Y-m-d H:i:s')
-		);
-		
-		$user_info_update = array(
-			'ACCESS_ID' => $form['security_level'],
-			'USER_Modules'=>$modules,
-			'CLIENT_ID'=>$form['dealership'],
-			'USER_Active'=>1,
-			'USER_Generated'=>1,
-		);
-		
-		$data = array(
-			'Users'=>$user_update,
-			'Directories'=>$directory_update,
-			'DirectoryAddresses'=>$address_update,
-			'EmailAddresses'=>$email_update,
-			'Users_Info'=>$user_info_update
-		);
-		
-		$add_user = $this->administration->addNewUser($data);
-		
-		if($add_user) {
-			echo '1';	
+		if(!$existingUser) {
+			$user_update = array(
+				'USER_Name'=>$form['username'],
+				'Team'=>$form['team']
+			);
+			
+			$directory_update = array(
+				'DIRECTORY_Type'=>3,
+				'DIRECTORY_FirstName'=>$form['first_name'],
+				'DIRECTORY_LastName'=>$form['last_name'],
+				'DIRECTORY_Created'=>date('Y-m-d H:i:s')
+			);
+			
+			$address_update = array(
+				'OWNER_Type' => 3,
+				'ADDRESS_Street' => $form['street'],
+				'ADDRESS_City'=>$form['city'],
+				'ADDRESS_State'=>$form['state'],
+				'ADDRESS_Zip'=>$form['zipcode'],
+				'ADDRESS_Type'=>'Home',
+				'ADDRESS_Active'=>1,
+				'ADDRESS_Primary'=>1,
+				'ADDRESS_Created'=>date('Y-m-d H:i:s')
+			);
+			
+			$email_update = array(
+				'OWNER_Type'=>3,
+				'EMAIL_Address' => $form['username'],
+				'EMAIL_Primary' => 1,
+				'EMAIL_Type' => 'Work',
+				'EMAIL_Active' => 1,
+				'EMAIL_Created' => date('Y-m-d H:i:s')
+			);
+			
+			$user_info_update = array(
+				'ACCESS_ID' => $form['security_level'],
+				'USER_Modules'=>$modules,
+				'CLIENT_ID'=>$form['dealership'],
+				'USER_Active'=>1,
+				'USER_Generated'=>1,
+			);
+			
+			$data = array(
+				'Users'=>$user_update,
+				'Directories'=>$directory_update,
+				'DirectoryAddresses'=>$address_update,
+				'EmailAddresses'=>$email_update,
+				'Users_Info'=>$user_info_update
+			);
+			
+			$add_user = $this->administration->addNewUser($data);
+			
+			if($add_user) {
+				echo '1';	
+			}else {
+				echo '0';
+			}
 		}else {
-			echo '0';
+			echo '2';	
 		}
 	}
 	
 	public function Edit() {
 		$this->load->model('system_contacts','syscontacts');
+		$this->load->model('members');
 		$user = $this->administration->getMyUser($this->user_id);
 		$user->Modules = ParseModulesInReadableArray($user->Modules);
 		$avatar = $this->members->get_user_avatar($user->ID);
@@ -175,6 +183,7 @@ class Users extends DOM_Controller {
 			'user'=>$user,
 			'avatar'=>$avatar,
 			'allMods'=>$this->administration->getAllModules(),
+			'SecurityLevels'=>$this->members->getSecurityLevels(),
 			'page'=>$page,
 			'websites'=>true,
 			'show_mods'=>((isset($_GET['modules'])) ? $_GET['modules'] : FALSE)
@@ -203,22 +212,20 @@ class Users extends DOM_Controller {
 		$this->load->model('mlist');
 		$dealerships = $this->mlist->getClients();
 		$user = $this->administration->getMyUser($this->user_id);
-		$user->Address = mod_parser($user->Address);
-		$user->CompanyAddress = mod_parser($user->CompanyAddress);
-		$user->Email = mod_parser($user->Emails,false,true);
-		$user->Phone = mod_parser($user->Phones,false,true);
 		
 		$page = $_GET['page'];
 		
 		$data = array(
 			'user'=>$user,
 			'dealerships'=>$dealerships,
-			'page'=>$page
+			'page'=>$page,
+			'SecurityLevels'=>$this->members->getSecurityLevels(),
 		);	
 		$this->load->dom_view('forms/users/edit_details', $this->theme_settings['ThemeViews'], $data);
 	}
 	
 	public function Submit_user_details_form() {
+		$this->load->model('system_contacts','domcontacts');
 		$form = $this->input->post();
 		
 		$did = $this->administration->getDirectoryID($this->user_id);
@@ -227,8 +234,23 @@ class Users extends DOM_Controller {
 			$directory_data = array(
 				'DIRECTORY_FirstName' => $form['first_name'],
 				'DIRECTORY_LastName'=>$form['last_name'],
-				'DIRECTORY_Address'=>'street:' . $form['street'] . ',city:' . $form['city'] . ',state:' . $form['state'] . ',zipcode:' . $form['zipcode']
 			);	
+			
+			$users_info = array(
+				'ACCESS_ID'=>$form['security_level']
+			);
+			
+			$address_update = array(
+				'DIRECTORY_ID'=>$did,
+				'OWNER_ID'=>$this->user_id,
+				'OWNER_Type'=>3,
+				'ADDRESS_Street'=>$form['street'],
+				'ADDRESS_City'=>$form['city'],
+				'ADDRESS_State'=>$form['state'],
+				'ADDRESS_Zip'=>$form['zip'],
+				'ADDRESS_Primary'=>1,
+				'ADDRESS_Active'=>1
+			);
 			
 			$user_data = array(
 				'USER_Name'=>$form['username']
@@ -236,13 +258,10 @@ class Users extends DOM_Controller {
 			
 			$update_directory = $this->administration->updateDirectory($did,$directory_data);
 			$update_users = $this->administration->udpateUserName($this->user_id,$user_data);
-			
-			if($update_directory AND $update_users) {
+			$update_address = $this->domcontacts->managePrimaryPhysicalAddress($did,$this->user_id,3,$address_update);
+			$update_access_level = $this->administration->updateAccessLevel($users_info,$this->user_id);
+			if($update_directory AND $update_users AND $update_address AND $update_access_level) {
 				echo '1';	
-			}elseif($update_directory AND !$update_users) {
-				echo '2';	
-			}elseif(!$update_directory AND $update_users) {
-				echo '3';	
 			}else {
 				echo '0';	
 			}

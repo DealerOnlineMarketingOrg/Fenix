@@ -1,12 +1,12 @@
 <div id="loader_block">
     <div id="client_loader"><img src="<?= base_url() . THEMEIMGS; ?>loaders/loader2.gif" /></div>
 </div>
-<div class="content">
+<div class="content hideTagFilter">
     <div class="title"><h5>Passwords</div>
     <?php notifyError(); ?>
     <?php include FCPATH . 'html/global/breadcrumb.php'; ?>
     <div class="table" style="margin-top:5px;">
-        <div class="head"><h5 class="iView">View All Passwords</h5></div>
+        <div class="head"><h5 class="iView">Passwords</h5></div>
         	<div id="passwordListTable"><?= PasswordlistTable(); ?></div>
         </div>
     </div>
