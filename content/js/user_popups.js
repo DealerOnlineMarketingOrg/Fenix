@@ -134,38 +134,3 @@ function resetMyPass(id) {
 	});
 }
 
-function editTheFreakinAvatar(id,page) {
-	jConfirm('This will overwrite your current avatar, Are you sure you want to proceed?','Upload Custom Avatar',function(r) {
-		if(r) {
-			$.ajax({
-				type:'GET',
-				url:'/users/profile/load_custom_avatar_form?uid=<?= $user->ID; ?>',
-				success:function(data) {
-					if(data) {
-						$('#editAvatarPop').html(data);	
-					}else {
-						jAlert('Houston, we have a problem...','Error Finding Popup');	
-					}
-				}
-			});
-		}
-	});
-}
-
-function importGoogleAvatar(id) {
-	var uid = id;
-	jConfirm('Are you sure you want to import your Google avatar into the system? This will overwrite any existing avatars you have set.','Import Google Avatar',function(r) {
-		if(r) {
-			$.ajax({
-				type:'GET',
-				url:'/admin/users/import_google_avatar?uid='+uid,
-				success:function(data) {
-					if(data) {
-						load_user_table(uid);
-					}
-				}
-			});
-		}
-	});
-};
-

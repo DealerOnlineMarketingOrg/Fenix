@@ -126,7 +126,7 @@
 				url:'/admin/users/submit_add_user',
 				success:function(resp) {
 					if(resp == 1) { 
-						load_users_table();
+						document.location.reload(true);
 					}else if(resp == 2) {
 						jAlert('Username already exists, please choose another and try again','Error');	
 					}else if(resp == 0) {

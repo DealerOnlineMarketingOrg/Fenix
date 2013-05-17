@@ -71,7 +71,7 @@ class Groups extends DOM_Controller {
 				'GROUP_Name'=>$group_data['name'],
 				'GROUP_Notes'=>$group_data['notes'],
 				'GROUP_Active'=>1,
-				'GROUP_Created'=>date(FULL_MILITARY_DATETIME),
+				'GROUP_Created'=>date('Y-m-d H:i:s'),
 			);
 			
 			$add = $this->administration->addGroup($add_data);
@@ -89,7 +89,6 @@ class Groups extends DOM_Controller {
 		$data = array(
 			'agencies'=>$agencies
 		);
-		
 		$this->load->dom_view('forms/groups/edit_add', $this->theme_settings['ThemeViews'], $data);
 	}
 	
@@ -102,6 +101,7 @@ class Groups extends DOM_Controller {
 		
 		$group = $this->administration->getGroup($group_id);
 		$agencies = $this->administration->getAllAgenciesForDropdown();
+		
 		if($group) {
 			$data = array(
 				'group'=>$group,

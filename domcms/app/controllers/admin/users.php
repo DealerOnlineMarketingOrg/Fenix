@@ -149,6 +149,7 @@ class Users extends DOM_Controller {
 				'CLIENT_ID'=>$form['dealership'],
 				'USER_Active'=>1,
 				'USER_Generated'=>1,
+				'USER_Created'=>date('Y-m-d H:i:s')
 			);
 			
 			$data = array(
@@ -220,6 +221,7 @@ class Users extends DOM_Controller {
 			'page'=>$page,
 			'SecurityLevels'=>$this->members->getSecurityLevels(),
 		);	
+		
 		$this->load->dom_view('forms/users/edit_details', $this->theme_settings['ThemeViews'], $data);
 	}
 	

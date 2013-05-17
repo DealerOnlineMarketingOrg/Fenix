@@ -250,6 +250,12 @@ class System_contacts extends DOM_Model {
 		return ($query) ? $query->result() : FALSE;	
 	}
 	
+	public function getVendorNameAsText($vid) {
+		$sql = 'SELECT VENDOR_Name as Name FROM Vendors WHERE VENDOR_ID = "' . $vid . '"';
+		$query = $this->db->query($sql);
+		return ($query) ? $query->row()->Name : FALSE;	
+	}
+	
 	//get websites
 	public function buildContactTable($id = false, $is_vendor = false) {
 		$contacts = array();
@@ -276,6 +282,7 @@ class System_contacts extends DOM_Model {
 							$vContact = $this->getSystemContacts(2,$vendor->ID);	
 							if($vContact) {
 								foreach($vContact as $vendorContact) {
+									$vendorContact->Owner = $this->getVendorNameAsText($vendorContact->OwnerID);
 									array_push($contacts,$vendorContact);	
 								}
 							}
@@ -312,9 +319,10 @@ class System_contacts extends DOM_Model {
 		$directories = $this->getDirectoryInformation($type,$id);
 		if($directories) { 
 			foreach($directories as $directory) {
-				$directory->Phones = $this->getContactPhoneNumbers($directory->OwnerID,$type);	
-				$directory->Emails = $this->getContactEmailAddresses($directory->OwnerID,$type);
-				$directory->Addresses = $this->getContactPhysicalAddresses($directory->OwnerID,$type);
+				//oid,otype,did
+				$directory->Phones = $this->getContactPhoneNumbers($directory->OwnerID,$directory->OwnerType,$directory->ContactID);	
+				$directory->Emails = $this->getContactEmailAddresses($directory->OwnerID,$directory->OwnerType,$directory->ContactID);
+				$directory->Addresses = $this->getContactPhysicalAddresses($directory->OwnerID,$directory->OwnerType,$directory->ContactID);
 			}
 		}
 		return $directories;

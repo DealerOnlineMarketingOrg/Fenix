@@ -53,7 +53,9 @@ class Profile extends DOM_Controller {
 		//print_object($this->input->post());
 		$rootpath = $_SERVER['DOCUMENT_ROOT'];
 		
-		$config['upload_path'] = $rootpath . '/uploads/avatars/';
+		print_object($this->input->post());
+		
+		$config['upload_path'] = FCPATH . '/uploads/avatars/';
 		$config['allowed_types'] = 'gif|jpg|png';
 		$config['max_size'] = '1000';
 		$config['max_width'] = '640';
@@ -64,7 +66,8 @@ class Profile extends DOM_Controller {
 		$avatar = 'avatar';
 		if(!$this->upload->do_upload($avatar)) {
 			$error = $this->upload->display_errors();
-			redirect($profile_url . '/upload_avatar_error?error=' . $error);
+			print_object($error);
+			//redirect($profile_url . '/upload_avatar_error?error=' . $error);
 		}else {
 			$data = array('upload_data' => $this->upload->data());
 			$filename = $data['upload_data']['file_name'];
@@ -72,11 +75,17 @@ class Profile extends DOM_Controller {
 			//log the url to the database
 			$updateAvatar = $this->members->avatar_update($this->user['UserID'],$filename);
 			// if the query was successfull, redirect back to the profile.
+			
+			print_object($filename);
+			print_object($data);
+			
+			/*
 			if($updateAvatar) :
 				redirect($profile_url,'refresh');
 			else :
 			    redirect($profile_url . '/upload_avatar_error','refresh');
 			endif;
+			*/
 			
 		}
 	}
@@ -98,89 +107,6 @@ class Profile extends DOM_Controller {
 		}else {
 			echo '0';
 		}
-	}
-	
-	private function initialize(&$form, &$user, &$profile_url) {
-		$form = $this->input->post();
-		
-		if($this->input->post('user_id')) {
-			$user_id = $this->input->post('user_id');
-		}else {
-			$user_id = $this->user['UserID'];
-		}
-		
-		$user                   = $this->administration->getUsers($user_id);
-		$user->UserID           = $user->ID;
-		$user->Edit       		= ($this->user['UserID'] == $user->UserID) ? TRUE : FALSE;
-		
-		$profile_url = base_url() . 'profile/' . strtolower($this->user['FirstName'] . $this->user['LastName']);
-	}
-	
-	public function update_UserInfo() {
-		$this->initialize($form, $user, $profile_url);
-		
-		$update = array(
-			'Users' => array(
-				'USER_Name' 			=> $form['username'],
-			),
-			'Directories' => array(
-				'DIRECTORY_ID'			=> $user->DirectoryID,
-				'DIRECTORY_FirstName'   => $form['firstname'],
-				'DIRECTORY_LastName'    => $form['lastname'],
-				'DIRECTORY_Address'		=>'street:' . $form['street'] . 'city:' . $form['city'] . ',state:' . $form['state'] . ',zipcode:' . $form['zipcode']
-			),
-			'Users_Info' => array(
-				'USER_ID'               => $user->UserID,
-				'DIRECTORY_ID'          => $user->DirectoryID,
-				'ACCESS_ID'             => $form['permissionlevel'],
-			)
-		);
-			
-		$update = $this->administration->updateUser($update);
-		
-		throwError(newError('User Info Edit',
-				($update) ? 1 : -1,
-				($update) ? 'Your User Info has been successfully updated!'
-						  : 'Something went wrong. Please try again or contact your admin.',
-				0, ''));
-		redirect($profile_url,'refresh');
-	}
-	
-	public function update_UserContactInfo() {
-		$this->initialize($form, $user, $profile_url);
-		
-		$emails = array();
-		if ($form['home_email']) $emails['home'] = 'home:'.$form['home_email'];
-		if ($form['work_email']) $emails['work'] = 'work:'.$form['work_email'];
-		$phones = array();
-		if ($form['work_phone']) $phones['work'] = 'work:'.$form['work_phone'];
-		if ($form['cell_phone']) $phones['cell'] = 'cell:'.$form['cell_phone'];
-		if ($form['fax_phone']) $phones['fax'] = 'fax:'.$form['fax_phone'];
-			
-		$update = array(
-			'Users' => array(
-				'USER_Name' 			=> $user->Username,
-			),
-			'Directories' => array(
-				'DIRECTORY_ID'			=> $user->DirectoryID,
-										   
-				'DIRECTORY_Email'       => implode(',', $emails),
-				'DIRECTORY_Phone'       => implode(',', $phones),
-			),
-			'Users_Info' => array(
-				'USER_ID'               => $user->UserID,
-				'DIRECTORY_ID'          => $user->DirectoryID,
-			)
-		);
-		
-		$update = $this->administration->updateUser($update);
-		
-		throwError(newError('User Contact Info Edit',
-				($update) ? 1 : -1,
-				($update) ? 'Your User Contact Info has been successfully updated!'
-						  : 'Something went wrong. Please try again or contact your admin.',
-				0, ''));
-		redirect($profile_url,'refresh');
 	}
 	
 	public function Edit() {
@@ -205,5 +131,12 @@ class Profile extends DOM_Controller {
 			'contactInfo'=>ContactInfoListingTable($user, 'UID', true),
 		);
 		$this->load->dom_view('forms/userProfile/edit_add_view', $this->theme_settings['ThemeViews'],$data);
+	}
+	
+	public function load_custom_avatar_form() {
+		$data = array(
+			'uid'=>$_GET['uid']
+		);	
+		$this->load->dom_view('forms/users/edit_avatar', $this->theme_settings['ThemeViews'],$data);
 	}
 }

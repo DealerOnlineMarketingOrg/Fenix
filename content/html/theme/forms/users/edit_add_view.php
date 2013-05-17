@@ -48,7 +48,7 @@
                     	<div class="title">
                         	<h5 class="iUser" style="min-height:20px;"><?= $user->LastName . ', ' . $user->FirstName; ?></h5>
                             <?php if(($this->user['AccessLevel'] >= 600000 || $this->user['UserID'] == $user->ID) AND !isset($view)) { ?>
-                            	<a title="Edit Contact" href="javascript:editUser('<?= $user->ID; ?>','<?=$page;?>');" class="actions_link"><img src="<?= base_url() . THEMEIMGS; ?>icons/color/pencil.png" alt="" /></a>
+                            	<a title="Edit Contact" href="javascript:editUserInfo('<?= $user->ID; ?>','<?=$page;?>');" class="actions_link"><img src="<?= base_url() . THEMEIMGS; ?>icons/color/pencil.png" alt="" /></a>
                                 
                             <?php } ?>
                         </div>
@@ -56,9 +56,9 @@
                         	<img class="profileAvatar" src="<?= $avatar; ?>" alt="<?= $user->FirstName . ' ' . $user->LastName; ?>" style="width:100px;" />
                             <?php if($this->user['UserID'] == $user->ID || $this->user['AccessLevel'] >= 600000) { ?>
                             	<div class="editButton inAvatar">
-                        				<a href="javascript:editTheFreakinAvatar('<?= $user->ID; ?>','<?=$page;?>');"><span>Edit</span></a>
+                        				<a title="Upload Custom Avatar" id="custom_Avatar" href="javascript:void(0);" rel="<?= $user->ID; ?>"><span>Edit</span></a>
                                     <?php if(isset($_SESSION['token']) AND $this->user['UserID'] == $user->ID) { ?>
-                                    	<a title="Import Google Avatar" id="importGoogleAvatar" href="javascript:importGoogleAvatar('<?=$user->ID;?>');"><span>Import Google Avatar</span></a>
+                                    	<a title="Import Google Avatar" rel="<?= $user->ID; ?>" id="importGoogleAvatar" href="javascript:void(0);"><span>Import Google Avatar</span></a>
                                     <?php } ?>
                                 </div>
                             <?php } ?>
@@ -370,6 +370,36 @@
 			});
 		})
 	}
+	$('#custom_Avatar').click(function() {
+		$.ajax({
+			type:'GET',
+			url:'/user/profile/load_custom_avatar_form?uid=<?= $user->ID; ?>',
+			success:function(data) {
+				if(data) {
+					$('#editAvatarPop').html(data);	
+				}else {
+					jAlert('Houston, we have a problem...','Error Finding Popup');	
+				}
+			}
+		});
+	});
+
+	$('#importGoogleAvatar').click(function() {
+		var uid = id;
+		jConfirm('Are you sure you want to import your Google avatar into the system? This will overwrite any existing avatars you have set.','Import Google Avatar',function(r) {
+			if(r) {
+				$.ajax({
+					type:'GET',
+					url:'/admin/users/import_google_avatar?uid='+uid,
+					success:function(data) {
+						if(data) {
+							load_user_table(uid);
+						}
+					}
+				});
+			}
+		});
+	});
 
 	$.mask.definitions['~'] = "[+-]";
 	$(".maskDate").mask("99/99/9999",{completed:function(){alert("Callback when completed");}});

@@ -65,11 +65,11 @@
 			data:formData,
 			success:function(data) {
 				if(data == '1') {
-					jAlert('The phone number was updated successfully!',function() {
-						load_phone_table();
+					jAlert('The email address was updated successfully!',function() {
+						document.location.reload(true);
 					});
 				}else {
-					jAlert('The phone number failed to update. Please try again.');
+					jAlert('The email address failed to update. Please try again.');
 				}
 			}
 		});
