@@ -13,6 +13,8 @@
 		}else {
 			$user = $usr;	
 		}
+		
+		print_object($user);
 		?>
 		<?php if(!empty($user->Phones)) { ?>
             <div style="margin-top:10px;margin-bottom:30px;">

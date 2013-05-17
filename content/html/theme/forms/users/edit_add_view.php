@@ -54,9 +54,9 @@
                         </div>
                         <div class="avatar" style="width:102px;margin-right:2px;">
                         	<img class="profileAvatar" src="<?= $avatar; ?>" alt="<?= $user->FirstName . ' ' . $user->LastName; ?>" style="width:100px;" />
-                            <?php if($this->user['UserID'] == $user->ID || $this->user['AccessLevel'] >= 600000) { ?>
+                            <?php if($this->user['UserID'] == $user->ID AND $this->user['AccessLevel'] >= 600000) { ?>
                             	<div class="editButton inAvatar">
-                        				<a title="Upload Custom Avatar" id="custom_Avatar" href="javascript:void(0);" rel="<?= $user->ID; ?>"><span>Edit</span></a>
+                        				<a href="javascript:void(0);" rel="<?=$user->ID;?>" id="custom_Avatar"><span>Edit</span></a>
                                     <?php if(isset($_SESSION['token']) AND $this->user['UserID'] == $user->ID) { ?>
                                     	<a title="Import Google Avatar" rel="<?= $user->ID; ?>" id="importGoogleAvatar" href="javascript:void(0);"><span>Import Google Avatar</span></a>
                                     <?php } ?>
@@ -210,7 +210,7 @@
 <div id="addContactInfoEmailPop"></div>
 <div id="editContactInfoEmailPop"></div>
 <div class="uDialog">
-    <div class="dialog-message" id="editAvatar" title="Edit Avatar">
+    <div class="dialog-message" id="editMyAvatar" title="Edit Avatar">
         <div class="uiForm">
             <p style="margin-left:15px !important;">Upload a custom Avatar to our system.</p>
             <?= form_open_multipart(base_url().'profile/avatar/upload', array('id' => 'uploadAvatar','class'=>'valid')); ?>
@@ -222,7 +222,18 @@
 
 
 <script type="text/javascript">
-
+	jQuery("select, input:checkbox, input:radio, input:file").uniform();
+	function editMyAvatar(id) {
+		jQuery("#editMyAvatar").dialog({
+			autoOpen: true,
+			modal: true,
+			buttons: {
+				Upload: function() {
+					jQuery('#uploadAvatar').submit();
+        		}
+			}
+		});
+	}
 	var $ = jQuery;
 	
 		$('#tagChanger').change(function() {
@@ -371,17 +382,8 @@
 		})
 	}
 	$('#custom_Avatar').click(function() {
-		$.ajax({
-			type:'GET',
-			url:'/user/profile/load_custom_avatar_form?uid=<?= $user->ID; ?>',
-			success:function(data) {
-				if(data) {
-					$('#editAvatarPop').html(data);	
-				}else {
-					jAlert('Houston, we have a problem...','Error Finding Popup');	
-				}
-			}
-		});
+		var id = $(this).attr('rel');
+		editMyAvatar(id);
 	});
 
 	$('#importGoogleAvatar').click(function() {

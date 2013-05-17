@@ -13,9 +13,9 @@
             <div class="widget" style="margin-top:-10px;padding-top:0;margin-bottom:10px;">
             	<?php
 					if(isset($group)) :
-						echo form_open('/admin/groups/edit',array('id'=>'groupForm','class' => 'validate mainForm formPop','style'=>'text-align:left'));
+						echo form_open('/admin/groups/edit',array('id'=>'groupForm','class' => 'mainForm formPop','style'=>'text-align:left'));
 					else :
-						echo form_open('/admin/groups/add',array('id'=>'groupForm','class'=>'validate mainForm formPop','style'=>'text-align:left'));				
+						echo form_open('/admin/groups/add',array('id'=>'groupForm','class'=>'mainForm formPop','style'=>'text-align:left'));				
 					endif;
 				?>
                     <fieldset>
@@ -24,9 +24,9 @@
                             <div class="formRight">
 								<?php
 									if(isset($group->Name)) {
-										echo form_input(array('id'=>'group_name','name'=>'name','class'=>'validate[required]','value'=>$group->Name));
+										echo form_input(array('id'=>'group_name','name'=>'name','class'=>'validate[required] required','value'=>$group->Name));
 									}else {
-										echo form_input(array('id'=>'group_name','name'=>'name','class'=>'validate[required]'));
+										echo form_input(array('id'=>'group_name','name'=>'name','class'=>'validate[required] required'));
 									}	
 								?>
 							</div>
@@ -35,7 +35,7 @@
                         <div class="rowElem noborder noSearch">
                             <label style="padding-top:10px;"><span class="req">*</span>Member Of</label>
                             <div class="formRight" style="text-align:left;padding-top:10px;margin-left:60px;float:left;width:auto;">
-                            	<select class="chzn-select" name="agency" style="width:200px;" id="MemberOfDrop">
+                            	<select class="chzn-select validate[required] required" name="agency" style="width:200px;" id="MemberOfDrop">
                                 	<option value="">Select a Agency</option>
                                     <?php foreach($agencies as $agency) { ?>
                                     	<?php if($agency->ID == $group->AgencyId) { ?>
@@ -88,33 +88,48 @@
 <style type="text/css">
 .rowElem > label {padding-top:5px;}
 	.ui-datepicker-append{float:left;}
+	div.formError{z-index:2000 !important;}
 </style>
 <script type="text/javascript">
 	//re initialize jQuery
-	var $ = jQuery.noConflict();
-	//$("#groupForm").validationEngine({promptPosition : "right", scroll: true});
+	var $ = jQuery;
+	//jQuery("#groupForm").validationEngine({promptPosition : "right", scroll: true});
 	
-	$('#groupForm').submit(function(e) {
+	function isValidForm() {
+		if($('.required').val() == '') {
+			return false;	
+		}else {
+			return true;	
+		}
+	}
+	
+	
+	jQuery('#groupForm').submit(function(e) {
 		e.preventDefault();
 		var formData = $(this).serialize();
+		var required = isValidForm();
 		
-		$.ajax({
-			type:'POST',
-			data:formData,
-			url:'/admin/groups/form<?= ((isset($group->GroupId)) ? '?gid=' . $group->GroupId : ''); ?>',
-			success:function(code) {
-				var msg;
-				if(code == '1') {
-					msg = '<?= (isset($group->GroupId)) ? 'Your edit was made successfully.' : 'Your Group was created successfully.'; ?>';
-					jAlert(msg,'Success',function() {
-						groupListTable();
-					}); 
-				}else {
-					msg = '<?= (isset($group)) ? 'There was a problem with editing the group requested. Please try again.':'There was a problem adding the group. Please try again.'; ?>';
-					jAlert(msg,'Error');
+		if(required) {
+			$.ajax({
+				type:'POST',
+				data:formData,
+				url:'/admin/groups/form<?= ((isset($group->GroupId)) ? '?gid=' . $group->GroupId : ''); ?>',
+				success:function(code) {
+					var msg;
+					if(code == '1') {
+						msg = '<?= (isset($group->GroupId)) ? 'Your edit was made successfully.' : 'Your Group was created successfully.'; ?>';
+						jAlert(msg,'Success',function() {
+							groupListTable();
+						}); 
+					}else {
+						msg = '<?= (isset($group)) ? 'There was a problem with editing the group requested. Please try again.':'There was a problem adding the group. Please try again.'; ?>';
+						jAlert(msg,'Error');
+					}
 				}
-			}
-		});
+			});
+		}else {
+			jAlert('All fields marked with * are required. Please try again','Error');	
+		}
 	});
 	
 	$(".chzn-select").chosen();

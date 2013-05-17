@@ -27,6 +27,16 @@
     div#client_loader{position:absolute;width:16px;height:16px;top:50%;margin-top:-8px;left:50%;margin-left:-8px;}
     div#dataClient{margin-top:1px;}
 </style>
+<div class="uDialog">
+    <div class="dialog-message" id="editAvatar" title="Edit Avatar">
+        <div class="uiForm">
+            <p style="margin-left:15px !important;">Upload a custom Avatar to our system.</p>
+            <?= form_open_multipart(base_url().'profile/avatar/upload', array('id' => 'uploadAvatar','class'=>'valid')); ?>
+            	<input name="avatar" placeholder="Custom Avatar" id="fileInput" class="fileInput" type="file" size="24" style="opacity:0;" />
+            <?= form_close(); ?>
+        </div>
+    </div>
+</div>
 <div id="editUsersForm"></div> 
 <div id="editUserDetailsForm"></div>
 <div id="passwordForms"></div>
@@ -44,4 +54,17 @@
 			});
 		<?php } ?>
 	<?php } ?>
+	
+	function editAvatar(id) {
+		jQuery("#editAvatar").dialog({
+			autoOpen: true,
+			modal: true,
+			buttons: {
+				Upload: function() {
+					jQuery('#uploadAvatar').submit();
+        		}
+			}
+		});
+	}
+	
 </script>

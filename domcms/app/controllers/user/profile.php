@@ -53,9 +53,7 @@ class Profile extends DOM_Controller {
 		//print_object($this->input->post());
 		$rootpath = $_SERVER['DOCUMENT_ROOT'];
 		
-		print_object($this->input->post());
-		
-		$config['upload_path'] = FCPATH . '/uploads/avatars/';
+		$config['upload_path'] = $rootpath . '/uploads/avatars/';
 		$config['allowed_types'] = 'gif|jpg|png';
 		$config['max_size'] = '1000';
 		$config['max_width'] = '640';
@@ -65,31 +63,23 @@ class Profile extends DOM_Controller {
 		$this->load->library('upload',$config);
 		$avatar = 'avatar';
 		if(!$this->upload->do_upload($avatar)) {
-			$error = $this->upload->display_errors();
-			print_object($error);
-			//redirect($profile_url . '/upload_avatar_error?error=' . $error);
+				$error = $this->upload->display_errors();
+				redirect($profile_url . '/upload_avatar_error?error=' . $error);
 		}else {
-			$data = array('upload_data' => $this->upload->data());
-			$filename = $data['upload_data']['file_name'];
-			// the current logged in users profile url
-			//log the url to the database
-			$updateAvatar = $this->members->avatar_update($this->user['UserID'],$filename);
-			// if the query was successfull, redirect back to the profile.
-			
-			print_object($filename);
-			print_object($data);
-			
-			/*
-			if($updateAvatar) :
-				redirect($profile_url,'refresh');
-			else :
-			    redirect($profile_url . '/upload_avatar_error','refresh');
-			endif;
-			*/
-			
+				$data = array('upload_data' => $this->upload->data());
+				$filename = $data['upload_data']['file_name'];
+				// the current logged in users profile url
+				//log the url to the database
+				$updateAvatar = $this->members->avatar_update($this->user['UserID'],$filename);
+				// if the query was successfull, redirect back to the profile.
+				if($updateAvatar) :
+						redirect($profile_url,'refresh');
+				else :
+					redirect($profile_url . '/upload_avatar_error','refresh');
+				endif;
+				
 		}
 	}
-
 	public function Reset_password() {
 		$this->load->model('members');
 		$this->load->helper('pass');

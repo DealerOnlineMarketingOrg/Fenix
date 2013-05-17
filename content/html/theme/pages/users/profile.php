@@ -30,6 +30,12 @@
             <div class="body alignleft">
                 <div class="avatar" style="border:2px solid <?= $user->Color; ?>;">
                     <img src="<?= $avatar; ?>" alt="<?= $user->FirstName . ' ' . $user->LastName; ?>" />
+                    <?php if($edit) { ?>
+                        <div class="editButton inAvatar"><a href="javascript:editAvatar('<?= $user->ID; ?>');"><span>Edit</span></a></div>
+                    <?php } ?>
+					<?php if(isset($_SESSION['token']) AND ($user->ID == $this->user['UserID'])) { ?>
+                        <a title="Import Google Avatar" id="importGoogleAvatar" rel="<?= $user->ID; ?>" href="javascript:void(0);"><span>Import Google Avatar</span></a>
+                    <?php } ?>
                 </div>
                 <div class="profileInfo alignleft">
                     <ul>
@@ -151,6 +157,16 @@
     <div class="fix"></div>
 </div>
 <div class="fix"></div>
+<div class="uDialog">
+    <div class="dialog-message" id="editAvatar" title="Edit Avatar">
+        <div class="uiForm">
+            <p style="margin-left:15px !important;">Upload a custom Avatar to our system.</p>
+            <?= form_open_multipart(base_url().'profile/avatar/upload', array('id' => 'uploadAvatar','class'=>'valid')); ?>
+            	<input name="avatar" placeholder="Custom Avatar" id="fileInput" class="fileInput" type="file" size="24" style="opacity:0;" />
+            <?= form_close(); ?>
+        </div>
+    </div>
+</div>
 <div id="editContactInfo">
     <div class="dialog-message" id="editUserContact" title="Edit User Contact Info">
         <div class="uiForm">
@@ -202,6 +218,18 @@
 						}
 					}
 				})
+			}
+		});
+	}
+
+	function editAvatar(id) {
+		jQuery("#editAvatar").dialog({
+			autoOpen: true,
+			modal: true,
+			buttons: {
+				Upload: function() {
+					jQuery('#uploadAvatar').submit();
+        		}
 			}
 		});
 	}
